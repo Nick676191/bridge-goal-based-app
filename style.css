@@ -2,6 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -12,4 +13,5 @@ body {
     display: flex;
     justify-content: space-around;
     background-color: blue;
+    padding: 0.5rem;
 }
