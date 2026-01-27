@@ -10,9 +10,26 @@
 <body>
     <!-- the homepage of the web-app will live here -->
     <!-- will design into a grid with three simple parts: header, main content, footer -->
+    <!-- the main content container will be split into two seperate portions where one part is a sidebar and the rest are the posts that people can see -->
     
     <!-- header -->
-    <div class="header"></div>
+    <div class="header">
+        <div class="logo">
+            <img src="" alt="">
+        </div>
+        <div class="search-container">
+            <form action="/search" method="GET">
+                <input type="text" placeholder="Search Bridge" name="search-bar" id="search">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <button>
+            <a href="">Log in</a>
+        </button>
+        <button>
+            <a href="">Sign up</a>
+        </button>
+    </div>
 
     <!-- main container -->
     <div class="main-container"></div>
