@@ -11,7 +11,18 @@ body {
 
 .header {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     background-color: blue;
     padding: 0.5rem;
+}
+
+.logo {
+    height: 3rem;
+    width: auto;
+}
+
+.logo img {
+    height: 100%;
+    width: 100%;
+    border-radius: 15%;
 }
