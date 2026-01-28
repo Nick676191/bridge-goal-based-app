@@ -40,7 +40,7 @@ button a {
 
 .main-container {
     display: flex;
-    grid-area: 2 / 1 / 6 / 5;
+    grid-area: 2 / 1 / 7 / 5;
 }
 
 .sidebar {
@@ -55,4 +55,9 @@ button a {
     margin: 0;
     padding: 2rem;
     
+}
+
+.footer {
+    background-color: beige;
+    grid-area: 7 / 1 / 8 / 5;
 }
