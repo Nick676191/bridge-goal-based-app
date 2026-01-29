@@ -3,6 +3,7 @@ html, body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 body {
@@ -63,4 +64,14 @@ a {
 
 .left-sidebar li:hover {
     background-color: lightgrey;
+}
+
+.content {
+    flex: auto;
+    overflow: scroll;
+}
+
+.right-sidebar {
+    padding: 1rem;
+    border-left: 1px solid black;
 }
