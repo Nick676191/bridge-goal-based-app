@@ -8,15 +8,15 @@ html, body {
 
 body {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(50px, auto);
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(4rem, auto);
     min-height: 100vh;
 }
 
 .header {
     display: flex;
     /* row start / col start / row end / col end */
-    grid-area: 1 / 1 / 2 / 5;
+    grid-area: 1 / 1 / 2 / 2;
     justify-content: space-between;
     align-items: center;
     /* background-color: blue; */
@@ -42,7 +42,7 @@ a {
 
 .main-container {
     display: flex;
-    grid-area: 2 / 1 / 7 / 5;
+    grid-area: 2 / 1 / 3 / 2;
 }
 
 .left-sidebar {
@@ -69,6 +69,7 @@ a {
 .content {
     flex: auto;
     overflow: scroll;
+    padding: 0.5rem;
 }
 
 .right-sidebar {
