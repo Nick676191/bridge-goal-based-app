@@ -18,8 +18,9 @@ body {
     grid-area: 1 / 1 / 2 / 5;
     justify-content: space-between;
     align-items: center;
-    background-color: blue;
+    /* background-color: blue; */
     padding: 0.5rem 3rem;
+    border-bottom: 1px solid black;
 }
 
 .logo {
@@ -33,7 +34,7 @@ body {
     border-radius: 25%;
 }
 
-button a {
+a {
     color: black;
     text-decoration: none;
 }
@@ -43,21 +44,23 @@ button a {
     grid-area: 2 / 1 / 7 / 5;
 }
 
-.sidebar {
-    background-color: aliceblue;
+.left-sidebar {
+    /* background-color: aliceblue; */
+    border-right: 1px solid black;
 }
 
-.sidebar li {
+.left-sidebar li {
     list-style-type: none;
+    padding: 0.5rem 3rem;
 }
 
-.sidebar ul {
+.left-sidebar ul {
     margin: 0;
-    padding: 2rem;
-    
+    padding: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-.footer {
-    background-color: beige;
-    grid-area: 7 / 1 / 8 / 5;
+.left-sidebar li:hover {
+    background-color: lightgrey;
 }
