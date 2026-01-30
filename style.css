@@ -22,6 +22,7 @@ body {
 
 .title {
     align-self: center;
+    font-size: 3rem;
 }
 
 .header-content {
@@ -84,4 +85,9 @@ a {
 .right-sidebar {
     padding: 1rem;
     border-left: 1px solid black;
+}
+
+.rs-title {
+    font-size: 2rem;
+    font-weight: bold;
 }
