@@ -4,8 +4,32 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
+    background-color: black;
 }
 
 .form-container {
+    width: 25rem;
     align-self: center;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 5px double white;
+}
+
+section {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+/* telling the divs to stretch out so that the input elements can stretch out */
+section > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 1rem;
+    color: white;
 }
