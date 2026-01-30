@@ -14,9 +14,18 @@ body {
 }
 
 .header {
-    display: flex;
     /* row start / col start / row end / col end */
     grid-area: 1 / 1 / 2 / 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    align-self: center;
+}
+
+.header-content {
+    display: flex;
     justify-content: space-between;
     align-items: center;
     /* background-color: blue; */
