@@ -22,7 +22,7 @@ Bridge is a social media web application designed to help users connect based on
 - Image uploads
 - Notifications
 
-## 🏗️ Architecture
+## Architecture
 
 ### Tech Stack
 
@@ -259,7 +259,7 @@ const anthropic = new Anthropic({
 // ... implementation code is already in the file
 ```
 
-## 🎨 Customization
+## Customization
 
 ### Changing Colors/Styling
 Edit `frontend/style.css` to customize the look and feel.
@@ -327,7 +327,7 @@ Customize email templates in `backend/utils/email.js`
 - id, user_id, post_id, conversation_history (JSONB)
 - created_at, updated_at
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Database Connection Issues
 ```bash
@@ -361,7 +361,7 @@ netstat -ano | findstr :3000  # Windows
 kill -9 <PID>        # Mac/Linux
 ```
 
-## 🚀 Deployment
+## Deployment
 
 ### AWS Deployment (Recommended)
 
@@ -407,11 +407,11 @@ kill -9 <PID>        # Mac/Linux
 
 This project is private and proprietary.
 
-## 👥 Contributors
+## Contributors
 
 - Nick Bourgeois - Initial development
 
-## 📞 Support
+## Support
 
 For issues or questions:
 1. Check the troubleshooting section
