@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bridge - What took so long?</title>
     <link rel="stylesheet" href="./style.css">
-    <script src="./script.js" defer></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/homepage.js" defer></script>
 </head>
 <body>
-    <!-- the homepage of the web-app will live here -->
-    <!-- will design into a grid with two simple parts: header, main content -->
-    <!-- the main content container will be split into three seperate portions where one part is a sidebar and the rest are the posts that people can see and the other sidebar allows users to track their progress towards their goals -->
-    
-    <!-- header -->
+    <!-- Header -->
     <div class="header">
         <span class="title"><a href="./index.html">BRIDGE</a></span>
         <div class="header-content">
@@ -27,50 +24,40 @@
             </div>
             <div class="pass-btns">
                 <button>
-                    <a href="./pages/login.html" target="_blank" rel="noopener noreferrer">Log in</a>
+                    <a href="./pages/login.html">Log in</a>
                 </button>
                 <button>
-                    <a href="./pages/sign-up.html" target="_blank" rel="noopener noreferrer">Sign up</a>
+                    <a href="./pages/sign-up.html">Sign up</a>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- main container -->
+    <!-- Main container -->
     <div class="main-container">
         <nav class="left-sidebar">
             <ul>
                 <li><a href="./index.html">Home</a></li>
-                <li><a href="./pages/explore.html" target="_blank" rel="noopener noreferrer">Explore</a></li>
-                <li><a href="https://www.google.com" target="_blank" rel="noopener noreferrer">Profile</a></li>
-                <li><a href="./pages/settings.html" target="_blank" rel="noopener noreferrer">Settings</a></li>
+                <li><a href="./pages/explore.html">Explore</a></li>
+                <li><a href="./pages/profile.html">Profile</a></li>
+                <li><a href="./pages/settings.html">Settings</a></li>
             </ul>
         </nav>
+        
         <div class="content">
-            <article>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta blanditiis ea odit sit facilis tempore quasi vel molestias eius. Delectus eius esse magnam quo cumque illo deserunt, quae repellat modi!</article>
-            <article>Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio repellat natus deserunt doloremque praesentium ea fuga earum voluptatum autem nulla excepturi minima quasi, eius saepe magni assumenda. Magni, molestias inventore.</article>
-            <article>Et totam ipsam veritatis architecto ipsum consectetur nemo, sit repudiandae voluptatum tempora eius porro similique rerum alias ratione vel! Delectus illum temporibus magni fuga itaque tempora ea, qui eum nihil.</article>
-            <article>Odit voluptas fuga natus voluptatem, cum ratione deserunt sint ab sit debitis! Laudantium provident corrupti aspernatur fuga obcaecati? Explicabo porro ducimus ullam deserunt provident reiciendis, veritatis sint cumque id odio?</article>
-            <article>Iusto blanditiis ipsum eius adipisci ipsam corrupti placeat, nostrum recusandae culpa fugiat at ullam asperiores voluptatum et tempore provident, sint sequi accusantium pariatur ipsa? Alias rem suscipit doloremque! In, nihil.</article>
-            <article>Facere ullam quae necessitatibus repudiandae voluptas repellat vero qui, ad modi aperiam recusandae rem alias distinctio minima eius consequatur odit libero quod quidem hic, id animi odio sequi vitae? Impedit.</article>
-            <article>Alias consequatur dolores pariatur quas sapiente quasi expedita dolor fuga explicabo sed qui sunt, mollitia deleniti aliquam debitis tempora rem nulla ipsam dolorem beatae optio similique iste. Labore, inventore quos!</article>
-            <article>Labore eveniet iste sit repellendus in molestias ipsam tenetur aperiam, necessitatibus alias praesentium et exercitationem explicabo, beatae sint ea unde earum illo. Aliquid corrupti laborum, repellendus aspernatur beatae perferendis. Debitis.</article>
-            <article>Rem provident totam quas, animi veritatis esse numquam maiores cumque, porro culpa quam inventore aliquam. Consectetur adipisci quaerat eveniet, non hic minus aspernatur delectus, autem vitae cupiditate atque iure architecto!</article>
-            <article>At quis cum id possimus unde, dignissimos iure doloribus quo est porro beatae accusamus exercitationem, deserunt, aliquam eum aliquid ex quibusdam voluptatum eos dolores necessitatibus blanditiis? Maxime fuga blanditiis non.</article>
-            <article>Saepe ipsa quasi repellat eveniet. Numquam hic laudantium harum, dicta culpa voluptatibus illo minus repellendus molestiae, blanditiis quibusdam quas ipsam! Perferendis, similique nam assumenda repellat numquam ipsam fuga. Tempora, earum!</article>
-            <article>Deleniti eos soluta voluptates, omnis id eius similique expedita iusto voluptas mollitia temporibus unde autem corrupti distinctio quidem, corporis dolor nesciunt ipsam at sed vero! Distinctio, saepe. Facilis, similique dicta?</article>
-            <article>Consectetur ullam ipsa debitis nisi atque est vero totam provident omnis accusamus velit doloribus, ad aliquam minima architecto eum. Soluta harum iusto aliquid voluptatem sapiente deleniti distinctio, ullam laudantium at!</article>
-            <article>Nihil deleniti fugiat laudantium tempora facere accusantium cumque doloribus adipisci atque amet officiis a magni explicabo asperiores beatae placeat fugit cum, aspernatur exercitationem maxime. Sequi dolorum eos blanditiis aut laborum.</article>
-            <article>Ducimus, a aliquam odio, corporis harum quo quisquam molestias, repellendus iure pariatur recusandae architecto temporibus illo quasi quam? Maiores dolor enim quae suscipit ipsa unde dolorum necessitatibus maxime, veniam dolore.</article>
-            <article>Corrupti quam minus provident iure ipsa et magnam necessitatibus dignissimos numquam labore. Maiores a quos eaque est beatae nam expedita id officia eius voluptate. Vitae rem quos ratione beatae deleniti!</article>
-            <article>Odio, quisquam sequi est quis nostrum impedit iusto, quae culpa enim architecto, possimus atque inventore. Neque odit consectetur nisi ipsa veritatis ducimus assumenda reprehenderit nulla qui odio, natus blanditiis dolore?</article>
-            <article>Accusantium suscipit nemo cupiditate iste ipsum qui voluptatum ducimus ipsam neque. Dolores non quidem, quod accusantium, reiciendis, sunt ipsum officiis sequi perspiciatis in hic laborum. Magni molestiae error debitis totam!</article>
-            <article>Accusantium rem nam id culpa doloremque rerum consequatur explicabo. Et iste blanditiis magni iure sequi odit aliquam quia aperiam est repudiandae! Officia, unde minus nihil dolorem quae ad id quia!</article>
-            <article>Accusantium consequatur accusamus at sunt enim deleniti, nobis officiis perspiciatis similique harum quam placeat dignissimos est possimus esse. Voluptatem, blanditiis maxime! Nemo, ratione corrupti! Cumque quibusdam veniam quidem modi fuga!</article>
-            <article>Rem aspernatur tempore ad deserunt ipsum, aut perspiciatis harum quis neque eligendi ex, dignissimos reprehenderit quo eveniet asperiores dicta modi quae magni iure. Hic quod, similique ex nemo odio obcaecati!</article>
+            <div class="loading">Loading trending posts...</div>
         </div>
+        
         <nav class="right-sidebar">
             <span class="rs-title">Goal Communities</span>
+            <div class="communities">
+                <p>Fitness & Health</p>
+                <p>Career Development</p>
+                <p>Personal Finance</p>
+                <p>Education & Learning</p>
+                <p>Creative Projects</p>
+                <p>Relationships</p>
+            </div>
         </nav>
     </div>
 </body>
