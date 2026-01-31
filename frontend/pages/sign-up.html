@@ -3,30 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Bridge</title>
-    <link rel="stylesheet" href="./login.css">
-    <script src="../js/api.js"></script>
-    <script src="../js/login.js" defer></script>
+    <title>Sign-up Page</title>
+    <link rel="stylesheet" href="./sign-up.css">
 </head>
 <body>
     <span class="title"><a href="../index.html">BRIDGE</a></span>
     <div class="form-container">
-        <h2>Welcome Back</h2>
-        <form id="login-form" method="POST">
-            <section class="form-section">
-                <div class="form-field">
+        <form id="sign-up" action="" method="POST">
+            <section class="account-name">
+                <div class="acct">
+                    <label for="user">USERNAME *</label>
+                    <input id="user" name="username" type="text" maxlength="50" required>
+                </div>
+            </section>
+            <section class="contacts">
+                <div class="email">
                     <label for="email">EMAIL *</label>
-                    <input id="email" name="email" type="email" placeholder="your@email.com" required>
+                    <input id="email" name="email" type="email" placeholder="johndoe@example.com" required>
+                </div>
+                <div class="phone-num">
+                    <label for="tele">PHONE NUMBER *</label>
+                    <input id="tele" name="tele" type="tel" placeholder="xxx-xxx-xxxx" required>
                 </div>
             </section>
-            <section class="form-section">
-                <div class="form-field">
-                    <label for="password">PASSWORD *</label>
-                    <input id="password" name="password" type="password" minlength="5" required>
+            <section class="passwords">
+                <div class="set-pass">
+                    <label for="first-pass">PASSWORD *</label>
+                    <input id="first-pass" name="set-password" type="password" minlength="5" maxlength="30" required>
+                </div>
+                <div class="final-pass">
+                    <label for="second-pass">CONFIRM PASSWORD *</label>
+                    <input id="second-pass" name="finish-password" type="password" minlength="5" maxlength="30" required>
                 </div>
             </section>
-            <button type="submit">Log In</button>
-            <p>Don't have an account? <a href="./sign-up.html">Sign up</a></p>
+            <button type="submit">Create Account</button>
+            <p>Already have an account? <a href="./login.html">Log in</a></p>
         </form>
     </div>
 </body>
