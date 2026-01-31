@@ -162,11 +162,11 @@ bridge-app/
 │   ├── middleware/
 │   │   └── auth.js                # Authentication middleware
 │   ├── routes/
-│   │   ├── auth.js                # Auth routes (login, register, verify)
-│   │   ├── posts.js               # Posts CRUD operations
-│   │   ├── comments.js            # Comments operations
-│   │   ├── users.js               # User profile operations
-│   │   └── ai-agent.js            # AI agent integration
+│   │   ├── auth-routes.js         # Auth routes (login, register, verify)
+│   │   ├── post-routes.js         # Posts CRUD operations
+│   │   ├── comments-routes.js     # Comments operations
+│   │   ├── user-routes.js         # User profile operations
+│   │   └── ai-agent-routes.js     # AI agent integration
 │   ├── utils/
 │   │   └── email.js               # Email service
 │   ├── server.js                  # Main server file
