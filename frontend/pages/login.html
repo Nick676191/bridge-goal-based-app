@@ -3,9 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Login - Bridge</title>
+    <link rel="stylesheet" href="./login.css">
+    <script src="../js/api.js"></script>
+    <script src="../js/login.js" defer></script>
 </head>
 <body>
-    <h1>LOGIN</h1>
+    <span class="title"><a href="../index.html">BRIDGE</a></span>
+    <div class="form-container">
+        <h2>Welcome Back</h2>
+        <form id="login-form" method="POST">
+            <section class="form-section">
+                <div class="form-field">
+                    <label for="email">EMAIL *</label>
+                    <input id="email" name="email" type="email" placeholder="your@email.com" required>
+                </div>
+            </section>
+            <section class="form-section">
+                <div class="form-field">
+                    <label for="password">PASSWORD *</label>
+                    <input id="password" name="password" type="password" minlength="5" required>
+                </div>
+            </section>
+            <button type="submit">Log In</button>
+            <p>Don't have an account? <a href="./sign-up.html">Sign up</a></p>
+        </form>
+    </div>
 </body>
 </html>
