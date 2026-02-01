@@ -15,7 +15,7 @@ psql --version
 npm --version
 ```
 
-If any are missing, install them first!
+If any are missing, install them first please!
 
 ## 🚀 5-Minute Setup
 
