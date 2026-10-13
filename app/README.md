@@ -46,7 +46,7 @@ To see it in a browser instead, press `w` in the Terminal window after
   committed to, the Updates box asks you to commit first.
 - Post an update with **Tag as a setback** on.
 - Under any tip or update, tap **Reply** to answer it or the star to encourage it.
-- On your own goal, tap **Status** to mark it achieved or dropped.
+- On your own goal, use **Where does this goal stand?** under the post to mark it achieved or dropped.
 - **Post** tab: watch the SMART Principles fill in as you type (tick Attainable
   and Relevant yourself), add up to 4 photos and one video (60 seconds max), and
   tap **New category** if none of the categories fit.

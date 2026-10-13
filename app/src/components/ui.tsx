@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   setbackText: { color: colors.setback, fontSize: 12, fontWeight: '700' },
-  status: { borderWidth: 1, borderRadius: 3, paddingHorizontal: 6, paddingVertical: 1 },
+  status: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: 3, paddingHorizontal: 6, paddingVertical: 1, marginBottom: 2 },
   statusText: { fontSize: 12, fontWeight: '700' },
   titleRow: {
     flexDirection: 'row',

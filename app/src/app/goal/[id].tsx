@@ -6,8 +6,6 @@
 
 import React, { useRef, useState } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,7 +14,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useKeyboardLift } from '@/lib/keyboard';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
@@ -36,11 +35,10 @@ export default function GoalScreen() {
   const [tab, setTab] = useState<'updates' | 'tips'>(params.tab === 'tips' ? 'tips' : 'updates');
   const [text, setText] = useState('');
   const [setback, setSetback] = useState(false);
-  const [statusOpen, setStatusOpen] = useState(false);
   // Set when you tap Reply under a tip, update or reply: who and what you're answering.
   const [replyingTo, setReplyingTo] = useState<{ parentId: string; name: string } | null>(null);
   const inputRef = useRef<TextInput>(null);
-  const insets = useSafeAreaInsets();
+  const keyboardLift = useKeyboardLift();
 
   if (!goal) return <Text style={styles.empty}>This goal was deleted.</Text>;
 
@@ -67,7 +65,8 @@ export default function GoalScreen() {
 
   const setStatus = (status: GoalStatus) => {
     store.dispatch({ type: 'setStatus', goalId: goal.id, status });
-    setStatusOpen(false);
+    // After marking it achieved or dropped, open Updates so you can say how it went.
+    if (status !== 'active') switchTab('updates');
   };
 
   // Replying to a reply attaches to the same tip or update (one level deep).
@@ -91,26 +90,21 @@ export default function GoalScreen() {
         options={{
           title: '',
           headerRight: () =>
-            isOwner ? (
-              <Pressable onPress={() => setStatusOpen((o) => !o)} hitSlop={10} accessibilityLabel="Update status">
-                <Text style={styles.headerAction}>Status</Text>
-              </Pressable>
-            ) : (
+            isOwner ? null : (
               <Pressable onPress={reportPost} hitSlop={10} accessibilityLabel="Report this post">
                 <Ionicons name="flag-outline" size={22} color={colors.ink} />
               </Pressable>
             ),
         }}
       />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        // The keyboard is measured from the top of the screen, so tell it how
-        // tall the status bar and the header above this screen are.
-        keyboardVerticalOffset={insets.top + 44}
-      >
+      {/* Everything above the keyboard. The bottom padding lifts the reply box
+          so it sits just above the keyboard and its suggested-words row. */}
+      <View style={{ flex: 1, paddingBottom: keyboardLift }}>
         <ScrollView keyboardShouldPersistTaps="handled">
-          {statusOpen && (
+          <GoalCard goal={goal} full />
+
+          {/* Only you see this on your own goals: mark it achieved or dropped. */}
+          {isOwner && (
             <View style={styles.statusPanel}>
               <Text style={styles.statusTitle}>Where does this goal stand?</Text>
               <View style={styles.statusRow}>
@@ -119,12 +113,14 @@ export default function GoalScreen() {
                 <Chip label="Dropped" selected={goal.status === 'dropped'} onPress={() => setStatus('dropped')} />
               </View>
               <Text style={styles.statusHint}>
-                {"Once a month we'll ask you this. Dropping a goal is fine; post an update saying what you learned."}
+                {goal.status === 'achieved'
+                  ? 'Nice work. Post an update below to tell everyone how it went.'
+                  : goal.status === 'dropped'
+                    ? 'Dropping a goal is fine. Post an update saying what you learned.'
+                    : "Once a month we'll ask you this. You can change it any time."}
               </Text>
             </View>
           )}
-
-          <GoalCard goal={goal} full />
           <Divider strong />
 
           <View style={styles.tabs}>
@@ -227,7 +223,7 @@ export default function GoalScreen() {
             </>
           )}
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -287,8 +283,14 @@ function ThreadItem({
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper },
-  headerAction: { fontSize: 16, fontWeight: '700', color: colors.lane },
-  statusPanel: { margin: space.lg, padding: space.md, backgroundColor: colors.wash, borderRadius: 4, gap: space.sm },
+  statusPanel: {
+    marginHorizontal: space.lg,
+    marginBottom: space.lg,
+    padding: space.md,
+    backgroundColor: colors.wash,
+    borderRadius: 4,
+    gap: space.sm,
+  },
   statusTitle: { fontSize: 15, fontWeight: '700', color: colors.ink },
   statusRow: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   statusHint: { fontSize: 13, color: colors.muted, lineHeight: 18 },
