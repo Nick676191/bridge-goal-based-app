@@ -7,7 +7,7 @@
 
 import React, { createContext, useContext, useMemo, useReducer } from 'react';
 import * as mock from './mock';
-import type { AppNotification, Category, Goal, GoalStatus, Tip, Update, User } from './types';
+import { CATEGORIES, type AppNotification, type Category, type Goal, type GoalStatus, type Tip, type Update, type User } from './types';
 
 type Settings = {
   dailyReminderCap: boolean; // at most one reminder a day across all goals
@@ -24,6 +24,7 @@ type State = {
   notifications: AppNotification[];
   blocked: string[];
   interests: Category[];
+  customCategories: Category[]; // categories people created when posting
   settings: Settings;
 };
 
@@ -41,7 +42,9 @@ type Action =
   | { type: 'block'; username: string }
   | { type: 'unblock'; username: string }
   | { type: 'updateProfile'; name: string; bio: string }
-  | { type: 'setSetting'; key: keyof Settings; value: boolean };
+  | { type: 'setSetting'; key: keyof Settings; value: boolean }
+  | { type: 'addCategory'; name: string }
+  | { type: 'setAvatar'; uri: string | undefined };
 
 const initialState: State = {
   me: mock.ME,
@@ -53,6 +56,7 @@ const initialState: State = {
   notifications: mock.notifications,
   blocked: [],
   interests: ['Running', 'Weightlifting', 'Triathlon'],
+  customCategories: [],
   settings: { dailyReminderCap: true, quietHours: true },
 };
 
@@ -160,6 +164,16 @@ function reducer(state: State, action: Action): State {
       };
     case 'setSetting':
       return { ...state, settings: { ...state.settings, [action.key]: action.value } };
+    case 'addCategory': {
+      const name = action.name.trim();
+      const exists = [...CATEGORIES, ...state.customCategories].some((c) => c.toLowerCase() === name.toLowerCase());
+      return exists || !name ? state : { ...state, customCategories: [...state.customCategories, name] };
+    }
+    case 'setAvatar':
+      return {
+        ...state,
+        users: state.users.map((u) => (u.username === state.me ? { ...u, avatarUri: action.uri } : u)),
+      };
   }
 }
 
@@ -186,6 +200,11 @@ function useStoreValue() {
       followers: (username: string) => state.users.filter((u) => u.following.includes(username)),
       canPostUpdate: (g: Goal) => g.author === state.me || g.committed.includes(state.me),
       unreadCount: state.notifications.filter((n) => !n.read).length,
+      // Built-in categories first, then ones people created.
+      allCategories: [...CATEGORIES, ...state.customCategories],
+      // Finds an existing category ignoring capitalization ("sport" -> "Sport").
+      findCategory: (name: string) =>
+        [...CATEGORIES, ...state.customCategories].find((c) => c.toLowerCase() === name.trim().toLowerCase()),
     };
   }, [state]);
 

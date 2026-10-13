@@ -117,7 +117,7 @@ export const goals: Goal[] = [
     author: 'coach_jo',
     subject: 'Break 80 on a par-72 course',
     body: 'Best round is 86. Short game is costing me 5+ strokes a round. Plan: 2 range sessions and 1 short-game session a week, 9 holes every Saturday, tracking putts and up-and-downs.',
-    category: 'Golf',
+    category: 'Sport',
     status: 'active',
     createdAt: ago(3 * DAY),
     committed: [],

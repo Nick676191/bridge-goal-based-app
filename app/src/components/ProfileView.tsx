@@ -50,7 +50,13 @@ export function ProfileView({ username }: { username: string }) {
     <ScrollView contentContainerStyle={{ paddingBottom: space.xxl }}>
       <View style={styles.head}>
         <View style={styles.headTop}>
-          <Avatar name={user.name} size={72} />
+          <Pressable
+            onPress={isMe ? () => router.push('/edit-profile') : undefined}
+            disabled={!isMe}
+            accessibilityLabel={isMe ? 'Change profile photo' : undefined}
+          >
+            <Avatar name={user.name} uri={user.avatarUri} size={72} />
+          </Pressable>
           <View style={styles.stats}>
             <Stat n={posted.length} label="Goals" />
             <Stat n={followers} label="Followers" />
@@ -63,7 +69,7 @@ export function ProfileView({ username }: { username: string }) {
 
         <View style={styles.buttons}>
           {isMe ? (
-            <Button label="Edit profile" variant="secondary" style={{ flex: 1 }} onPress={() => router.push('/settings')} />
+            <Button label="Edit profile" variant="secondary" style={{ flex: 1 }} onPress={() => router.push('/edit-profile')} />
           ) : blocked ? (
             <Button label="Unblock" variant="secondary" style={{ flex: 1 }} onPress={() => store.dispatch({ type: 'unblock', username })} />
           ) : (

@@ -46,9 +46,11 @@ To see it in a browser instead, press `w` in the Terminal window after
   committed to, the Updates box asks you to commit first.
 - Post an update with **Tag as a setback** on.
 - On your own goal, tap **Status** to mark it achieved or dropped.
-- **Post** tab: watch the SMART checklist fill in as you type, and add up to 4
-  photos and one video (60 seconds max). The video plays on the goal's page.
-- **Explore**: tap a category, or search "soccer" or "marathon".
+- **Post** tab: watch the SMART Principles fill in as you type (tick Attainable
+  and Relevant yourself), add up to 4 photos and one video (60 seconds max), and
+  tap **New category** if none of the categories fit.
+- **Explore**: tap a category, or search "marathon" or "Maya".
+- **Profile > Edit profile**: tap the photo to add your own.
 - On someone's profile, the **...** button has Report and Block.
 
 ## How the code is organized
@@ -62,7 +64,7 @@ app/
                      notifications (Activity), profile
       goal/[id].tsx  A goal's page; [id] means "any goal id"
       user/[username].tsx  Someone else's profile
-      welcome.tsx, onboarding.tsx, settings.tsx
+      welcome.tsx, onboarding.tsx, settings.tsx, edit-profile.tsx
     components/      Pieces used on many screens (post card, action bar, buttons)
     data/
       types.ts       The shapes of users, goals, tips, updates

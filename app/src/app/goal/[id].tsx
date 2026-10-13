@@ -134,7 +134,7 @@ export default function GoalScreen() {
                 style={[styles.item, isSetback && styles.itemSetback]}
               >
                 <Pressable onPress={() => router.push({ pathname: '/user/[username]', params: { username: item.author } })}>
-                  <Avatar name={author?.name ?? item.author} size={30} />
+                  <Avatar name={author?.name ?? item.author} uri={author?.avatarUri} size={30} />
                 </Pressable>
                 <View style={{ flex: 1, gap: 4 }}>
                   <View style={styles.itemHead}>

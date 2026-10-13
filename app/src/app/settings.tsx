@@ -1,27 +1,18 @@
-// Settings: edit profile, notification limits, blocked accounts, legal links,
+// Settings: a link to Edit profile, notification limits, blocked accounts, legal links,
 // log out and delete account. Apple requires in-app account deletion and a
 // privacy policy link (see "App Store requirements" in the plan doc).
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useStore } from '@/data/store';
 import { confirm } from '@/components/ProfileView';
-import { Button, Divider, Field } from '@/components/ui';
+import { Button, Divider } from '@/components/ui';
 import { colors, space } from '@/theme';
 
 export default function Settings() {
   const store = useStore();
-  const me = store.meUser;
-  const [name, setName] = useState(me.name);
-  const [bio, setBio] = useState(me.bio);
-  const [saved, setSaved] = useState(false);
   const { settings, blocked } = store.state;
-
-  const save = () => {
-    store.dispatch({ type: 'updateProfile', name: name.trim() || me.name, bio: bio.trim() });
-    setSaved(true);
-  };
 
   const signOut = () => {
     store.dispatch({ type: 'signOut' });
@@ -32,9 +23,10 @@ export default function Settings() {
   return (
     <ScrollView contentContainerStyle={styles.content}>
       <Text style={styles.section}>Profile</Text>
-      <Field label="Name" value={name} onChangeText={(v) => { setName(v); setSaved(false); }} />
-      <Field label="Bio" value={bio} onChangeText={(v) => { setBio(v); setSaved(false); }} multiline max={160} />
-      <Button label={saved ? 'Saved' : 'Save profile'} onPress={save} disabled={saved} />
+      <Pressable onPress={() => router.push('/edit-profile')} style={styles.row} accessibilityRole="button">
+        <Text style={styles.label}>Edit photo, name and bio</Text>
+        <Text style={styles.link}>Edit</Text>
+      </Pressable>
 
       <Divider />
       <Text style={styles.section}>Notifications</Text>

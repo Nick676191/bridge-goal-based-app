@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
-import { CATEGORIES, type Category } from '@/data/types';
+import { type Category } from '@/data/types';
 import { Button, Chip, Field } from '@/components/ui';
 import { colors, fonts, space } from '@/theme';
 
@@ -88,7 +88,7 @@ export default function Onboarding() {
               <Text style={styles.title}>What are you chasing now?</Text>
               <Text style={styles.hint}>Pick at least one. Your home feed starts with goals in these categories.</Text>
               <View style={styles.chips}>
-                {CATEGORIES.map((c) => (
+                {store.allCategories.map((c) => (
                   <Chip key={c} label={c} selected={interests.includes(c)} onPress={() => toggleInterest(c)} />
                 ))}
               </View>

@@ -13,7 +13,7 @@ const notify = (title: string, message: string) =>
   Platform.OS === 'web' ? window.alert(`${title}\n\n${message}`) : Alert.alert(title, message);
 
 // iOS asks for photo access once; after that the picker opens straight away.
-async function canUseLibrary() {
+export async function canUseLibrary() {
   if (Platform.OS === 'web') return true;
   const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!granted)

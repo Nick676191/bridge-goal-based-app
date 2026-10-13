@@ -73,7 +73,7 @@ export default function Explore() {
                 style={styles.person}
                 onPress={() => router.push({ pathname: '/user/[username]', params: { username: u.username } })}
               >
-                <Avatar name={u.name} size={40} />
+                <Avatar name={u.name} uri={u.avatarUri} size={40} />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.personName}>{u.name}</Text>
                   <Text style={styles.personMeta}>@{u.username}</Text>
@@ -93,14 +93,18 @@ export default function Explore() {
           <>
             <Text style={styles.heading}>Categories</Text>
             <View style={styles.chips}>
-              {CATEGORIES.map((c) => (
-                <Chip
-                  key={c}
-                  label={`${c} ${countFor(c)}`}
-                  selected={category === c}
-                  onPress={() => setCategory(category === c ? null : c)}
-                />
-              ))}
+              {/* Built-in categories always show; ones people created show once
+                  they have at least one goal in them. */}
+              {store.allCategories
+                .filter((c) => CATEGORIES.includes(c) || goals.some((g) => g.category === c))
+                .map((c) => (
+                  <Chip
+                    key={c}
+                    label={`${c} ${countFor(c)}`}
+                    selected={category === c}
+                    onPress={() => setCategory(category === c ? null : c)}
+                  />
+                ))}
             </View>
 
             {category ? (

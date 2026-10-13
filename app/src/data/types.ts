@@ -2,19 +2,9 @@
 // plan doc, so when the real backend (Supabase) arrives, the screens won't
 // need to change much. In Python terms, each `type` here is like a dataclass.
 
-export type Category =
-  | 'Running'
-  | 'Weightlifting'
-  | 'Calisthenics'
-  | 'Golf'
-  | 'Tennis'
-  | 'Soccer'
-  | 'Cycling'
-  | 'Swimming'
-  | 'Triathlon'
-  | 'Hybrid'
-  | 'Climbing'
-  | 'Mobility';
+// A category is any short name. The built-in list below covers most goals;
+// people can also create their own when posting (see the Post screen).
+export type Category = string;
 
 export const CATEGORIES: Category[] = [
   'Running',
@@ -24,17 +14,18 @@ export const CATEGORIES: Category[] = [
   'Triathlon',
   'Cycling',
   'Swimming',
-  'Golf',
-  'Tennis',
-  'Soccer',
+  'Sport', // any team or racquet sport: soccer, tennis, golf, and so on
   'Climbing',
   'Mobility',
 ];
+
+export const CATEGORY_MAX = 24; // characters, for categories people create
 
 export type User = {
   username: string;
   name: string;
   bio: string;
+  avatarUri?: string; // profile photo; initials are shown when missing
   following: string[]; // usernames this user follows
 };
 

@@ -36,7 +36,7 @@ export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean })
         accessibilityRole="link"
         accessibilityLabel={`${author?.name}'s profile`}
       >
-        <Avatar name={author?.name ?? goal.author} size={32} />
+        <Avatar name={author?.name ?? goal.author} uri={author?.avatarUri} size={32} />
         <View style={{ flex: 1 }}>
           <Text style={styles.authorName}>{author?.name}</Text>
           <Text style={styles.meta}>
