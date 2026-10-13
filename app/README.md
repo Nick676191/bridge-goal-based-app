@@ -46,7 +46,8 @@ To see it in a browser instead, press `w` in the Terminal window after
   committed to, the Updates box asks you to commit first.
 - Post an update with **Tag as a setback** on.
 - On your own goal, tap **Status** to mark it achieved or dropped.
-- **Post** tab: watch the SMART checklist fill in as you type.
+- **Post** tab: watch the SMART checklist fill in as you type, and add up to 4
+  photos and one video (60 seconds max). The video plays on the goal's page.
 - **Explore**: tap a category, or search "soccer" or "marathon".
 - On someone's profile, the **...** button has Report and Block.
 

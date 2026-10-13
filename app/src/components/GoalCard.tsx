@@ -11,6 +11,7 @@ import { colors, fonts, space } from '@/theme';
 import { timeAgo } from '@/lib/format';
 import { Avatar } from './Avatar';
 import { ActionBar } from './ActionBar';
+import { MediaStrip } from './MediaStrip';
 import { SetbackTag, StatusTag } from './ui';
 
 export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean }) {
@@ -53,7 +54,11 @@ export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean })
         <Text style={styles.body} numberOfLines={full ? undefined : 3}>
           {goal.body}
         </Text>
+      </Pressable>
 
+      {goal.media?.length ? <MediaStrip media={goal.media} full={full} onPress={() => open()} /> : null}
+
+      <Pressable onPress={full ? undefined : () => open()} disabled={full} accessibilityRole={full ? undefined : 'link'}>
         {committedNames.length > 0 && (
           <Text style={styles.committedLine}>
             {committedNames.length === 1

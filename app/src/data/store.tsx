@@ -28,7 +28,7 @@ type State = {
 };
 
 type Action =
-  | { type: 'signIn'; username?: string; name?: string; originSport?: string; interests?: Category[] }
+  | { type: 'signIn'; username?: string; name?: string; bio?: string; interests?: Category[] }
   | { type: 'signOut' }
   | { type: 'toggleEncourage'; goalId: string }
   | { type: 'toggleCommit'; goalId: string }
@@ -40,7 +40,7 @@ type Action =
   | { type: 'markAllRead' }
   | { type: 'block'; username: string }
   | { type: 'unblock'; username: string }
-  | { type: 'updateProfile'; name: string; bio: string; originSport: string }
+  | { type: 'updateProfile'; name: string; bio: string }
   | { type: 'setSetting'; key: keyof Settings; value: boolean };
 
 const initialState: State = {
@@ -73,7 +73,7 @@ function reducer(state: State, action: Action): State {
           ? {
               ...u,
               name: action.name || u.name,
-              originSport: action.originSport ?? u.originSport,
+              bio: action.bio ?? u.bio,
             }
           : u
       );
@@ -154,7 +154,7 @@ function reducer(state: State, action: Action): State {
         ...state,
         users: state.users.map((u) =>
           u.username === state.me
-            ? { ...u, name: action.name, bio: action.bio, originSport: action.originSport || undefined }
+            ? { ...u, name: action.name, bio: action.bio }
             : u
         ),
       };

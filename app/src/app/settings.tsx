@@ -15,12 +15,11 @@ export default function Settings() {
   const me = store.meUser;
   const [name, setName] = useState(me.name);
   const [bio, setBio] = useState(me.bio);
-  const [sport, setSport] = useState(me.originSport ?? '');
   const [saved, setSaved] = useState(false);
   const { settings, blocked } = store.state;
 
   const save = () => {
-    store.dispatch({ type: 'updateProfile', name: name.trim() || me.name, bio: bio.trim(), originSport: sport.trim() });
+    store.dispatch({ type: 'updateProfile', name: name.trim() || me.name, bio: bio.trim() });
     setSaved(true);
   };
 
@@ -35,12 +34,6 @@ export default function Settings() {
       <Text style={styles.section}>Profile</Text>
       <Field label="Name" value={name} onChangeText={(v) => { setName(v); setSaved(false); }} />
       <Field label="Bio" value={bio} onChangeText={(v) => { setBio(v); setSaved(false); }} multiline max={160} />
-      <Field
-        label="Sport you came from (optional)"
-        value={sport}
-        onChangeText={(v) => { setSport(v); setSaved(false); }}
-        placeholder="Soccer"
-      />
       <Button label={saved ? 'Saved' : 'Save profile'} onPress={save} disabled={saved} />
 
       <Divider />

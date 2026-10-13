@@ -29,7 +29,7 @@ export default function Explore() {
         (u) =>
           u.username !== store.state.me &&
           !store.state.blocked.includes(u.username) &&
-          (u.name.toLowerCase().includes(q) || u.username.includes(q) || u.originSport?.toLowerCase().includes(q))
+          (u.name.toLowerCase().includes(q) || u.username.includes(q) || u.bio.toLowerCase().includes(q))
       )
     : [];
   const goalResults = q

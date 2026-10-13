@@ -1,6 +1,6 @@
 // Sign-up in three steps, then straight to writing your first goal.
 //   1. Account: username, email, password (no phone number; see the plan doc)
-//   2. About you: name and, optionally, the sport you came from
+//   2. About you: name and an optional short bio
 //   3. Categories you care about, which seed your home feed
 
 import React, { useState } from 'react';
@@ -13,8 +13,6 @@ import { CATEGORIES, type Category } from '@/data/types';
 import { Button, Chip, Field } from '@/components/ui';
 import { colors, fonts, space } from '@/theme';
 
-const SPORTS = ['Soccer', 'Basketball', 'Football', 'Baseball', 'Softball', 'Volleyball', 'Hockey', 'Lacrosse', 'Swimming', 'Track', 'Wrestling', 'Rugby'];
-
 export default function Onboarding() {
   const store = useStore();
   const [step, setStep] = useState(1);
@@ -22,7 +20,7 @@ export default function Onboarding() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [sport, setSport] = useState<string | null>(null);
+  const [bio, setBio] = useState('');
   const [interests, setInterests] = useState<Category[]>([]);
 
   const emailOk = /^\S+@\S+\.\S+$/.test(email);
@@ -31,7 +29,7 @@ export default function Onboarding() {
 
   const next = () => {
     if (step < 3) return setStep(step + 1);
-    store.dispatch({ type: 'signIn', name: name.trim(), originSport: sport ?? undefined, interests });
+    store.dispatch({ type: 'signIn', name: name.trim(), bio: bio.trim() || undefined, interests });
     router.replace('/post');
   };
 
@@ -74,15 +72,14 @@ export default function Onboarding() {
             <>
               <Text style={styles.title}>About you</Text>
               <Field label="Name" value={name} onChangeText={setName} placeholder="How people will see you" />
-              <View style={{ gap: space.sm }}>
-                <Text style={styles.label}>What sport did you play? (optional)</Text>
-                <Text style={styles.hint}>Shown on your profile so others with the same background can find you.</Text>
-                <View style={styles.chips}>
-                  {SPORTS.map((s) => (
-                    <Chip key={s} label={s} selected={sport === s} onPress={() => setSport(sport === s ? null : s)} />
-                  ))}
-                </View>
-              </View>
+              <Field
+                label="Bio (optional)"
+                value={bio}
+                onChangeText={setBio}
+                multiline
+                max={160}
+                placeholder="What you're working toward, in a sentence or two"
+              />
             </>
           )}
 

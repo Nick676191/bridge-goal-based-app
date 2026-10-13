@@ -35,11 +35,25 @@ export type User = {
   username: string;
   name: string;
   bio: string;
-  originSport?: string; // optional; never shown on posts, only on profiles
   following: string[]; // usernames this user follows
 };
 
 export type GoalStatus = 'active' | 'achieved' | 'dropped';
+
+// A photo or video attached to a goal post to help explain the plan.
+// `uri` points at the file on the phone for now; in milestone 2 it becomes a
+// link to the file in cloud storage.
+export type Media = {
+  kind: 'photo' | 'video';
+  uri: string;
+  width: number;
+  height: number;
+  durationSec?: number; // videos only
+};
+
+// Limits per post. Kept here so the composer and the database agree.
+export const MAX_PHOTOS = 4;
+export const MAX_VIDEO_SECONDS = 60;
 
 export type Goal = {
   id: string;
@@ -51,6 +65,7 @@ export type Goal = {
   createdAt: number; // milliseconds since 1970, like Python's time.time() * 1000
   committed: string[]; // usernames who pressed Commit
   encouraged: string[]; // usernames who pressed Encourage
+  media?: Media[]; // up to 4 photos and 1 video, optional
 };
 
 // A reply in a goal's Tips thread. Anyone can post one.

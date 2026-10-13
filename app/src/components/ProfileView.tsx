@@ -1,4 +1,4 @@
-// A profile: photo, bio, origin sport, followers and following, and two lists:
+// A profile: photo, bio, followers and following, and two lists:
 // goals they posted and goals they committed to. Used for your own Profile tab
 // and for other people's profiles.
 
@@ -59,7 +59,6 @@ export function ProfileView({ username }: { username: string }) {
         </View>
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.handle}>@{user.username}</Text>
-        {user.originSport ? <Text style={styles.origin}>Former {user.originSport.toLowerCase()} player</Text> : null}
         <Text style={styles.bio}>{user.bio}</Text>
 
         <View style={styles.buttons}>
@@ -158,8 +157,7 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 12, color: colors.muted },
   name: { fontFamily: fonts.display, fontSize: 30, lineHeight: 32, color: colors.ink },
   handle: { fontSize: 14, color: colors.muted },
-  origin: { fontSize: 14, color: colors.ink, fontWeight: '600', marginTop: space.sm },
-  bio: { fontSize: 15, lineHeight: 21, color: colors.ink, marginTop: space.xs },
+  bio: { fontSize: 15, lineHeight: 21, color: colors.ink, marginTop: space.sm },
   buttons: { flexDirection: 'row', gap: space.sm, marginTop: space.lg },
   more: {
     width: 48,

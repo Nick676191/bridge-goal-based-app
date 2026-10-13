@@ -1,6 +1,6 @@
 // New goal post: a subject (the goal, up to 40 characters) and a body (the
 // plan to start, up to 500). The checklist nudges toward a SMART goal but
-// never blocks posting.
+// never blocks posting. Photos and a video are optional.
 
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -8,7 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { newId, useStore } from '@/data/store';
-import { CATEGORIES, type Category } from '@/data/types';
+import { CATEGORIES, type Category, type Media } from '@/data/types';
+import { MediaPicker } from '@/components/MediaPicker';
 import { Button, Chip, Field, ScreenTitle } from '@/components/ui';
 import { smartChecks } from '@/lib/format';
 import { colors, fonts, space } from '@/theme';
@@ -21,6 +22,7 @@ export default function Post() {
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [category, setCategory] = useState<Category | null>(null);
+  const [media, setMedia] = useState<Media[]>([]);
 
   const checks = smartChecks(subject, body);
   const ready =
@@ -41,11 +43,13 @@ export default function Post() {
         createdAt: Date.now(),
         committed: [],
         encouraged: [],
+        media,
       },
     });
     setSubject('');
     setBody('');
     setCategory(null);
+    setMedia([]);
     router.push({ pathname: '/goal/[id]', params: { id } });
   };
 
@@ -61,7 +65,7 @@ export default function Post() {
               value={subject}
               onChangeText={setSubject}
               placeholder="Run a sub-4 hour marathon"
-              hint="State the goal itself. Your old sport goes on your profile, not here."
+              hint="State the goal itself, like a headline."
             />
 
             {/* Live preview in the same type the feed uses, so the subject
@@ -76,6 +80,8 @@ export default function Post() {
               multiline
               placeholder="What you'll do first, how often, and by when."
             />
+
+            <MediaPicker value={media} onChange={setMedia} />
 
             <View style={{ gap: space.sm }}>
               <Text style={styles.label}>Category</Text>
