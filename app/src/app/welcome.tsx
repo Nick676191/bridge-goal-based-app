@@ -6,14 +6,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useStore } from '@/data/store';
 import { Button } from '@/components/ui';
-import { colors, fonts, space } from '@/theme';
+import { APP_NAME, colors, fonts, space } from '@/theme';
 
 export default function Welcome() {
   const store = useStore();
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.top}>
-        <Text style={styles.wordmark}>BRIDGE</Text>
+        <Text style={styles.wordmark}>{APP_NAME}</Text>
       </View>
       <View style={styles.middle}>
         <Text style={styles.motto} accessibilityRole="header">
@@ -41,7 +41,7 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper, paddingHorizontal: space.xl },
   top: { paddingTop: space.lg },
-  wordmark: { fontFamily: fonts.displayHeavy, fontSize: 40, letterSpacing: 1, color: colors.ink },
+  wordmark: { fontFamily: fonts.displayHeavy, fontSize: 64, lineHeight: 66, letterSpacing: 2, color: colors.ink },
   middle: { flex: 1, justifyContent: 'center' },
   // Big enough that each sentence takes about two lines on an iPhone.
   motto: { fontFamily: fonts.displayHeavy, fontSize: 92, lineHeight: 86, color: colors.ink },

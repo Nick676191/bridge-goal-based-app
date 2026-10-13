@@ -16,7 +16,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
@@ -40,6 +40,7 @@ export default function GoalScreen() {
   // Set when you tap Reply under a tip, update or reply: who and what you're answering.
   const [replyingTo, setReplyingTo] = useState<{ parentId: string; name: string } | null>(null);
   const inputRef = useRef<TextInput>(null);
+  const insets = useSafeAreaInsets();
 
   if (!goal) return <Text style={styles.empty}>This goal was deleted.</Text>;
 
@@ -104,7 +105,9 @@ export default function GoalScreen() {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={100}
+        // The keyboard is measured from the top of the screen, so tell it how
+        // tall the status bar and the header above this screen are.
+        keyboardVerticalOffset={insets.top + 44}
       >
         <ScrollView keyboardShouldPersistTaps="handled">
           {statusOpen && (
@@ -125,12 +128,14 @@ export default function GoalScreen() {
           <Divider strong />
 
           <View style={styles.tabs}>
+            {/* Tips on the left, Updates on the right, matching Reply (left)
+                and Commit (center) on the post above. */}
+            <TabButton label={`Tips ${store.tipsFor(goal.id).length}`} on={tab === 'tips'} onPress={() => switchTab('tips')} />
             <TabButton
               label={`Updates ${store.updatesFor(goal.id).length}`}
               on={tab === 'updates'}
               onPress={() => switchTab('updates')}
             />
-            <TabButton label={`Tips ${store.tipsFor(goal.id).length}`} on={tab === 'tips'} onPress={() => switchTab('tips')} />
           </View>
           <Divider />
           <Text style={styles.explainer}>
@@ -216,7 +221,7 @@ export default function GoalScreen() {
                   style={[styles.send, !text.trim() && { opacity: 0.3 }]}
                   accessibilityLabel={replyingTo ? 'Post reply' : tab === 'updates' ? 'Post update' : 'Post tip'}
                 >
-                  <Ionicons name="arrow-up" size={20} color={colors.paper} />
+                  <Ionicons name="arrow-up" size={18} color={colors.paper} />
                 </Pressable>
               </View>
             </>
@@ -306,9 +311,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: colors.ink,
     paddingHorizontal: space.lg,
-    paddingTop: space.sm,
-    paddingBottom: space.sm,
-    gap: space.sm,
+    paddingTop: 6,
+    paddingBottom: 6,
+    gap: 6,
     backgroundColor: colors.paper,
   },
   locked: { fontSize: 14, lineHeight: 20, color: colors.muted },
@@ -320,16 +325,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.wash,
     borderRadius: 4,
     paddingHorizontal: space.md,
-    paddingTop: 10,
-    paddingBottom: 10,
-    fontSize: 16,
-    maxHeight: 120,
+    paddingTop: 8,
+    paddingBottom: 8,
+    fontSize: 15,
+    minHeight: 36,
+    maxHeight: 110,
     color: colors.ink,
   },
   send: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: colors.ink,
     alignItems: 'center',
     justifyContent: 'center',

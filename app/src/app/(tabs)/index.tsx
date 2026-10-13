@@ -9,7 +9,7 @@ import { useStore } from '@/data/store';
 import { rankFeed } from '@/lib/rank';
 import { GoalCard } from '@/components/GoalCard';
 import { Button, Divider } from '@/components/ui';
-import { colors, fonts, space } from '@/theme';
+import { APP_NAME, colors, fonts, space } from '@/theme';
 import type { Goal } from '@/data/types';
 
 type Row = { kind: 'goal'; goal: Goal } | { kind: 'section'; label: string };
@@ -36,7 +36,7 @@ export default function Home() {
     <SafeAreaView style={styles.screen} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.wordmark} accessibilityRole="header">
-          BRIDGE
+          {APP_NAME}
         </Text>
       </View>
       <Divider strong />

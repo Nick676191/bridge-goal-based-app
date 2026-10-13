@@ -3,6 +3,10 @@
 //
 // Think of this like the CSS variables at the top of your website's style.css.
 
+// The app's name as shown on screen. Change it here (and "name" in app.json)
+// when the new name is decided.
+export const APP_NAME = 'BRIDGE';
+
 export const colors = {
   ink: '#000000', // primary text, dividers between posts, the wordmark
   paper: '#FFFFFF', // screen background
