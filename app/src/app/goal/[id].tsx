@@ -1,9 +1,10 @@
 // A goal's page: the full post with its three actions, then two threads.
 //   Updates: progress from the author and everyone committed (can be tagged Setback)
 //   Tips:    suggestions from anyone
-// The author can also mark the goal achieved or dropped.
+// Anyone can reply to a tip or an update, or press the star on it; replies sit
+// indented underneath. The author can also mark the goal achieved or dropped.
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -19,7 +20,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
-import type { GoalStatus } from '@/data/types';
+import type { GoalStatus, Reply, Tip, Update } from '@/data/types';
+import { EncourageButton } from '@/components/ActionBar';
 import { GoalCard } from '@/components/GoalCard';
 import { Avatar } from '@/components/Avatar';
 import { TabButton, confirm } from '@/components/ProfileView';
@@ -35,6 +37,9 @@ export default function GoalScreen() {
   const [text, setText] = useState('');
   const [setback, setSetback] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
+  // Set when you tap Reply under a tip, update or reply: who and what you're answering.
+  const [replyingTo, setReplyingTo] = useState<{ parentId: string; name: string } | null>(null);
+  const inputRef = useRef<TextInput>(null);
 
   if (!goal) return <Text style={styles.empty}>This goal was deleted.</Text>;
 
@@ -50,7 +55,10 @@ export default function GoalScreen() {
   const send = () => {
     const t = text.trim();
     if (!t) return;
-    if (tab === 'updates') store.dispatch({ type: 'addUpdate', goalId: goal.id, text: t, setback });
+    if (replyingTo) {
+      store.dispatch({ type: 'addReply', parentId: replyingTo.parentId, text: t });
+      setReplyingTo(null);
+    } else if (tab === 'updates') store.dispatch({ type: 'addUpdate', goalId: goal.id, text: t, setback });
     else store.dispatch({ type: 'addTip', goalId: goal.id, text: t });
     setText('');
     setSetback(false);
@@ -59,6 +67,18 @@ export default function GoalScreen() {
   const setStatus = (status: GoalStatus) => {
     store.dispatch({ type: 'setStatus', goalId: goal.id, status });
     setStatusOpen(false);
+  };
+
+  // Replying to a reply attaches to the same tip or update (one level deep).
+  const startReply = (parentId: string, author: string) => {
+    const name = author === me ? 'yourself' : store.user(author)?.name.split(' ')[0] ?? author;
+    setReplyingTo({ parentId, name });
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  const switchTab = (t: 'updates' | 'tips') => {
+    setTab(t);
+    setReplyingTo(null);
   };
 
   const reportPost = () =>
@@ -108,9 +128,9 @@ export default function GoalScreen() {
             <TabButton
               label={`Updates ${store.updatesFor(goal.id).length}`}
               on={tab === 'updates'}
-              onPress={() => setTab('updates')}
+              onPress={() => switchTab('updates')}
             />
-            <TabButton label={`Tips ${store.tipsFor(goal.id).length}`} on={tab === 'tips'} onPress={() => setTab('tips')} />
+            <TabButton label={`Tips ${store.tipsFor(goal.id).length}`} on={tab === 'tips'} onPress={() => switchTab('tips')} />
           </View>
           <Divider />
           <Text style={styles.explainer}>
@@ -124,37 +144,32 @@ export default function GoalScreen() {
               {tab === 'updates' ? 'No updates yet.' : 'No tips yet. Know something that helped you? Share it.'}
             </Text>
           )}
-          {items.map((item) => {
-            const author = store.user(item.author);
-            const isSetback = 'setback' in item && item.setback === true;
-            return (
-              <Pressable
-                key={item.id}
-                onLongPress={() => item.author !== me && confirm('Report this reply?', 'We review reports within 24 hours.', 'Report', () => {})}
-                style={[styles.item, isSetback && styles.itemSetback]}
-              >
-                <Pressable onPress={() => router.push({ pathname: '/user/[username]', params: { username: item.author } })}>
-                  <Avatar name={author?.name ?? item.author} uri={author?.avatarUri} size={30} />
-                </Pressable>
-                <View style={{ flex: 1, gap: 4 }}>
-                  <View style={styles.itemHead}>
-                    <Text style={styles.itemName}>{item.author === me ? 'You' : author?.name}</Text>
-                    {item.author === goal.author && tab === 'updates' && item.author !== me ? (
-                      <Text style={styles.badge}>Author</Text>
-                    ) : null}
-                    <Text style={styles.itemTime}>{timeAgo(item.createdAt)}</Text>
-                  </View>
-                  {isSetback && <SetbackTag />}
-                  <Text style={styles.itemText}>{item.text}</Text>
-                </View>
-              </Pressable>
-            );
-          })}
+          {items.map((item) => (
+            <View key={item.id}>
+              <ThreadItem
+                item={item}
+                kind={tab === 'updates' ? 'update' : 'tip'}
+                showAuthorBadge={tab === 'updates' && item.author === goal.author}
+                onReply={() => startReply(item.id, item.author)}
+              />
+              {store.repliesFor(item.id).map((r) => (
+                <ThreadItem key={r.id} item={r} kind="reply" onReply={() => startReply(item.id, r.author)} />
+              ))}
+            </View>
+          ))}
         </ScrollView>
 
         {/* The composer at the bottom changes with the tab you're on. */}
         <View style={styles.composer}>
-          {tab === 'updates' && !canUpdate ? (
+          {replyingTo ? (
+            <View style={styles.replyingBar}>
+              <Text style={styles.replyingText}>Replying to {replyingTo.name}</Text>
+              <Pressable onPress={() => setReplyingTo(null)} hitSlop={10} accessibilityLabel="Cancel reply">
+                <Ionicons name="close" size={18} color={colors.muted} />
+              </Pressable>
+            </View>
+          ) : null}
+          {tab === 'updates' && !canUpdate && !replyingTo ? (
             <View style={{ gap: space.sm }}>
               <Text style={styles.locked}>
                 Only {authorFirst} and people committed to this goal post updates. Commit to train alongside them.
@@ -163,7 +178,7 @@ export default function GoalScreen() {
             </View>
           ) : (
             <>
-              {tab === 'updates' && (
+              {tab === 'updates' && !replyingTo && (
                 <View style={styles.setbackRow}>
                   <Switch
                     value={setback}
@@ -179,9 +194,16 @@ export default function GoalScreen() {
               )}
               <View style={styles.inputRow}>
                 <TextInput
+                  ref={inputRef}
                   value={text}
                   onChangeText={setText}
-                  placeholder={tab === 'updates' ? 'How did it go?' : `Share a tip with ${authorFirst}`}
+                  placeholder={
+                    replyingTo
+                      ? 'Write a reply'
+                      : tab === 'updates'
+                        ? 'How did it go?'
+                        : `Share a tip with ${authorFirst}`
+                  }
                   placeholderTextColor={colors.muted}
                   style={styles.input}
                   multiline
@@ -192,7 +214,7 @@ export default function GoalScreen() {
                   onPress={send}
                   disabled={!text.trim()}
                   style={[styles.send, !text.trim() && { opacity: 0.3 }]}
-                  accessibilityLabel={tab === 'updates' ? 'Post update' : 'Post tip'}
+                  accessibilityLabel={replyingTo ? 'Post reply' : tab === 'updates' ? 'Post update' : 'Post tip'}
                 >
                   <Ionicons name="arrow-up" size={20} color={colors.paper} />
                 </Pressable>
@@ -202,6 +224,59 @@ export default function GoalScreen() {
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
+  );
+}
+
+// One tip, update or reply: avatar, name, time, text, then Reply and the star.
+// Replies are drawn smaller and indented under the item they answer.
+function ThreadItem({
+  item,
+  kind,
+  showAuthorBadge = false,
+  onReply,
+}: {
+  item: Tip | Update | Reply;
+  kind: 'tip' | 'update' | 'reply';
+  showAuthorBadge?: boolean;
+  onReply: () => void;
+}) {
+  const store = useStore();
+  const me = store.state.me;
+  const author = store.user(item.author);
+  const isSetback = 'setback' in item && item.setback === true;
+  const isReply = kind === 'reply';
+  return (
+    <Pressable
+      onLongPress={() =>
+        item.author !== me && confirm('Report this reply?', 'We review reports within 24 hours.', 'Report', () => {})
+      }
+      style={[styles.item, isReply && styles.replyItem, isSetback && styles.itemSetback]}
+    >
+      <Pressable onPress={() => router.push({ pathname: '/user/[username]', params: { username: item.author } })}>
+        <Avatar name={author?.name ?? item.author} uri={author?.avatarUri} size={isReply ? 24 : 30} />
+      </Pressable>
+      <View style={{ flex: 1, gap: 4 }}>
+        <View style={styles.itemHead}>
+          <Text style={[styles.itemName, isReply && { fontSize: 14 }]}>{item.author === me ? 'You' : author?.name}</Text>
+          {showAuthorBadge && item.author !== me ? <Text style={styles.badge}>Author</Text> : null}
+          <Text style={styles.itemTime}>{timeAgo(item.createdAt)}</Text>
+        </View>
+        {isSetback && <SetbackTag />}
+        <Text style={[styles.itemText, isReply && { fontSize: 14, lineHeight: 20 }]}>{item.text}</Text>
+        <View style={styles.itemActions}>
+          <Pressable onPress={onReply} hitSlop={8} accessibilityRole="button" accessibilityLabel="Reply">
+            <Text style={styles.replyLink}>Reply</Text>
+          </Pressable>
+          <EncourageButton
+            small
+            encouraged={item.encouraged.includes(me)}
+            count={item.encouraged.length}
+            disabled={item.author === me}
+            onPress={() => store.dispatch({ type: 'toggleItemEncourage', kind, id: item.id })}
+          />
+        </View>
+      </View>
+    </Pressable>
   );
 }
 
@@ -222,6 +297,11 @@ const styles = StyleSheet.create({
   badge: { fontSize: 11, fontWeight: '700', color: colors.muted, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 4, borderRadius: 3 },
   itemTime: { fontSize: 13, color: colors.muted, marginLeft: 'auto' },
   itemText: { fontSize: 15, lineHeight: 21, color: colors.ink },
+  replyItem: { paddingLeft: space.lg + 42, paddingTop: 0 },
+  itemActions: { flexDirection: 'row', alignItems: 'center', gap: space.lg, marginTop: 2 },
+  replyLink: { fontSize: 13, fontWeight: '700', color: colors.muted },
+  replyingBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  replyingText: { fontSize: 13, fontWeight: '600', color: colors.muted },
   composer: {
     borderTopWidth: 1,
     borderTopColor: colors.ink,

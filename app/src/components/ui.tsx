@@ -19,12 +19,14 @@ export function Button({
   onPress,
   variant = 'primary',
   disabled,
+  large,
   style,
 }: {
   label: string;
   onPress?: () => void;
   variant?: 'primary' | 'secondary' | 'danger' | 'accent';
   disabled?: boolean;
+  large?: boolean; // taller, fully rounded, bigger text (welcome screen)
   style?: StyleProp<ViewStyle>;
 }) {
   const bg =
@@ -39,12 +41,13 @@ export function Button({
       style={({ pressed }) => [
         styles.button,
         { backgroundColor: bg, borderColor: variant === 'danger' ? colors.danger : variant === 'accent' ? colors.lane : colors.ink },
+        large && styles.buttonLarge,
         disabled && { opacity: 0.35 },
         pressed && { opacity: 0.75 },
         style,
       ]}
     >
-      <Text style={[styles.buttonText, { color: fg }]}>{label}</Text>
+      <Text style={[styles.buttonText, large && styles.buttonTextLarge, { color: fg }]}>{label}</Text>
     </Pressable>
   );
 }
@@ -153,6 +156,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: { fontSize: 16, fontWeight: '700' },
+  buttonLarge: { minHeight: 62, borderRadius: 999, borderWidth: 2 },
+  buttonTextLarge: { fontSize: 19 },
   chip: {
     paddingHorizontal: space.md,
     paddingVertical: 7,

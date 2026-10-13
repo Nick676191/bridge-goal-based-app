@@ -7,7 +7,7 @@
 
 import React, { createContext, useContext, useMemo, useReducer } from 'react';
 import * as mock from './mock';
-import { CATEGORIES, type AppNotification, type Category, type Goal, type GoalStatus, type Tip, type Update, type User } from './types';
+import { CATEGORIES, type AppNotification, type Category, type Goal, type GoalStatus, type Reply, type Tip, type Update, type User } from './types';
 
 type Settings = {
   dailyReminderCap: boolean; // at most one reminder a day across all goals
@@ -21,6 +21,7 @@ type State = {
   goals: Goal[];
   tips: Tip[];
   updates: Update[];
+  replies: Reply[];
   notifications: AppNotification[];
   blocked: string[];
   interests: Category[];
@@ -44,6 +45,8 @@ type Action =
   | { type: 'updateProfile'; name: string; bio: string }
   | { type: 'setSetting'; key: keyof Settings; value: boolean }
   | { type: 'addCategory'; name: string }
+  | { type: 'addReply'; parentId: string; text: string }
+  | { type: 'toggleItemEncourage'; kind: 'tip' | 'update' | 'reply'; id: string }
   | { type: 'setAvatar'; uri: string | undefined };
 
 const initialState: State = {
@@ -53,6 +56,7 @@ const initialState: State = {
   goals: mock.goals,
   tips: mock.tips,
   updates: mock.updates,
+  replies: mock.replies,
   notifications: mock.notifications,
   blocked: [],
   interests: ['Running', 'Weightlifting', 'Triathlon'],
@@ -118,7 +122,7 @@ function reducer(state: State, action: Action): State {
         ...state,
         tips: [
           ...state.tips,
-          { id: newId('t'), goalId: action.goalId, author: state.me, text: action.text, createdAt: Date.now() },
+          { id: newId('t'), goalId: action.goalId, author: state.me, text: action.text, createdAt: Date.now(), encouraged: [] },
         ],
       };
     case 'addUpdate':
@@ -133,6 +137,7 @@ function reducer(state: State, action: Action): State {
             text: action.text,
             setback: action.setback,
             createdAt: Date.now(),
+            encouraged: [],
           },
         ],
       };
@@ -169,6 +174,22 @@ function reducer(state: State, action: Action): State {
       const exists = [...CATEGORIES, ...state.customCategories].some((c) => c.toLowerCase() === name.toLowerCase());
       return exists || !name ? state : { ...state, customCategories: [...state.customCategories, name] };
     }
+    case 'addReply':
+      return {
+        ...state,
+        replies: [
+          ...state.replies,
+          { id: newId('r'), parentId: action.parentId, author: state.me, text: action.text, createdAt: Date.now(), encouraged: [] },
+        ],
+      };
+    case 'toggleItemEncourage': {
+      // Same idea as encouraging a goal, for a single tip, update or reply.
+      const flip = <T extends { id: string; encouraged: string[] }>(list: T[]) =>
+        list.map((x) => (x.id === action.id ? { ...x, encouraged: toggle(x.encouraged, state.me) } : x));
+      if (action.kind === 'tip') return { ...state, tips: flip(state.tips) };
+      if (action.kind === 'update') return { ...state, updates: flip(state.updates) };
+      return { ...state, replies: flip(state.replies) };
+    }
     case 'setAvatar':
       return {
         ...state,
@@ -198,6 +219,9 @@ function useStoreValue() {
         state.updates.filter((u) => u.goalId === goalId && visible(u.author)),
       isFollowing: (username: string) => meUser.following.includes(username),
       followers: (username: string) => state.users.filter((u) => u.following.includes(username)),
+      // Replies under one tip or update, oldest first so they read as a conversation.
+      repliesFor: (parentId: string) =>
+        state.replies.filter((r) => r.parentId === parentId && visible(r.author)),
       canPostUpdate: (g: Goal) => g.author === state.me || g.committed.includes(state.me),
       unreadCount: state.notifications.filter((n) => !n.read).length,
       // Built-in categories first, then ones people created.

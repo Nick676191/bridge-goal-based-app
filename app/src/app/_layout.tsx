@@ -41,6 +41,7 @@ export default function RootLayout() {
         <Stack.Screen name="user/[username]" options={{ title: '' }} />
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         <Stack.Screen name="edit-profile" options={{ title: 'Edit profile' }} />
+        <Stack.Screen name="connections/[username]" options={{ title: '' }} />
       </Stack>
     </StoreProvider>
   );

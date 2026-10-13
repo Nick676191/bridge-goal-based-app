@@ -2,7 +2,7 @@
 // every screen has something believable to show. In milestone 2 this file is
 // replaced by reads from the database.
 
-import type { AppNotification, Goal, Tip, Update, User } from './types';
+import type { AppNotification, Goal, Reply, Tip, Update, User } from './types';
 
 export const ME = 'nick';
 
@@ -154,6 +154,7 @@ export const tips: Tip[] = [
     author: 'coach_jo',
     text: 'Run your long runs slower than feels right. Most first-timers blow up because every run is a medium-hard run.',
     createdAt: ago(2 * HOUR),
+    encouraged: ['maya.runs', 'nick'],
   },
   {
     id: 't2',
@@ -161,6 +162,7 @@ export const tips: Tip[] = [
     author: 'benji.h',
     text: 'Practice fueling on long runs, not just on race day. Gels every 40 minutes worked for me.',
     createdAt: ago(1 * HOUR),
+    encouraged: ['maya.runs'],
   },
   {
     id: 't3',
@@ -168,6 +170,7 @@ export const tips: Tip[] = [
     author: 'priya.moves',
     text: 'Film from the side, not the front. Hard to see bar path otherwise.',
     createdAt: ago(6 * HOUR),
+    encouraged: [],
   },
   {
     id: 't4',
@@ -175,6 +178,7 @@ export const tips: Tip[] = [
     author: 'tess.tri',
     text: 'For a 1:45 you want tempo runs around 7:45-7:55 per mile. Do them on a flat loop so you can actually hold pace.',
     createdAt: ago(3 * DAY),
+    encouraged: ['nick', 'maya.runs'],
   },
   {
     id: 't5',
@@ -182,6 +186,7 @@ export const tips: Tip[] = [
     author: 'dre_lifts',
     text: 'Explosive pull-ups to the chest helped me more than band work did. Get the bar to your sternum first.',
     createdAt: ago(20 * HOUR),
+    encouraged: ['priya.moves'],
   },
 ];
 
@@ -193,6 +198,7 @@ export const updates: Update[] = [
     text: 'First 10-miler done. Legs felt fine until mile 8, then everything hurt. Still counts.',
     setback: false,
     createdAt: ago(2 * HOUR),
+    encouraged: [],
   },
   {
     id: 'u2',
@@ -201,6 +207,7 @@ export const updates: Update[] = [
     text: 'Skipped my long run Sunday. Bad week at work, then bad sleep, then I just didn\'t go. Back on it this weekend.',
     setback: true,
     createdAt: ago(1 * HOUR),
+    encouraged: ['maya.runs', 'nick', 'coach_jo'],
   },
   {
     id: 'u3',
@@ -209,6 +216,7 @@ export const updates: Update[] = [
     text: 'Missed 335 twice today. Lockout is the weak point. Adding block pulls.',
     setback: true,
     createdAt: ago(8 * HOUR),
+    encouraged: ['benji.h'],
   },
   {
     id: 'u4',
@@ -217,6 +225,7 @@ export const updates: Update[] = [
     text: 'Week 1: three runs, 11 miles total. The tempo run was humbling.',
     setback: false,
     createdAt: ago(2 * DAY),
+    encouraged: ['maya.runs', 'tess.tri'],
   },
   {
     id: 'u5',
@@ -225,6 +234,7 @@ export const updates: Update[] = [
     text: 'Did your Thursday tempo with you remotely. 7:58 pace for 3 miles. Next week we hold 7:50.',
     setback: false,
     createdAt: ago(1 * DAY),
+    encouraged: [],
   },
   {
     id: 'u6',
@@ -233,6 +243,34 @@ export const updates: Update[] = [
     text: 'Ran the whole 5K. 27:41. Marking this one done.',
     setback: false,
     createdAt: ago(40 * DAY),
+    encouraged: [],
+  },
+];
+
+export const replies: Reply[] = [
+  {
+    id: 'r1',
+    parentId: 'u2',
+    author: 'maya.runs',
+    text: 'Happens to everyone. Want to do Saturday together? I can push my long run a day.',
+    createdAt: ago(40 * 60 * 1000),
+    encouraged: ['tess.tri'],
+  },
+  {
+    id: 'r2',
+    parentId: 'u2',
+    author: 'tess.tri',
+    text: 'Yes. 7am at the lakefront?',
+    createdAt: ago(20 * 60 * 1000),
+    encouraged: [],
+  },
+  {
+    id: 'r3',
+    parentId: 't4',
+    author: 'nick',
+    text: 'That flat loop tip is a good one. My route has a big hill at mile 2.',
+    createdAt: ago(2 * DAY + 5 * HOUR),
+    encouraged: ['tess.tri'],
   },
 ];
 

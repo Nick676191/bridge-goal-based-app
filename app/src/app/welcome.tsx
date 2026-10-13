@@ -1,4 +1,4 @@
-// The first screen a new person sees.
+// The first screen a new person sees: the wordmark, the motto, and two buttons.
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -16,14 +16,14 @@ export default function Welcome() {
         <Text style={styles.wordmark}>BRIDGE</Text>
       </View>
       <View style={styles.middle}>
-        <Text style={styles.headline}>You left the team. Keep the training partners.</Text>
-        <Text style={styles.sub}>
-          {"Post a fitness goal in public. People chasing the same thing commit to it with you, and you all post updates, setbacks included, until it's done."}
+        <Text style={styles.motto} accessibilityRole="header">
+          Scroll less. Dream more.
         </Text>
       </View>
       <View style={styles.bottom}>
-        <Button label="Create account" onPress={() => router.push('/onboarding')} />
+        <Button large label="Create account" onPress={() => router.push('/onboarding')} />
         <Button
+          large
           label="Log in"
           variant="secondary"
           onPress={() => {
@@ -42,9 +42,9 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper, paddingHorizontal: space.xl },
   top: { paddingTop: space.lg },
   wordmark: { fontFamily: fonts.displayHeavy, fontSize: 40, letterSpacing: 1, color: colors.ink },
-  middle: { flex: 1, justifyContent: 'center', gap: space.lg },
-  headline: { fontFamily: fonts.displayHeavy, fontSize: 58, lineHeight: 56, color: colors.ink },
-  sub: { fontSize: 17, lineHeight: 24, color: colors.ink },
+  middle: { flex: 1, justifyContent: 'center' },
+  // Big enough that each sentence takes about two lines on an iPhone.
+  motto: { fontFamily: fonts.displayHeavy, fontSize: 92, lineHeight: 86, color: colors.ink },
   bottom: { gap: space.md, paddingBottom: space.lg },
   note: { fontSize: 13, color: colors.muted, textAlign: 'center' },
 });

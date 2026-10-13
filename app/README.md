@@ -40,17 +40,19 @@ To see it in a browser instead, press `w` in the Terminal window after
 ## Things to try
 
 - **Log in** skips straight to the app; **Create account** walks through sign-up.
-- On any post: **Reply** (bottom left), **Commit** (the X, center), **Encourage**
-  (the star that turns into an arrow, bottom right).
+- On any post: **Reply** (bottom left), **Commit** (the X, center), and the
+  **star** (bottom right), which turns into an arrow when you encourage.
 - Open a goal: switch between **Updates** and **Tips**. On a goal you haven't
   committed to, the Updates box asks you to commit first.
 - Post an update with **Tag as a setback** on.
+- Under any tip or update, tap **Reply** to answer it or the star to encourage it.
 - On your own goal, tap **Status** to mark it achieved or dropped.
 - **Post** tab: watch the SMART Principles fill in as you type (tick Attainable
   and Relevant yourself), add up to 4 photos and one video (60 seconds max), and
   tap **New category** if none of the categories fit.
 - **Explore**: tap a category, or search "marathon" or "Maya".
 - **Profile > Edit profile**: tap the photo to add your own.
+- **Profile**: tap **Followers** or **Following** to see the lists.
 - On someone's profile, the **...** button has Report and Block.
 
 ## How the code is organized
@@ -64,6 +66,7 @@ app/
                      notifications (Activity), profile
       goal/[id].tsx  A goal's page; [id] means "any goal id"
       user/[username].tsx  Someone else's profile
+      connections/[username].tsx  Followers and Following lists
       welcome.tsx, onboarding.tsx, settings.tsx, edit-profile.tsx
     components/      Pieces used on many screens (post card, action bar, buttons)
     data/

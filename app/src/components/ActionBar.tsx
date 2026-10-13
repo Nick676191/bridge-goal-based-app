@@ -2,7 +2,9 @@
 // the business plan:
 //   bottom left   Reply      opens the post's Tips thread
 //   center        Commit (X) join this goal
-//   bottom right  Encourage  a star that turns into a right arrow: "keep pushing"
+//   bottom right  Encourage  a star (no label) that turns into a right arrow:
+//                            "keep pushing". The same star appears on tips,
+//                            updates and replies.
 
 import React, { useEffect, useState } from 'react';
 import { Animated, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -67,28 +69,30 @@ export function ActionBar(p: Props) {
         encouraged={p.encouraged}
         count={p.encouragedCount}
         disabled={p.isOwn}
-        onPress={() => {
-          tap();
-          p.onEncourage();
-        }}
+        onPress={p.onEncourage}
       />
     </View>
   );
 }
 
 // The star rotates and shrinks away while an arrow springs in, pointing
-// forward. Pressing again reverses it.
-function EncourageButton({
+// forward. Pressing again reverses it. `small` is the size used on tips,
+// updates and replies.
+export function EncourageButton({
   encouraged,
   count,
-  disabled,
+  disabled = false,
+  small = false,
   onPress,
 }: {
   encouraged: boolean;
   count: number;
-  disabled: boolean;
+  disabled?: boolean;
+  small?: boolean;
   onPress: () => void;
 }) {
+  const star = small ? 17 : 21;
+  const box = small ? 20 : 24;
   // useState with a function creates the animated value once and keeps it.
   const [progress] = useState(() => new Animated.Value(encouraged ? 1 : 0));
   useEffect(() => {
@@ -117,26 +121,28 @@ function EncourageButton({
 
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() => {
+        tap();
+        onPress();
+      }}
       disabled={disabled}
       hitSlop={8}
-      style={[styles.action, disabled && { opacity: 0.4 }]}
+      style={[styles.action, small && styles.actionSmall, disabled && { opacity: 0.4 }]}
       accessibilityRole="button"
       accessibilityState={{ selected: encouraged, disabled }}
       accessibilityLabel={`${encouraged ? 'Encouraged' : 'Encourage'}. ${count} encouragements`}
     >
-      <View style={styles.iconStack}>
+      <View style={{ width: box, height: box }}>
         <Animated.View style={[StyleSheet.absoluteFill, styles.center, starStyle]}>
-          <Ionicons name="star-outline" size={21} color={colors.ink} />
+          <Ionicons name="star-outline" size={star} color={small ? colors.muted : colors.ink} />
         </Animated.View>
         <Animated.View style={[StyleSheet.absoluteFill, styles.center, arrowStyle]}>
-          <Ionicons name="arrow-forward-circle" size={23} color={colors.lane} />
+          <Ionicons name="arrow-forward-circle" size={star + 2} color={colors.lane} />
         </Animated.View>
       </View>
-      <Text style={[styles.label, encouraged && { color: colors.lane }]}>
-        {encouraged ? 'Encouraged' : 'Encourage'}
-      </Text>
-      <Text style={styles.count}>{count}</Text>
+      {count > 0 || !small ? (
+        <Text style={[styles.count, small && styles.countSmall, encouraged && { color: colors.lane }]}>{count}</Text>
+      ) : null}
     </Pressable>
   );
 }
@@ -161,6 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   commitBoxOn: { backgroundColor: colors.lane, borderColor: colors.lane },
-  iconStack: { width: 24, height: 24 },
+  actionSmall: { minHeight: 28, gap: 4 },
+  countSmall: { fontSize: 13 },
   center: { alignItems: 'center', justifyContent: 'center' },
 });

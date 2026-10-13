@@ -66,6 +66,7 @@ export type Tip = {
   author: string;
   text: string;
   createdAt: number;
+  encouraged: string[]; // usernames who pressed the star on this tip
 };
 
 // A post in a goal's Updates thread. Only the goal's author and committed
@@ -77,6 +78,19 @@ export type Update = {
   text: string;
   setback: boolean;
   createdAt: number;
+  encouraged: string[]; // usernames who pressed the star on this update
+};
+
+// A reply to a tip or an update, shown indented underneath it. Anyone can
+// reply. Replying to a reply attaches to the same tip or update, so threads
+// stay one level deep and easy to read on a phone.
+export type Reply = {
+  id: string;
+  parentId: string; // the tip or update it belongs to
+  author: string;
+  text: string;
+  createdAt: number;
+  encouraged: string[];
 };
 
 export type NotificationKind = 'encourage' | 'commit' | 'tip' | 'update' | 'reminder' | 'follow';

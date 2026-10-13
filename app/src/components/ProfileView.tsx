@@ -59,8 +59,16 @@ export function ProfileView({ username }: { username: string }) {
           </Pressable>
           <View style={styles.stats}>
             <Stat n={posted.length} label="Goals" />
-            <Stat n={followers} label="Followers" />
-            <Stat n={user.following.length} label="Following" />
+            <Stat
+              n={followers}
+              label="Followers"
+              onPress={() => router.push({ pathname: '/connections/[username]', params: { username, tab: 'followers' } })}
+            />
+            <Stat
+              n={user.following.length}
+              label="Following"
+              onPress={() => router.push({ pathname: '/connections/[username]', params: { username, tab: 'following' } })}
+            />
           </View>
         </View>
         <Text style={styles.name}>{user.name}</Text>
@@ -133,12 +141,21 @@ export function confirm(title: string, message: string, action: string, onConfir
   ]);
 }
 
-function Stat({ n, label }: { n: number; label: string }) {
+// A number with a label under it. Followers and Following are tappable and
+// open the list of people.
+function Stat({ n, label, onPress }: { n: number; label: string; onPress?: () => void }) {
   return (
-    <View style={{ alignItems: 'center', minWidth: 64 }}>
+    <Pressable
+      onPress={onPress}
+      disabled={!onPress}
+      hitSlop={6}
+      style={{ alignItems: 'center', minWidth: 64 }}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={`${n} ${label}`}
+    >
       <Text style={styles.statN}>{n}</Text>
       <Text style={styles.statLabel}>{label}</Text>
-    </View>
+    </Pressable>
   );
 }
 

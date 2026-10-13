@@ -37,8 +37,6 @@ export default function Explore() {
     : [];
   const inCategory = category ? goals.filter((g) => g.category === category && g.status === 'active') : [];
 
-  const countFor = (c: Category) => goals.filter((g) => g.category === c && g.status === 'active').length;
-
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: space.xxl }}>
@@ -100,7 +98,7 @@ export default function Explore() {
                 .map((c) => (
                   <Chip
                     key={c}
-                    label={`${c} ${countFor(c)}`}
+                    label={c}
                     selected={category === c}
                     onPress={() => setCategory(category === c ? null : c)}
                   />
@@ -110,7 +108,7 @@ export default function Explore() {
             {category ? (
               <>
                 <Text style={styles.heading}>
-                  {category}, {plural(inCategory.length, 'active goal')}
+                  {category}
                 </Text>
                 {inCategory.length === 0 && (
                   <Text style={styles.none}>Nobody has posted a {category.toLowerCase()} goal yet. Be the first.</Text>
