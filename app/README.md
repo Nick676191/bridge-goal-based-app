@@ -40,16 +40,18 @@ To see it in a browser instead, press `w` in the Terminal window after
 ## Things to try
 
 - **Log in** skips straight to the app; **Create account** walks through sign-up.
-- On any post: **Reply** (bottom left), **Commit** (the X, center), and the
+- On any post: **Reply** (bottom left), **Commit** (the pen, center), and the
   **star** (bottom right), which turns into an arrow when you encourage.
 - Open a goal: switch between **Tips** (left) and **Updates** (right). On a goal you haven't
   committed to, the Updates box asks you to commit first.
 - Post an update with **Tag as a setback** on.
 - Under any tip or update, tap **Reply** to answer it or the star to encourage it.
+  Tips, updates and replies are limited to 300 characters.
+- **Activity**: Maya's achieved goal shows how people who committed are notified.
 - On your own goal, use **Where does this goal stand?** under the post to mark it achieved or dropped.
 - **Post** tab: watch the SMART Principles fill in as you type (tick Attainable
   and Relevant yourself), add up to 4 photos and one video (60 seconds max), and
-  tap **New category** if none of the categories fit.
+  pick up to 3 categories (or tap **New category** if none fit).
 - **Explore**: tap a category, or search "marathon" or "Maya".
 - **Profile > Edit profile**: tap the photo to add your own.
 - **Profile**: tap **Followers** or **Following** to see the lists.

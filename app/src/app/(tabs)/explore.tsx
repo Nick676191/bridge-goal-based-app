@@ -33,9 +33,9 @@ export default function Explore() {
       )
     : [];
   const goalResults = q
-    ? goals.filter((g) => `${g.subject} ${g.body} ${g.category}`.toLowerCase().includes(q))
+    ? goals.filter((g) => `${g.subject} ${g.body} ${g.categories.join(' ')}`.toLowerCase().includes(q))
     : [];
-  const inCategory = category ? goals.filter((g) => g.category === category && g.status === 'active') : [];
+  const inCategory = category ? goals.filter((g) => g.categories.includes(category) && g.status === 'active') : [];
 
   return (
     <SafeAreaView style={styles.screen} edges={['top']}>
@@ -94,7 +94,7 @@ export default function Explore() {
               {/* Built-in categories always show; ones people created show once
                   they have at least one goal in them. */}
               {store.allCategories
-                .filter((c) => CATEGORIES.includes(c) || goals.some((g) => g.category === c))
+                .filter((c) => CATEGORIES.includes(c) || goals.some((g) => g.categories.includes(c)))
                 .map((c) => (
                   <Chip
                     key={c}
@@ -134,7 +134,7 @@ export default function Explore() {
                     <View style={{ flex: 1 }}>
                       <Text style={styles.trendSubject}>{g.subject}</Text>
                       <Text style={styles.personMeta}>
-                        {store.user(g.author)?.name}, {g.category}. {plural(g.committed.length, 'commit')},{' '}
+                        {store.user(g.author)?.name}, {g.categories.join(', ')}. {plural(g.committed.length, 'commit')},{' '}
                         {plural(g.encouraged.length, 'encouragement')}
                       </Text>
                     </View>

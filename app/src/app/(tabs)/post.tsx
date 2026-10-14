@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { newId, useStore } from '@/data/store';
-import { CATEGORY_MAX, type Category, type Media } from '@/data/types';
+import { CATEGORY_MAX, MAX_CATEGORIES_PER_GOAL, type Category, type Media } from '@/data/types';
 import { MediaPicker } from '@/components/MediaPicker';
 import { Button, Chip, Field, ScreenTitle } from '@/components/ui';
 import { smartChecks } from '@/lib/format';
@@ -21,7 +21,13 @@ export default function Post() {
   const store = useStore();
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
-  const [category, setCategory] = useState<Category | null>(null);
+  // Categories this goal belongs to, in the order picked (first = main one).
+  const [categories, setCategories] = useState<Category[]>([]);
+  const full = categories.length >= MAX_CATEGORIES_PER_GOAL;
+  const toggleCategory = (c: Category) =>
+    setCategories((list) =>
+      list.includes(c) ? list.filter((x) => x !== c) : list.length >= MAX_CATEGORIES_PER_GOAL ? list : [...list, c]
+    );
   const [media, setMedia] = useState<Media[]>([]);
   const [creating, setCreating] = useState(false); // the "New category" field is open
   const [newCategory, setNewCategory] = useState('');
@@ -35,17 +41,18 @@ export default function Post() {
     if (!name) return;
     const existing = store.findCategory(name);
     if (!existing) store.dispatch({ type: 'addCategory', name });
-    setCategory(existing ?? name);
+    const picked = existing ?? name;
+    setCategories((list) => (list.includes(picked) || list.length >= MAX_CATEGORIES_PER_GOAL ? list : [...list, picked]));
     setNewCategory('');
     setCreating(false);
   };
 
   const checks = smartChecks(subject, body);
   const ready =
-    subject.trim().length > 0 && subject.length <= SUBJECT_MAX && body.length <= BODY_MAX && category !== null;
+    subject.trim().length > 0 && subject.length <= SUBJECT_MAX && body.length <= BODY_MAX && categories.length > 0;
 
   const publish = () => {
-    if (!ready || !category) return;
+    if (!ready) return;
     const id = newId('g');
     store.dispatch({
       type: 'addGoal',
@@ -54,7 +61,7 @@ export default function Post() {
         author: store.state.me,
         subject: subject.trim(),
         body: body.trim(),
-        category,
+        categories,
         status: 'active',
         createdAt: Date.now(),
         committed: [],
@@ -64,7 +71,7 @@ export default function Post() {
     });
     setSubject('');
     setBody('');
-    setCategory(null);
+    setCategories([]);
     setMedia([]);
     setAttainable(false);
     setRelevant(false);
@@ -102,12 +109,25 @@ export default function Post() {
             <MediaPicker value={media} onChange={setMedia} />
 
             <View style={{ gap: space.sm }}>
-              <Text style={styles.label}>Category</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>Categories</Text>
+                <Text style={styles.counter}>
+                  {categories.length}/{MAX_CATEGORIES_PER_GOAL}
+                </Text>
+              </View>
+              <Text style={styles.hintSmall}>Pick up to {MAX_CATEGORIES_PER_GOAL}. The first one you pick shows first.</Text>
               <View style={styles.chips}>
                 {store.allCategories.map((c) => (
-                  <Chip key={c} label={c} selected={category === c} onPress={() => setCategory(c)} />
+                  <Chip
+                    key={c}
+                    label={c}
+                    selected={categories.includes(c)}
+                    // Once 3 are picked, the others wait until you unpick one.
+                    dimmed={full && !categories.includes(c)}
+                    onPress={() => toggleCategory(c)}
+                  />
                 ))}
-                {!creating && (
+                {!creating && !full && (
                   <Pressable
                     onPress={() => setCreating(true)}
                     style={styles.newChip}
@@ -171,8 +191,8 @@ export default function Post() {
             </View>
 
             <Button label="Post goal" onPress={publish} disabled={!ready} />
-            {!category && subject.trim() ? (
-              <Text style={styles.why}>Pick a category to post.</Text>
+            {categories.length === 0 && subject.trim() ? (
+              <Text style={styles.why}>Pick at least one category to post.</Text>
             ) : null}
           </View>
         </ScrollView>
@@ -214,6 +234,8 @@ const styles = StyleSheet.create({
     marginTop: -space.sm,
   },
   label: { fontSize: 14, fontWeight: '700', color: colors.ink },
+  labelRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  counter: { fontSize: 13, color: colors.muted, fontVariant: ['tabular-nums'] },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   smart: { gap: space.sm, padding: space.md, backgroundColor: colors.wash, borderRadius: 4 },
   check: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm },

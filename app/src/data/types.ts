@@ -20,6 +20,7 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const CATEGORY_MAX = 24; // characters, for categories people create
+export const MAX_CATEGORIES_PER_GOAL = 3; // a post can sit in up to 3 categories
 
 export type User = {
   username: string;
@@ -45,13 +46,14 @@ export type Media = {
 // Limits per post. Kept here so the composer and the database agree.
 export const MAX_PHOTOS = 4;
 export const MAX_VIDEO_SECONDS = 60;
+export const REPLY_MAX = 300; // characters, for tips, updates and replies
 
 export type Goal = {
   id: string;
   author: string; // username
   subject: string; // the goal itself, max 40 characters
   body: string; // the plan to start, max 500 characters
-  category: Category;
+  categories: Category[]; // 1 to 3; the first is the main one
   status: GoalStatus;
   createdAt: number; // milliseconds since 1970, like Python's time.time() * 1000
   committed: string[]; // usernames who pressed Commit
@@ -93,11 +95,12 @@ export type Reply = {
   encouraged: string[];
 };
 
-export type NotificationKind = 'encourage' | 'commit' | 'tip' | 'update' | 'reminder' | 'follow';
+export type NotificationKind = 'encourage' | 'commit' | 'tip' | 'update' | 'reminder' | 'follow' | 'achieved';
 
 export type AppNotification = {
   id: string;
   kind: NotificationKind;
+  to: string; // who receives it
   actor?: string; // who did it (missing for reminders)
   goalId?: string;
   createdAt: number;

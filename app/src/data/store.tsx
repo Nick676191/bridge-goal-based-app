@@ -141,13 +141,36 @@ function reducer(state: State, action: Action): State {
           },
         ],
       };
-    case 'setStatus':
+    case 'setStatus': {
+      const goal = state.goals.find((g) => g.id === action.goalId);
+      if (!goal) return state;
+      // When a goal becomes achieved, tell everyone who committed to it.
+      // (In the real app this also sends a push notification to their phone.)
+      const newlyAchieved = action.status === 'achieved' && goal.status !== 'achieved';
+      const alerts: AppNotification[] = newlyAchieved
+        ? goal.committed
+            .filter((u) => u !== goal.author)
+            .map((u) => ({
+              id: newId('n'),
+              kind: 'achieved' as const,
+              to: u,
+              actor: goal.author,
+              goalId: goal.id,
+              createdAt: Date.now(),
+              read: false,
+            }))
+        : [];
       return {
         ...state,
         goals: state.goals.map((g) => (g.id === action.goalId ? { ...g, status: action.status } : g)),
+        notifications: [...alerts, ...state.notifications],
       };
+    }
     case 'markAllRead':
-      return { ...state, notifications: state.notifications.map((n) => ({ ...n, read: true })) };
+      return {
+        ...state,
+        notifications: state.notifications.map((n) => (n.to === state.me ? { ...n, read: true } : n)),
+      };
     case 'block':
       return {
         ...state,
@@ -223,7 +246,13 @@ function useStoreValue() {
       repliesFor: (parentId: string) =>
         state.replies.filter((r) => r.parentId === parentId && visible(r.author)),
       canPostUpdate: (g: Goal) => g.author === state.me || g.committed.includes(state.me),
-      unreadCount: state.notifications.filter((n) => !n.read).length,
+      // Only your own notifications (others' are kept for when the backend sends them).
+      myNotifications: state.notifications.filter((n) => n.to === state.me),
+      unreadCount: state.notifications.filter((n) => n.to === state.me && !n.read).length,
+      // Everyone who has been told a goal was achieved (used to show the
+      // author who was notified).
+      notifiedOf: (goalId: string) =>
+        state.notifications.filter((n) => n.kind === 'achieved' && n.goalId === goalId).map((n) => n.to),
       // Built-in categories first, then ones people created.
       allCategories: [...CATEGORIES, ...state.customCategories],
       // Finds an existing category ignoring capitalization ("sport" -> "Sport").

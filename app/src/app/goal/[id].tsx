@@ -19,7 +19,7 @@ import { useKeyboardLift } from '@/lib/keyboard';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
-import type { GoalStatus, Reply, Tip, Update } from '@/data/types';
+import { REPLY_MAX, type GoalStatus, type Reply, type Tip, type Update } from '@/data/types';
 import { EncourageButton } from '@/components/ActionBar';
 import { GoalCard } from '@/components/GoalCard';
 import { Avatar } from '@/components/Avatar';
@@ -114,7 +114,12 @@ export default function GoalScreen() {
               </View>
               <Text style={styles.statusHint}>
                 {goal.status === 'achieved'
-                  ? 'Nice work. Post an update below to tell everyone how it went.'
+                  ? store.notifiedOf(goal.id).length
+                    ? `Nice work. We let ${store
+                        .notifiedOf(goal.id)
+                        .map((u) => store.user(u)?.name.split(' ')[0] ?? u)
+                        .join(' and ')} know. Post an update below to say how it went.`
+                    : 'Nice work. Post an update below to tell everyone how it went.'
                   : goal.status === 'dropped'
                     ? 'Dropping a goal is fine. Post an update saying what you learned.'
                     : "Once a month we'll ask you this. You can change it any time."}
@@ -193,6 +198,13 @@ export default function GoalScreen() {
                   </Text>
                 </View>
               )}
+              {/* Character count appears once you start typing; it turns red
+                  in the last 20 characters. */}
+              {text.length > 0 ? (
+                <Text style={[styles.charCount, text.length > REPLY_MAX - 20 && { color: colors.danger }]}>
+                  {text.length}/{REPLY_MAX}
+                </Text>
+              ) : null}
               <View style={styles.inputRow}>
                 <TextInput
                   ref={inputRef}
@@ -208,7 +220,7 @@ export default function GoalScreen() {
                   placeholderTextColor={colors.muted}
                   style={styles.input}
                   multiline
-                  maxLength={500}
+                  maxLength={REPLY_MAX}
                   autoFocus={params.compose === '1'}
                 />
                 <Pressable
@@ -319,6 +331,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.paper,
   },
   locked: { fontSize: 14, lineHeight: 20, color: colors.muted },
+  charCount: { alignSelf: 'flex-end', fontSize: 12, color: colors.muted, fontVariant: ['tabular-nums'], marginBottom: -2 },
   setbackRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   setbackLabel: { fontSize: 14, color: colors.ink, flex: 1 },
   inputRow: { flexDirection: 'row', alignItems: 'flex-end', gap: space.sm },

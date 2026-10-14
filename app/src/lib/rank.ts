@@ -20,7 +20,7 @@ export function activityScore(goal: Goal, updates: Update[], now = Date.now()) {
 export function rankFeed(goals: Goal[], me: string, following: string[], interests: Category[]) {
   const fromFollowed = goals.filter((g) => g.author === me || following.includes(g.author));
   const fromInterests = goals.filter(
-    (g) => !fromFollowed.includes(g) && g.status === 'active' && interests.includes(g.category)
+    (g) => !fromFollowed.includes(g) && g.status === 'active' && g.categories.some((c) => interests.includes(c))
   );
   const byNewest = (a: Goal, b: Goal) => b.createdAt - a.createdAt;
   return [...fromFollowed.sort(byNewest), ...fromInterests.sort(byNewest)];

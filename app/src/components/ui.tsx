@@ -55,10 +55,12 @@ export function Button({
 export function Chip({
   label,
   selected,
+  dimmed,
   onPress,
 }: {
   label: string;
   selected?: boolean;
+  dimmed?: boolean; // shown faded, e.g. when the 3-category limit is reached
   onPress?: () => void;
 }) {
   return (
@@ -66,7 +68,7 @@ export function Chip({
       accessibilityRole="button"
       accessibilityState={{ selected }}
       onPress={onPress}
-      style={[styles.chip, selected && styles.chipSelected]}
+      style={[styles.chip, selected && styles.chipSelected, dimmed && { opacity: 0.35 }]}
     >
       <Text style={[styles.chipText, selected && { color: colors.paper }]}>{label}</Text>
     </Pressable>

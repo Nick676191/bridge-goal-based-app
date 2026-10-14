@@ -8,6 +8,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useStore } from '@/data/store';
 import type { AppNotification } from '@/data/types';
 import { Divider, ScreenTitle } from '@/components/ui';
@@ -18,7 +19,7 @@ type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
 export default function Notifications() {
   const store = useStore();
-  const list = store.state.notifications.filter((n) => !n.actor || !store.state.blocked.includes(n.actor));
+  const list = store.myNotifications.filter((n) => !n.actor || !store.state.blocked.includes(n.actor));
 
   // Mark everything read when you leave the screen, so unread items stay
   // highlighted while you're looking at them.
@@ -29,7 +30,7 @@ export default function Notifications() {
     }, [])
   );
 
-  const describe = (n: AppNotification): { icon: IconName; color: string; text: string } => {
+  const describe = (n: AppNotification): { icon: IconName | 'pen'; color: string; text: string } => {
     const who = n.actor ? store.user(n.actor)?.name ?? n.actor : '';
     const subject = n.goalId ? store.goal(n.goalId)?.subject : '';
     switch (n.kind) {
@@ -38,7 +39,13 @@ export default function Notifications() {
       case 'encourage':
         return { icon: 'arrow-forward-circle', color: colors.lane, text: `${who} encouraged "${subject}"` };
       case 'commit':
-        return { icon: 'close', color: colors.ink, text: `${who} committed to "${subject}"` };
+        return { icon: 'pen', color: colors.ink, text: `${who} committed to "${subject}"` };
+      case 'achieved':
+        return {
+          icon: 'trophy',
+          color: colors.achieved,
+          text: `${who} achieved "${subject}", a goal you committed to. Send some congrats.`,
+        };
       case 'tip':
         return { icon: 'chatbubble-outline', color: colors.ink, text: `${who} left a tip on "${subject}"` };
       case 'update':
@@ -74,7 +81,11 @@ export default function Notifications() {
               accessibilityRole="link"
             >
               <View style={styles.icon}>
-                <Ionicons name={d.icon} size={20} color={d.color} />
+                {d.icon === 'pen' ? (
+                  <MaterialCommunityIcons name="draw-pen" size={20} color={d.color} />
+                ) : (
+                  <Ionicons name={d.icon} size={20} color={d.color} />
+                )}
               </View>
               <Text style={[styles.text, !item.read && { fontWeight: '600' }]}>{d.text}</Text>
               <Text style={styles.time}>{timeAgo(item.createdAt)}</Text>

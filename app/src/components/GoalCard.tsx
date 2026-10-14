@@ -43,7 +43,13 @@ export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean })
             @{goal.author}, {timeAgo(goal.createdAt)}
           </Text>
         </View>
-        <Text style={styles.category}>{goal.category}</Text>
+        {/* In the feed: the main category plus how many more ("Hybrid +2").
+            On the goal's own page: all of them. */}
+        <Text style={styles.category} numberOfLines={full ? 2 : 1}>
+          {full || goal.categories.length === 1
+            ? goal.categories.join(', ')
+            : `${goal.categories[0]} +${goal.categories.length - 1}`}
+        </Text>
       </Pressable>
 
       <Pressable onPress={full ? undefined : () => open()} disabled={full} accessibilityRole={full ? undefined : 'link'}>
@@ -102,7 +108,7 @@ const styles = StyleSheet.create({
   authorRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   authorName: { fontSize: 15, fontWeight: '700', color: colors.ink },
   meta: { fontSize: 13, color: colors.muted },
-  category: { fontSize: 13, fontWeight: '600', color: colors.muted },
+  category: { fontSize: 13, fontWeight: '600', color: colors.muted, maxWidth: '45%', textAlign: 'right' },
   subjectRow: { marginTop: space.xs },
   subject: { fontFamily: fonts.display, fontSize: 34, lineHeight: 36, color: colors.ink, marginBottom: space.xs },
   dropped: { textDecorationLine: 'line-through', color: colors.muted },

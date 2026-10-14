@@ -1,7 +1,7 @@
 // The three actions at the bottom of every goal post, placed as described in
 // the business plan:
 //   bottom left   Reply      opens the post's Tips thread
-//   center        Commit (X) join this goal
+//   center        Commit (a pen signing) join this goal
 //   bottom right  Encourage  a star (no label) that turns into a right arrow:
 //                            "keep pushing". The same star appears on tips,
 //                            updates and replies.
@@ -9,6 +9,7 @@
 import React, { useEffect, useState } from 'react';
 import { Animated, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Haptics from 'expo-haptics';
 import { colors, space } from '@/theme';
 
@@ -56,9 +57,8 @@ export function ActionBar(p: Props) {
         accessibilityState={{ selected: p.committed, disabled: p.isOwn }}
         accessibilityLabel={`${p.committed ? 'Committed' : 'Commit'}. ${p.committedCount} committed`}
       >
-        <View style={[styles.commitBox, p.committed && styles.commitBoxOn]}>
-          <Ionicons name="close" size={18} color={p.committed ? colors.paper : colors.ink} />
-        </View>
+        {/* A pen signing its name: committing is signing on to the goal. */}
+        <MaterialCommunityIcons name="draw-pen" size={22} color={p.committed ? colors.lane : colors.ink} />
         <Text style={[styles.label, p.committed && { color: colors.lane }]}>
           {p.committed ? 'Committed' : 'Commit'}
         </Text>
@@ -157,16 +157,6 @@ const styles = StyleSheet.create({
   action: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 36 },
   label: { fontSize: 14, fontWeight: '600', color: colors.ink },
   count: { fontSize: 14, color: colors.muted, fontVariant: ['tabular-nums'] },
-  commitBox: {
-    width: 22,
-    height: 22,
-    borderRadius: 3,
-    borderWidth: 1.5,
-    borderColor: colors.ink,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  commitBoxOn: { backgroundColor: colors.lane, borderColor: colors.lane },
   actionSmall: { minHeight: 28, gap: 4 },
   countSmall: { fontSize: 13 },
   center: { alignItems: 'center', justifyContent: 'center' },
