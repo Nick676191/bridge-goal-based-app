@@ -18,7 +18,7 @@ export default function Welcome() {
       </View>
       <View style={styles.middle}>
         <Text style={styles.motto} accessibilityRole="header">
-          Go You
+          Next Up
         </Text>
         <Text style={styles.subtext}>Steady Strides Towards Big Goals</Text>
       </View>
@@ -45,8 +45,9 @@ const styles = StyleSheet.create({
   top: { paddingTop: space.lg },
   wordmark: { fontFamily: fonts.displayHeavy, fontSize: 64, lineHeight: 66, letterSpacing: 2, color: colors.ink },
   middle: { flex: 1, justifyContent: 'center', gap: space.md },
-  // Two short words, so they can be very large and still fit on one line.
-  motto: { fontFamily: fonts.displayHeavy, fontSize: 128, lineHeight: 120, color: colors.ink },
+  // Two short words: as large as possible while staying on one line on the
+  // smallest current iPhone (375 points wide).
+  motto: { fontFamily: fonts.displayHeavy, fontSize: 108, lineHeight: 104, color: colors.ink },
   subtext: { fontFamily: fonts.displayMedium, fontSize: 26, lineHeight: 30, color: colors.ink },
   bottom: { gap: space.md, paddingBottom: space.lg },
   note: { fontSize: 13, color: colors.muted, textAlign: 'center' },
