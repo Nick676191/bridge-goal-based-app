@@ -15,7 +15,7 @@ export const users: User[] = [
   {
     username: 'nick',
     name: 'Nick',
-    bio: 'Building Bridge. Learning to run long after years of running short.',
+    bio: 'Building PostIt. Learning to run long after years of running short.',
     following: ['maya.runs', 'dre_lifts', 'tess.tri', 'coach_jo'],
   },
   {

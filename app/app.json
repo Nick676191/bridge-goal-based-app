@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Bridge",
-    "slug": "bridge",
+    "name": "PostIt",
+    "slug": "postit",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.bridgegoals.app"
+      "bundleIdentifier": "com.nick676191.postit"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,11 +31,11 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Bridge uses your photo library so you can add photos and a video to your goals."
+          "photosPermission": "PostIt uses your photo library so you can add photos and a video to your goals."
         }
       ]
     ],
-    "scheme": "bridge",
+    "scheme": "postit",
     "experiments": {
       "typedRoutes": true
     }
