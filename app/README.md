@@ -1,4 +1,4 @@
-# PostIt app (clickable prototype)
+# TENET app (clickable prototype)
 
 This is milestone 1 from the v1 plan: every screen of the iPhone app, working
 buttons, and fake data. Nothing is saved; closing the app resets it.

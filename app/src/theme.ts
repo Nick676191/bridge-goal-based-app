@@ -1,11 +1,11 @@
-// Design tokens for PostIt. Every screen pulls colors, type and spacing from
+// Design tokens for TENET. Every screen pulls colors, type and spacing from
 // here, so changing the look of the app means editing this one file.
 //
 // Think of this like the CSS variables at the top of your website's style.css.
 
 // The app's name as shown on screen. To rename the app, change it here and
 // "name" in app.json.
-export const APP_NAME = 'PostIt';
+export const APP_NAME = 'TENET';
 
 export const colors = {
   ink: '#000000', // primary text, dividers between posts, the wordmark

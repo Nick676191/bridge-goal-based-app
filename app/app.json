@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "PostIt",
-    "slug": "postit",
+    "name": "TENET",
+    "slug": "tenet",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.nick676191.postit"
+      "bundleIdentifier": "com.nick676191.tenet"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,11 +31,11 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "PostIt uses your photo library so you can add photos and a video to your goals."
+          "photosPermission": "TENET uses your photo library so you can add photos and a video to your goals."
         }
       ]
     ],
-    "scheme": "postit",
+    "scheme": "tenet",
     "experiments": {
       "typedRoutes": true
     }

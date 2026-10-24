@@ -17,7 +17,7 @@ export async function canUseLibrary() {
   if (Platform.OS === 'web') return true;
   const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!granted)
-    notify('Photo access is off', 'To add photos or a video, allow PostIt to use your photos in the iPhone Settings app.');
+    notify('Photo access is off', 'To add photos or a video, allow TENET to use your photos in the iPhone Settings app.');
   return granted;
 }
 
