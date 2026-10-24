@@ -27,7 +27,8 @@ export default function RootLayout() {
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
-          headerTintColor: colors.ink,
+          headerTintColor: colors.navy,
+          headerStyle: { backgroundColor: colors.carolina },
           headerShadowVisible: false,
           headerBackTitle: 'Back',
           headerTitleStyle: { fontWeight: '700' },
@@ -42,6 +43,7 @@ export default function RootLayout() {
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         <Stack.Screen name="edit-profile" options={{ title: 'Edit profile' }} />
         <Stack.Screen name="connections/[username]" options={{ title: '' }} />
+        <Stack.Screen name="share/[id]" options={{ title: 'Share goal', presentation: 'modal' }} />
       </Stack>
     </StoreProvider>
   );

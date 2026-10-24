@@ -38,9 +38,9 @@ export default function Explore() {
   const inCategory = category ? goals.filter((g) => g.categories.includes(category) && g.status === 'active') : [];
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={[]}>
+      <ScreenTitle>Explore</ScreenTitle>
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: space.xxl }}>
-        <ScreenTitle>Explore</ScreenTitle>
         <View style={styles.searchBox}>
           <Ionicons name="search" size={18} color={colors.muted} />
           <TextInput
@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper },
   searchBox: {
     marginHorizontal: space.lg,
+    marginTop: space.lg,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.sm,
@@ -184,6 +185,6 @@ const styles = StyleSheet.create({
     borderTopColor: colors.line,
     alignItems: 'flex-start',
   },
-  rank: { fontFamily: fonts.displayHeavy, fontSize: 40, lineHeight: 40, width: 28, color: colors.lane },
+  rank: { fontFamily: fonts.displayHeavy, fontSize: 40, lineHeight: 40, width: 28, color: colors.carolina },
   trendSubject: { fontFamily: fonts.display, fontSize: 24, lineHeight: 26, color: colors.ink },
 });

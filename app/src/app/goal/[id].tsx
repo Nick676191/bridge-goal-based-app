@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   explainer: { fontSize: 13, color: colors.muted, paddingHorizontal: space.lg, paddingTop: space.md },
   empty: { padding: space.lg, fontSize: 15, color: colors.muted },
   item: { flexDirection: 'row', gap: space.md, paddingHorizontal: space.lg, paddingVertical: space.md },
-  itemSetback: { backgroundColor: '#FFFAF2' },
+  itemSetback: { backgroundColor: colors.setbackWash },
   itemHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   itemName: { fontSize: 15, fontWeight: '700', color: colors.ink },
   badge: { fontSize: 11, fontWeight: '700', color: colors.muted, borderWidth: 1, borderColor: colors.hairline, paddingHorizontal: 4, borderRadius: 3 },

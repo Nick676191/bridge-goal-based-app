@@ -41,7 +41,8 @@ export default function Welcome() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.paper, paddingHorizontal: space.xl },
+  // The whole welcome screen is Carolina blue.
+  screen: { flex: 1, backgroundColor: colors.carolina, paddingHorizontal: space.xl },
   top: { paddingTop: space.lg },
   wordmark: { fontFamily: fonts.displayHeavy, fontSize: 64, lineHeight: 66, letterSpacing: 2, color: colors.ink },
   middle: { flex: 1, justifyContent: 'center', gap: space.md },
@@ -50,5 +51,5 @@ const styles = StyleSheet.create({
   motto: { fontFamily: fonts.displayHeavy, fontSize: 108, lineHeight: 104, color: colors.ink },
   subtext: { fontFamily: fonts.displayMedium, fontSize: 26, lineHeight: 30, color: colors.ink },
   bottom: { gap: space.md, paddingBottom: space.lg },
-  note: { fontSize: 13, color: colors.muted, textAlign: 'center' },
+  note: { fontSize: 13, color: colors.navy, textAlign: 'center', opacity: 0.8 },
 });

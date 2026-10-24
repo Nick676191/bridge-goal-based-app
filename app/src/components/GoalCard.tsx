@@ -5,6 +5,7 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
 import type { Goal } from '@/data/types';
 import { colors, fonts, space } from '@/theme';
@@ -21,38 +22,60 @@ export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean })
   const tips = store.tipsFor(goal.id);
   const updates = store.updatesFor(goal.id);
   const latest = updates[updates.length - 1];
-  const committedNames = goal.committed
-    .map((u) => store.user(u)?.name.split(' ')[0])
-    .filter(Boolean) as string[];
+  const committedNames = goal.committed.map((u) => store.user(u)?.name.split(' ')[0]).filter(Boolean) as string[];
 
   const open = (tab?: 'tips' | 'updates') =>
-    router.push({ pathname: '/goal/[id]', params: { id: goal.id, tab: tab ?? 'updates' } });
+    router.push({
+      pathname: '/goal/[id]',
+      params: { id: goal.id, tab: tab ?? 'updates' },
+    });
 
   return (
     <View style={styles.card}>
-      <Pressable
-        onPress={() => router.push({ pathname: '/user/[username]', params: { username: goal.author } })}
-        style={styles.authorRow}
-        accessibilityRole="link"
-        accessibilityLabel={`${author?.name}'s profile`}
-      >
-        <Avatar name={author?.name ?? goal.author} uri={author?.avatarUri} size={32} />
-        <View style={{ flex: 1 }}>
-          <Text style={styles.authorName}>{author?.name}</Text>
-          <Text style={styles.meta}>
-            @{goal.author}, {timeAgo(goal.createdAt)}
-          </Text>
-        </View>
-        {/* In the feed: the main category plus how many more ("Hybrid +2").
+      <View style={styles.headerRow}>
+        <Pressable
+          onPress={() =>
+            router.push({
+              pathname: '/user/[username]',
+              params: { username: goal.author },
+            })
+          }
+          style={[styles.authorRow, { flex: 1 }]}
+          accessibilityRole="link"
+          accessibilityLabel={`${author?.name}'s profile`}
+        >
+          <Avatar name={author?.name ?? goal.author} uri={author?.avatarUri} size={32} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.authorName}>{author?.name}</Text>
+            <Text style={styles.meta}>
+              @{goal.author}, {timeAgo(goal.createdAt)}
+            </Text>
+          </View>
+          {/* In the feed: the main category plus how many more ("Hybrid +2").
             On the goal's own page: all of them. */}
-        <Text style={styles.category} numberOfLines={full ? 2 : 1}>
-          {full || goal.categories.length === 1
-            ? goal.categories.join(', ')
-            : `${goal.categories[0]} +${goal.categories.length - 1}`}
-        </Text>
-      </Pressable>
+          <Text style={styles.category} numberOfLines={full ? 2 : 1}>
+            {full || goal.categories.length === 1
+              ? goal.categories.join(', ')
+              : `${goal.categories[0]} +${goal.categories.length - 1}`}
+          </Text>
+        </Pressable>
+        {/* Share: send this goal to someone on TENET or by text message. */}
+        <Pressable
+          onPress={() => router.push({ pathname: '/share/[id]', params: { id: goal.id } })}
+          hitSlop={10}
+          style={styles.share}
+          accessibilityRole="button"
+          accessibilityLabel="Share this goal"
+        >
+          <Ionicons name="paper-plane-outline" size={20} color={colors.navy} />
+        </Pressable>
+      </View>
 
-      <Pressable onPress={full ? undefined : () => open()} disabled={full} accessibilityRole={full ? undefined : 'link'}>
+      <Pressable
+        onPress={full ? undefined : () => open()}
+        disabled={full}
+        accessibilityRole={full ? undefined : 'link'}
+      >
         <View style={styles.subjectRow}>
           <Text style={[styles.subject, goal.status === 'dropped' && styles.dropped]}>{goal.subject}</Text>
         </View>
@@ -64,7 +87,11 @@ export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean })
 
       {goal.media?.length ? <MediaStrip media={goal.media} full={full} onPress={() => open()} /> : null}
 
-      <Pressable onPress={full ? undefined : () => open()} disabled={full} accessibilityRole={full ? undefined : 'link'}>
+      <Pressable
+        onPress={full ? undefined : () => open()}
+        disabled={full}
+        accessibilityRole={full ? undefined : 'link'}
+      >
         {committedNames.length > 0 && (
           <Text style={styles.committedLine}>
             {committedNames.length === 1
@@ -104,16 +131,45 @@ export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean })
 }
 
 const styles = StyleSheet.create({
-  card: { paddingHorizontal: space.lg, paddingVertical: space.lg, gap: space.sm, backgroundColor: colors.paper },
+  card: {
+    paddingHorizontal: space.lg,
+    paddingVertical: space.lg,
+    gap: space.sm,
+    backgroundColor: colors.paper,
+  },
+  headerRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   authorRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  share: { paddingLeft: space.xs },
   authorName: { fontSize: 15, fontWeight: '700', color: colors.ink },
   meta: { fontSize: 13, color: colors.muted },
-  category: { fontSize: 13, fontWeight: '600', color: colors.muted, maxWidth: '45%', textAlign: 'right' },
+  category: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.muted,
+    maxWidth: '45%',
+    textAlign: 'right',
+  },
   subjectRow: { marginTop: space.xs },
-  subject: { fontFamily: fonts.display, fontSize: 34, lineHeight: 36, color: colors.ink, marginBottom: space.xs },
+  subject: {
+    fontFamily: fonts.display,
+    fontSize: 34,
+    lineHeight: 36,
+    color: colors.ink,
+    marginBottom: space.xs,
+  },
   dropped: { textDecorationLine: 'line-through', color: colors.muted },
-  body: { fontSize: 16, lineHeight: 22, color: colors.ink, marginTop: space.xs },
-  committedLine: { fontSize: 13, color: colors.lane, fontWeight: '600', marginTop: space.sm },
+  body: {
+    fontSize: 16,
+    lineHeight: 22,
+    color: colors.ink,
+    marginTop: space.xs,
+  },
+  committedLine: {
+    fontSize: 13,
+    color: colors.lane,
+    fontWeight: '600',
+    marginTop: space.sm,
+  },
   latest: {
     marginTop: space.md,
     paddingLeft: space.md,

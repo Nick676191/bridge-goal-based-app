@@ -12,6 +12,7 @@
     "expo-image-picker": "~57.0.20",
     "expo-linking": "~57.0.12",
     "expo-router": "~57.0.26",
+    "expo-sms": "~57.0.2",
     "expo-status-bar": "~57.0.1",
     "expo-video": "~57.0.5",
     "react": "19.2.3",

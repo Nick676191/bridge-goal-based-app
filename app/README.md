@@ -47,7 +47,12 @@ To see it in a browser instead, press `w` in the Terminal window after
 - Post an update with **Tag as a setback** on.
 - Under any tip or update, tap **Reply** to answer it or the star to encourage it.
   Tips, updates and replies are limited to 300 characters.
-- **Activity**: Maya's achieved goal shows how people who committed are notified.
+- **Activity**: Maya's achieved goal shows how people who committed are notified,
+  and Jordan's message shows what a shared goal looks like.
+- **Share** (the paper plane at the top right of any post): send the goal to
+  people you follow, or type a phone number and tap **Text it** to open Messages
+  with the goal and a link filled in. The link (`tenet://goal/...`) only opens
+  on phones with the app installed for now; a web link comes before launch.
 - On your own goal, use **Where does this goal stand?** under the post to mark it achieved or dropped.
 - **Post** tab: watch the SMART Principles fill in as you type (tick Attainable
   and Relevant yourself), add up to 4 photos and one video (60 seconds max), and
@@ -69,6 +74,7 @@ app/
       goal/[id].tsx  A goal's page; [id] means "any goal id"
       user/[username].tsx  Someone else's profile
       connections/[username].tsx  Followers and Following lists
+      share/[id].tsx Share a goal in the app or by text message
       welcome.tsx, onboarding.tsx, settings.tsx, edit-profile.tsx
     components/      Pieces used on many screens (post card, action bar, buttons)
     data/
@@ -76,7 +82,7 @@ app/
       mock.ts        The fake data
       store.tsx      Shared state: what happens when you press each button
     lib/             Feed ranking, timestamps, SMART checks
-    theme.ts         Colors, fonts and spacing for the whole app
+    theme.ts         Colors (Carolina blue, maize, navy), fonts and spacing
 ```
 
 If you know Python: `types.ts` is like a set of dataclasses, `store.tsx` is

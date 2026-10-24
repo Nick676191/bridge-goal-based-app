@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.lg, paddingVertical: space.sm },
   stepText: { fontSize: 14, fontWeight: '600', color: colors.muted },
   progress: { height: 3, backgroundColor: colors.hairline },
-  progressFill: { height: 3, backgroundColor: colors.ink },
+  progressFill: { height: 3, backgroundColor: colors.carolina },
   content: { padding: space.xl, gap: space.lg },
   title: { fontFamily: fonts.displayHeavy, fontSize: 40, lineHeight: 42, color: colors.ink },
   apple: {

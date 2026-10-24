@@ -12,6 +12,7 @@ import {
   ViewStyle,
   StyleProp,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fonts, space } from '@/theme';
 
 export function Button({
@@ -29,10 +30,14 @@ export function Button({
   large?: boolean; // taller, fully rounded, bigger text (welcome screen)
   style?: StyleProp<ViewStyle>;
 }) {
+  // primary: maize with navy text (the main action on a screen)
+  // accent: Carolina blue with navy text (e.g. Commit to this goal)
+  // secondary: white with a navy outline; danger: white with a red outline
   const bg =
-    variant === 'primary' ? colors.ink : variant === 'accent' ? colors.lane : colors.paper;
-  const fg =
-    variant === 'secondary' ? colors.ink : variant === 'danger' ? colors.danger : colors.paper;
+    variant === 'primary' ? colors.maize : variant === 'accent' ? colors.carolina : colors.paper;
+  const fg = variant === 'danger' ? colors.danger : colors.navy;
+  const border =
+    variant === 'primary' ? colors.maize : variant === 'accent' ? colors.carolina : variant === 'danger' ? colors.danger : colors.navy;
   return (
     <Pressable
       accessibilityRole="button"
@@ -40,7 +45,7 @@ export function Button({
       disabled={disabled}
       style={({ pressed }) => [
         styles.button,
-        { backgroundColor: bg, borderColor: variant === 'danger' ? colors.danger : variant === 'accent' ? colors.lane : colors.ink },
+        { backgroundColor: bg, borderColor: border },
         large && styles.buttonLarge,
         disabled && { opacity: 0.35 },
         pressed && { opacity: 0.75 },
@@ -70,12 +75,12 @@ export function Chip({
       onPress={onPress}
       style={[styles.chip, selected && styles.chipSelected, dimmed && { opacity: 0.35 }]}
     >
-      <Text style={[styles.chipText, selected && { color: colors.paper }]}>{label}</Text>
+      <Text style={styles.chipText}>{label}</Text>
     </Pressable>
   );
 }
 
-// The amber tag on setback updates.
+// The burnt-orange tag on setback updates.
 export function SetbackTag() {
   return (
     <View style={styles.setback}>
@@ -88,7 +93,14 @@ export function StatusTag({ status }: { status: 'active' | 'achieved' | 'dropped
   if (status === 'active') return null;
   const achieved = status === 'achieved';
   return (
-    <View style={[styles.status, { borderColor: achieved ? colors.achieved : colors.muted }]}>
+    <View
+      style={[
+        styles.status,
+        achieved
+          ? { backgroundColor: colors.achievedFill, borderColor: colors.achievedFill }
+          : { borderColor: colors.muted },
+      ]}
+    >
       <Text style={[styles.statusText, { color: achieved ? colors.achieved : colors.muted }]}>
         {achieved ? 'Achieved' : 'Dropped'}
       </Text>
@@ -96,14 +108,26 @@ export function StatusTag({ status }: { status: 'active' | 'achieved' | 'dropped
   );
 }
 
-// Big condensed title at the top of each tab, e.g. "Explore".
-export function ScreenTitle({ children, right }: { children: string; right?: React.ReactNode }) {
+// The Carolina blue band at the top of each tab, with a big condensed title
+// (e.g. "Explore"). It reaches up behind the clock and battery icons.
+export function ScreenTitle({
+  children,
+  right,
+  size = 40,
+}: {
+  children: string;
+  right?: React.ReactNode;
+  size?: number;
+}) {
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.titleRow}>
-      <Text style={styles.title} accessibilityRole="header">
-        {children}
-      </Text>
-      {right}
+    <View style={[styles.titleBand, { paddingTop: insets.top + space.sm }]}>
+      <View style={styles.titleRow}>
+        <Text style={[styles.title, { fontSize: size, lineHeight: size + 2 }]} accessibilityRole="header">
+          {children}
+        </Text>
+        {right}
+      </View>
     </View>
   );
 }
@@ -168,7 +192,7 @@ const styles = StyleSheet.create({
     borderColor: colors.ink,
     backgroundColor: colors.paper,
   },
-  chipSelected: { backgroundColor: colors.ink },
+  chipSelected: { backgroundColor: colors.carolina, borderColor: colors.navy },
   chipText: { fontSize: 14, fontWeight: '600', color: colors.ink },
   setback: {
     alignSelf: 'flex-start',
@@ -181,12 +205,12 @@ const styles = StyleSheet.create({
   setbackText: { color: colors.setback, fontSize: 12, fontWeight: '700' },
   status: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: 3, paddingHorizontal: 6, paddingVertical: 1, marginBottom: 2 },
   statusText: { fontSize: 12, fontWeight: '700' },
+  titleBand: { backgroundColor: colors.carolina, borderBottomWidth: 2, borderBottomColor: colors.navy },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
     paddingHorizontal: space.lg,
-    paddingTop: space.sm,
     paddingBottom: space.md,
   },
   title: { fontFamily: fonts.displayHeavy, fontSize: 40, lineHeight: 42, color: colors.ink },

@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { Redirect, Tabs } from 'expo-router';
-import { Platform, type ColorValue } from 'react-native';
+import { Platform, StyleSheet, View, type ColorValue } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
 import { colors } from '@/theme';
@@ -25,10 +25,10 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.ink,
-        tabBarInactiveTintColor: '#8A8F96',
+        tabBarInactiveTintColor: colors.muted,
         tabBarStyle: {
-          borderTopColor: colors.ink,
-          borderTopWidth: 1,
+          borderTopColor: colors.navy,
+          borderTopWidth: 2,
           backgroundColor: colors.paper,
           ...(Platform.OS === 'web' ? { height: 64, paddingBottom: 8 } : null),
         },
@@ -41,8 +41,11 @@ export default function TabsLayout() {
         name="post"
         options={{
           title: 'Post',
+          // A maize button with a navy plus: the one bright spot in the tab bar.
           tabBarIcon: ({ focused }) => (
-            <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} size={27} color={colors.lane} />
+            <View style={[styles.postButton, focused && styles.postButtonOn]}>
+              <Ionicons name="add" size={22} color={colors.navy} />
+            </View>
           ),
         }}
       />
@@ -52,10 +55,22 @@ export default function TabsLayout() {
           title: 'Activity',
           tabBarIcon: icon('notifications', 'notifications-outline'),
           tabBarBadge: store.unreadCount > 0 ? store.unreadCount : undefined,
-          tabBarBadgeStyle: { backgroundColor: colors.lane, fontSize: 11 },
+          tabBarBadgeStyle: { backgroundColor: colors.maize, color: colors.navy, fontSize: 11, fontWeight: '700' },
         }}
       />
       <Tabs.Screen name="profile" options={{ title: 'Profile', tabBarIcon: icon('person', 'person-outline') }} />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  postButton: {
+    width: 34,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.maize,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  postButtonOn: { borderWidth: 2, borderColor: colors.navy },
+});

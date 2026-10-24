@@ -275,6 +275,16 @@ export const replies: Reply[] = [
 ];
 
 export const notifications: AppNotification[] = [
+  {
+    to: 'nick',
+    id: 'n00',
+    kind: 'share',
+    actor: 'coach_jo',
+    goalId: 'g3',
+    message: 'You said you wanted a muscle-up too. Priya is posting her whole progression.',
+    createdAt: ago(1 * HOUR),
+    read: false,
+  },
   { to: 'nick', id: 'n0', kind: 'achieved', actor: 'maya.runs', goalId: 'g8', createdAt: ago(3 * HOUR), read: false },
   { to: 'nick', id: 'n1', kind: 'reminder', goalId: 'g4', createdAt: ago(30 * 60 * 1000), read: false },
   { to: 'nick', id: 'n2', kind: 'update', actor: 'maya.runs', goalId: 'g4', createdAt: ago(1 * DAY), read: false },

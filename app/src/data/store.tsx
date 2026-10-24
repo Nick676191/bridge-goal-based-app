@@ -46,6 +46,7 @@ type Action =
   | { type: 'setSetting'; key: keyof Settings; value: boolean }
   | { type: 'addCategory'; name: string }
   | { type: 'addReply'; parentId: string; text: string }
+  | { type: 'shareGoal'; goalId: string; to: string[]; message: string }
   | { type: 'toggleItemEncourage'; kind: 'tip' | 'update' | 'reply'; id: string }
   | { type: 'setAvatar'; uri: string | undefined };
 
@@ -197,6 +198,24 @@ function reducer(state: State, action: Action): State {
       const exists = [...CATEGORIES, ...state.customCategories].some((c) => c.toLowerCase() === name.toLowerCase());
       return exists || !name ? state : { ...state, customCategories: [...state.customCategories, name] };
     }
+    case 'shareGoal':
+      // Each person you send it to gets a notification in their Activity tab.
+      return {
+        ...state,
+        notifications: [
+          ...action.to.map((u) => ({
+            id: newId('n'),
+            kind: 'share' as const,
+            to: u,
+            actor: state.me,
+            goalId: action.goalId,
+            message: action.message.trim() || undefined,
+            createdAt: Date.now(),
+            read: false,
+          })),
+          ...state.notifications,
+        ],
+      };
     case 'addReply':
       return {
         ...state,

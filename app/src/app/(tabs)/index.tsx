@@ -8,7 +8,7 @@ import { router } from 'expo-router';
 import { useStore } from '@/data/store';
 import { rankFeed } from '@/lib/rank';
 import { GoalCard } from '@/components/GoalCard';
-import { Button, Divider } from '@/components/ui';
+import { Button, Divider, ScreenTitle } from '@/components/ui';
 import { APP_NAME, colors, fonts, space } from '@/theme';
 import type { Goal } from '@/data/types';
 
@@ -33,13 +33,9 @@ export default function Home() {
   }
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.wordmark} accessibilityRole="header">
-          {APP_NAME}
-        </Text>
-      </View>
-      <Divider strong />
+    <SafeAreaView style={styles.screen} edges={[]}>
+      {/* The app's name in the blue band, in place of a page title. */}
+      <ScreenTitle size={38}>{APP_NAME}</ScreenTitle>
       <FlatList
         data={rows}
         keyExtractor={(r) => (r.kind === 'goal' ? r.goal.id : r.label)}

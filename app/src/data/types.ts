@@ -95,7 +95,15 @@ export type Reply = {
   encouraged: string[];
 };
 
-export type NotificationKind = 'encourage' | 'commit' | 'tip' | 'update' | 'reminder' | 'follow' | 'achieved';
+export type NotificationKind =
+  | 'encourage'
+  | 'commit'
+  | 'tip'
+  | 'update'
+  | 'reminder'
+  | 'follow'
+  | 'achieved'
+  | 'share';
 
 export type AppNotification = {
   id: string;
@@ -103,6 +111,7 @@ export type AppNotification = {
   to: string; // who receives it
   actor?: string; // who did it (missing for reminders)
   goalId?: string;
+  message?: string; // optional note sent along with a shared goal
   createdAt: number;
   read: boolean;
 };

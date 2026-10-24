@@ -7,18 +7,32 @@
 // "name" in app.json.
 export const APP_NAME = 'TENET';
 
+// Palette: Carolina Blue (UNC) and Michigan Maize, with UNC Navy for text.
+// Official values from the UNC and Michigan brand guides.
+//   Carolina Blue  #4B9CD3  big surfaces: welcome screen, headers, selected chips
+//   Maize          #FFCB05  highlights: main buttons, the Post button, achievements
+//   Navy           #13294B  text and lines (readable on white, blue and maize)
+// Light Carolina Blue is too pale for small text on white, so links and
+// "you did this" accents use UNC's darker web-link blue (#007FAE).
 export const colors = {
-  ink: '#000000', // primary text, dividers between posts, the wordmark
+  carolina: '#4B9CD3',
+  carolinaWash: '#E7F1F9', // pale blue panels and highlighted rows
+  maize: '#FFCB05',
+  maizeWash: '#FFF5CC',
+  navy: '#13294B',
+
+  ink: '#13294B', // primary text, dividers between posts, the wordmark
   paper: '#FFFFFF', // screen background
-  wash: '#F2F3F5', // input fields, chips, subtle panels
-  line: '#000000', // the thin black bars between posts (from the business plan)
-  hairline: '#D9DBDF', // lighter separators inside a screen
-  muted: '#62676E', // secondary text: timestamps, counts, hints
-  lane: '#1D4ED8', // accent: things YOU did (encouraged, committed, active tab)
-  laneWash: '#E6EDFF',
-  setback: '#A15C00', // setback tag: amber, not red, because a setback is not an error
-  setbackWash: '#FFF1DC',
-  achieved: '#0F7A3D',
+  wash: '#F1F5F9', // input fields and subtle panels
+  line: '#13294B', // the thin bars between posts (from the business plan)
+  hairline: '#D5DEE7', // lighter separators inside a screen
+  muted: '#5B6B7F', // secondary text: timestamps, counts, hints
+  lane: '#007FAE', // accent text and icons: things YOU did (encouraged, committed)
+  laneWash: '#E7F1F9',
+  setback: '#B4480B', // burnt orange: distinct from maize, and not an error red
+  setbackWash: '#FDEBDD',
+  achieved: '#13294B', // achieved tags are maize with navy text (a gold medal)
+  achievedFill: '#FFCB05',
   danger: '#B42318', // only for destructive actions like deleting an account
 };
 

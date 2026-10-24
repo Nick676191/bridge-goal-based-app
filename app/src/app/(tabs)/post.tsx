@@ -79,10 +79,10 @@ export default function Post() {
   };
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={[]}>
+      <ScreenTitle>New goal</ScreenTitle>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
-          <ScreenTitle>New goal</ScreenTitle>
           <View style={styles.form}>
             <Field
               label="Goal"
@@ -225,7 +225,7 @@ function Check({ ok, text, onPress }: { ok: boolean; text: string; onPress?: () 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.paper },
   content: { paddingBottom: 48 },
-  form: { paddingHorizontal: space.lg, gap: space.xl },
+  form: { paddingHorizontal: space.lg, paddingTop: space.lg, gap: space.xl },
   preview: {
     fontFamily: fonts.display,
     fontSize: 34,

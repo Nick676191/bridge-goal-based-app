@@ -13,7 +13,7 @@ import { colors } from '@/theme';
 export default function Profile() {
   const store = useStore();
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={[]}>
       <ScreenTitle
         right={
           <Pressable onPress={() => router.push('/settings')} hitSlop={10} accessibilityLabel="Settings">

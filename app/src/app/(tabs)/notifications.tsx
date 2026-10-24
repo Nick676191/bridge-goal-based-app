@@ -40,10 +40,16 @@ export default function Notifications() {
         return { icon: 'arrow-forward-circle', color: colors.lane, text: `${who} encouraged "${subject}"` };
       case 'commit':
         return { icon: 'pen', color: colors.ink, text: `${who} committed to "${subject}"` };
+      case 'share':
+        return {
+          icon: 'paper-plane-outline',
+          color: colors.lane,
+          text: `${who} sent you "${subject}"${n.message ? `: "${n.message}"` : ''}`,
+        };
       case 'achieved':
         return {
           icon: 'trophy',
-          color: colors.achieved,
+          color: colors.navy,
           text: `${who} achieved "${subject}", a goal you committed to. Send some congrats.`,
         };
       case 'tip':
@@ -65,9 +71,8 @@ export default function Notifications() {
   };
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <SafeAreaView style={styles.screen} edges={[]}>
       <ScreenTitle>Activity</ScreenTitle>
-      <Divider strong />
       <FlatList
         data={list}
         keyExtractor={(n) => n.id}
