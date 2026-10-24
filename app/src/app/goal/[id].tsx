@@ -37,7 +37,7 @@ export default function GoalScreen() {
   const [setback, setSetback] = useState(false);
   // Set when you tap Reply under a tip, update or reply: who and what you're answering.
   const [replyingTo, setReplyingTo] = useState<{ parentId: string; name: string } | null>(null);
-  const inputRef = useRef<TextInput>(null);
+  const inputRef = useRef<React.ComponentRef<typeof TextInput>>(null);
   const keyboardLift = useKeyboardLift();
 
   if (!goal) return <Text style={styles.empty}>This goal was deleted.</Text>;

@@ -97,5 +97,5 @@ npm run typecheck  # check for type errors
 npm run lint       # check for common mistakes
 ```
 
-Built with Expo SDK 57 and Expo Router. In milestone 2, `src/data/store.tsx`
+Built with Expo SDK 58 and Expo Router. In milestone 2, `src/data/store.tsx`
 starts reading and writing a real Supabase database instead of `mock.ts`.

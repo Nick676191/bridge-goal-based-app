@@ -29,6 +29,9 @@ export default function RootLayout() {
         screenOptions={{
           headerTintColor: colors.navy,
           headerStyle: { backgroundColor: colors.carolina },
+          // On iOS 26+ (SDK 58) headers are see-through by default and content
+          // slides underneath; keep them solid blue with content below.
+          headerTransparent: false,
           headerShadowVisible: false,
           headerBackTitle: 'Back',
           headerTitleStyle: { fontWeight: '700' },
