@@ -50,9 +50,11 @@ To see it in a browser instead, press `w` in the Terminal window after
 - **Activity**: Maya's achieved goal shows how people who committed are notified,
   and Jordan's message shows what a shared goal looks like.
 - **Share** (the paper plane at the top right of any post): send the goal to
-  people you follow, or type a phone number and tap **Text it** to open Messages
-  with the goal and a link filled in. The link (`tenet://goal/...`) only opens
-  on phones with the app installed for now; a web link comes before launch.
+  people you follow, or tap **More options** for the iPhone share sheet
+  (Messages, copy link, AirDrop). The message reads "Check out [name]'s goal
+  that they posted on TENET. Follow along with their progress here: [link]".
+  The link (`tenet://goal/...`) only opens on phones with the app installed for
+  now; a web link comes before launch.
 - On your own goal, use **Where does this goal stand?** under the post to mark it achieved or dropped.
 - **Post** tab: watch the SMART Principles fill in as you type (tick Attainable
   and Relevant yourself), add up to 4 photos and one video (60 seconds max), and
@@ -74,7 +76,7 @@ app/
       goal/[id].tsx  A goal's page; [id] means "any goal id"
       user/[username].tsx  Someone else's profile
       connections/[username].tsx  Followers and Following lists
-      share/[id].tsx Share a goal in the app or by text message
+      share/[id].tsx Share a goal in the app or through the share sheet
       welcome.tsx, onboarding.tsx, settings.tsx, edit-profile.tsx
     components/      Pieces used on many screens (post card, action bar, buttons)
     data/

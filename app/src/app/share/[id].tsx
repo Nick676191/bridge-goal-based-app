@@ -1,13 +1,11 @@
-// Share a goal. Three ways, top to bottom:
+// Share a goal. Two ways:
 //   1. Send to people on TENET: pick people, add a note; they get it in Activity.
-//   2. Text it: type a phone number (or leave it blank) and the phone's
-//      Messages app opens with the text filled in, ready to send.
-//   3. More options: the iPhone share sheet (copy, AirDrop, other apps).
+//   2. Share outside TENET: the iPhone share sheet (Messages, copy link,
+//      AirDrop, other apps), with a ready-made message and link.
 
 import React, { useMemo, useState } from 'react';
-import { Alert, Linking, Platform, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import * as SMS from 'expo-sms';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
 import { Avatar } from '@/components/Avatar';
@@ -25,7 +23,6 @@ export default function ShareGoal() {
   const [note, setNote] = useState('');
   const [query, setQuery] = useState('');
   const [picked, setPicked] = useState<string[]>([]);
-  const [phone, setPhone] = useState('');
 
   // People you're connected to (following or followers), excluding you and
   // anyone blocked. People you follow come first.
@@ -54,20 +51,7 @@ export default function ShareGoal() {
     router.back();
   };
 
-  // Opens the Messages app with the number (if any) and the text filled in.
-  const sendText = async () => {
-    const body = shareText(goal, author, note);
-    const digits = phone.replace(/[^\d+]/g, '');
-    if (Platform.OS !== 'web' && (await SMS.isAvailableAsync())) {
-      await SMS.sendSMSAsync(digits ? [digits] : [], body);
-      return;
-    }
-    // Fallback (web preview, or a device that can't text): an sms: link.
-    const url = `sms:${digits}${Platform.OS === 'ios' ? '&' : '?'}body=${encodeURIComponent(body)}`;
-    Linking.openURL(url).catch(() => notify("Can't send texts here", 'Try this on your iPhone.'));
-  };
-
-  const moreOptions = () => Share.share({ message: shareText(goal, author, note) });
+  const moreOptions = () => Share.share({ message: shareText(goal, author, note, store.state.me) });
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
@@ -135,27 +119,23 @@ export default function ShareGoal() {
         disabled={picked.length === 0}
       />
 
-      <Text style={[styles.heading, { marginTop: space.lg }]}>Text it to a phone number</Text>
-      <Text style={styles.hint}>
-        Opens Messages with the goal and a link filled in. Leave the number blank to pick a contact there.
-      </Text>
-      <View style={styles.phoneRow}>
-        <TextInput
-          value={phone}
-          onChangeText={setPhone}
-          placeholder="(555) 123-4567"
-          placeholderTextColor={colors.muted}
-          keyboardType="phone-pad"
-          textContentType="telephoneNumber"
-          style={[styles.note, styles.phoneInput]}
-          accessibilityLabel="Phone number"
-        />
-        <Button label="Text it" variant="accent" onPress={sendText} style={styles.textIt} />
-      </View>
-
-      <Pressable onPress={moreOptions} style={styles.more} accessibilityRole="button">
-        <Ionicons name="share-outline" size={20} color={colors.navy} />
-        <Text style={styles.moreText}>More options (copy, AirDrop, other apps)</Text>
+      {/* Everything outside the app goes through the iPhone share sheet,
+          which includes Messages, so a text is one tap away. */}
+      <Text style={[styles.heading, { marginTop: space.lg }]}>Share outside TENET</Text>
+      <Pressable
+        onPress={moreOptions}
+        style={({ pressed }) => [styles.more, pressed && { opacity: 0.8 }]}
+        accessibilityRole="button"
+        accessibilityLabel="More options: Messages, copy link, AirDrop, other apps"
+      >
+        <View style={styles.moreIcon}>
+          <Ionicons name="share-outline" size={26} color={colors.navy} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.moreTitle}>More options</Text>
+          <Text style={styles.moreSub}>Messages, copy link, AirDrop, other apps</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={22} color={colors.navy} />
       </Pressable>
     </ScrollView>
   );
@@ -201,9 +181,24 @@ const styles = StyleSheet.create({
   person: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.md, paddingVertical: 10 },
   personName: { fontSize: 15, fontWeight: '700', color: colors.ink },
   personHandle: { fontSize: 13, color: colors.muted },
-  phoneRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  phoneInput: { flex: 1, minWidth: 0, minHeight: 48, paddingVertical: space.sm },
-  textIt: { paddingHorizontal: space.md, flexShrink: 0 },
-  more: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, marginTop: space.sm },
-  moreText: { fontSize: 15, fontWeight: '600', color: colors.navy },
+  more: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    minHeight: 72,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.md,
+    backgroundColor: colors.carolina,
+    borderRadius: 12,
+  },
+  moreIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.paper,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  moreTitle: { fontSize: 19, fontWeight: '800', color: colors.navy },
+  moreSub: { fontSize: 14, color: colors.navy, marginTop: 2 },
 });
