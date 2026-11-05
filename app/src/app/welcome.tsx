@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
   // Two short words: as large as possible while staying on one line on the
   // smallest current iPhone (375 points wide).
   motto: { fontFamily: fonts.displayHeavy, fontSize: 108, lineHeight: 104, color: colors.ink },
-  subtext: { fontFamily: fonts.displayMedium, fontSize: 26, lineHeight: 30, color: colors.ink },
+  // About half the motto's size, so the two read as one line and its follow-up.
+  subtext: { fontFamily: fonts.display, fontSize: 52, lineHeight: 54, color: colors.ink },
   bottom: { gap: space.md, paddingBottom: space.lg },
   note: { fontSize: 13, color: colors.navy, textAlign: 'center', opacity: 0.8 },
 });
