@@ -7,7 +7,7 @@
 
 import React, { createContext, useContext, useMemo, useReducer } from 'react';
 import * as mock from './mock';
-import { CATEGORIES, type AppNotification, type Category, type Goal, type GoalStatus, type Reply, type Tip, type Update, type User } from './types';
+import { CATEGORIES, type AppNotification, type Category, type Goal, type GoalStatus, type Message, type Reply, type Tip, type Update, type User } from './types';
 
 type Settings = {
   dailyReminderCap: boolean; // at most one reminder a day across all goals
@@ -23,6 +23,7 @@ type State = {
   updates: Update[];
   replies: Reply[];
   notifications: AppNotification[];
+  messages: Message[];
   blocked: string[];
   interests: Category[];
   customCategories: Category[]; // categories people created when posting
@@ -47,6 +48,8 @@ type Action =
   | { type: 'addCategory'; name: string }
   | { type: 'addReply'; parentId: string; text: string }
   | { type: 'shareGoal'; goalId: string; to: string[]; message: string }
+  | { type: 'sendMessage'; to: string; text: string }
+  | { type: 'readConversation'; with: string }
   | { type: 'toggleItemEncourage'; kind: 'tip' | 'update' | 'reply'; id: string }
   | { type: 'setAvatar'; uri: string | undefined };
 
@@ -59,6 +62,7 @@ const initialState: State = {
   updates: mock.updates,
   replies: mock.replies,
   notifications: mock.notifications,
+  messages: mock.messages,
   blocked: [],
   interests: ['Running', 'Weightlifting', 'Triathlon'],
   customCategories: [],
@@ -199,22 +203,38 @@ function reducer(state: State, action: Action): State {
       return exists || !name ? state : { ...state, customCategories: [...state.customCategories, name] };
     }
     case 'shareGoal':
-      // Each person you send it to gets a notification in their Activity tab.
+      // Each person you send it to gets it as a direct message, with your
+      // note (if any) attached. It shows up in their Messages inbox.
       return {
         ...state,
-        notifications: [
+        messages: [
+          ...state.messages,
           ...action.to.map((u) => ({
-            id: newId('n'),
-            kind: 'share' as const,
+            id: newId('m'),
+            from: state.me,
             to: u,
-            actor: state.me,
             goalId: action.goalId,
-            message: action.message.trim() || undefined,
+            text: action.message.trim() || undefined,
             createdAt: Date.now(),
             read: false,
           })),
-          ...state.notifications,
         ],
+      };
+    case 'sendMessage':
+      return {
+        ...state,
+        messages: [
+          ...state.messages,
+          { id: newId('m'), from: state.me, to: action.to, text: action.text.trim(), createdAt: Date.now(), read: false },
+        ],
+      };
+    case 'readConversation':
+      // Opening a conversation marks everything they sent you as read.
+      return {
+        ...state,
+        messages: state.messages.map((m) =>
+          m.from === action.with && m.to === state.me && !m.read ? { ...m, read: true } : m
+        ),
       };
     case 'addReply':
       return {
@@ -251,7 +271,37 @@ function useStoreValue() {
     const visible = (username: string) => !state.blocked.includes(username);
     const user = (username: string) => state.users.find((u) => u.username === username);
     const meUser = user(state.me)!;
+
+    // Direct messages, grouped into one conversation per person. Blocked
+    // people's conversations are hidden. Newest conversation first.
+    const myMessages = state.messages.filter(
+      (m) => (m.from === state.me || m.to === state.me) && visible(m.from === state.me ? m.to : m.from)
+    );
+    const byPerson = new Map<string, Message[]>();
+    for (const m of myMessages) {
+      const other = m.from === state.me ? m.to : m.from;
+      byPerson.set(other, [...(byPerson.get(other) ?? []), m]);
+    }
+    const conversations = [...byPerson.entries()]
+      .map(([withUser, list]) => {
+        const sorted = [...list].sort((a, b) => a.createdAt - b.createdAt);
+        return {
+          with: withUser,
+          last: sorted[sorted.length - 1],
+          unread: sorted.filter((m) => m.to === state.me && !m.read).length,
+        };
+      })
+      .sort((a, b) => b.last.createdAt - a.last.createdAt);
+
     return {
+      conversations,
+      // Every message between you and one person, oldest first.
+      messagesWith: (username: string) =>
+        myMessages
+          .filter((m) => m.from === username || m.to === username)
+          .sort((a, b) => a.createdAt - b.createdAt),
+      // How many conversations have something you haven't read (for the badge).
+      unreadConversations: conversations.filter((c) => c.unread > 0).length,
       user,
       meUser,
       goal: (id: string) => state.goals.find((g) => g.id === id),

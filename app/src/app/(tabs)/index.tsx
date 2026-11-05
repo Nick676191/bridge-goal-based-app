@@ -2,9 +2,10 @@
 // the categories you picked. Posts are separated by thin black bars.
 
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
 import { rankFeed } from '@/lib/rank';
 import { GoalCard } from '@/components/GoalCard';
@@ -35,7 +36,29 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.screen} edges={[]}>
       {/* The app's name in the blue band, in place of a page title. */}
-      <ScreenTitle size={38}>{APP_NAME}</ScreenTitle>
+      <ScreenTitle
+        size={38}
+        right={
+          // Messages, top right, with a maize badge for unread conversations.
+          <Pressable
+            onPress={() => router.push('/messages')}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel={
+              store.unreadConversations ? `Messages, ${store.unreadConversations} unread` : 'Messages'
+            }
+          >
+            <Ionicons name="chatbubbles-outline" size={28} color={colors.ink} />
+            {store.unreadConversations > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{store.unreadConversations}</Text>
+              </View>
+            )}
+          </Pressable>
+        }
+      >
+        {APP_NAME}
+      </ScreenTitle>
       <FlatList
         data={rows}
         keyExtractor={(r) => (r.kind === 'goal' ? r.goal.id : r.label)}
@@ -75,6 +98,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.wash,
   },
   empty: { padding: space.xl, gap: space.md },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -8,
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    backgroundColor: colors.maize,
+    borderWidth: 2,
+    borderColor: colors.carolina,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: { fontSize: 11, fontWeight: '800', color: colors.navy },
   emptyTitle: { fontFamily: fonts.display, fontSize: 28, color: colors.ink },
   emptyText: { fontSize: 16, lineHeight: 22, color: colors.muted },
 });

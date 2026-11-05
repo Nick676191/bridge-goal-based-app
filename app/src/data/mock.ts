@@ -2,7 +2,7 @@
 // every screen has something believable to show. In milestone 2 this file is
 // replaced by reads from the database.
 
-import type { AppNotification, Goal, Reply, Tip, Update, User } from './types';
+import type { AppNotification, Goal, Message, Reply, Tip, Update, User } from './types';
 
 export const ME = 'nick';
 
@@ -275,16 +275,6 @@ export const replies: Reply[] = [
 ];
 
 export const notifications: AppNotification[] = [
-  {
-    to: 'nick',
-    id: 'n00',
-    kind: 'share',
-    actor: 'coach_jo',
-    goalId: 'g3',
-    message: 'You said you wanted a muscle-up too. Priya is posting her whole progression.',
-    createdAt: ago(1 * HOUR),
-    read: false,
-  },
   { to: 'nick', id: 'n0', kind: 'achieved', actor: 'maya.runs', goalId: 'g8', createdAt: ago(3 * HOUR), read: false },
   { to: 'nick', id: 'n1', kind: 'reminder', goalId: 'g4', createdAt: ago(30 * 60 * 1000), read: false },
   { to: 'nick', id: 'n2', kind: 'update', actor: 'maya.runs', goalId: 'g4', createdAt: ago(1 * DAY), read: false },
@@ -292,4 +282,50 @@ export const notifications: AppNotification[] = [
   { to: 'nick', id: 'n4', kind: 'tip', actor: 'tess.tri', goalId: 'g4', createdAt: ago(3 * DAY), read: true },
   { to: 'nick', id: 'n5', kind: 'commit', actor: 'maya.runs', goalId: 'g4', createdAt: ago(3 * DAY + 5 * HOUR), read: true },
   { to: 'nick', id: 'n6', kind: 'follow', actor: 'coach_jo', createdAt: ago(4 * DAY), read: true },
+];
+
+// Direct messages. Goals shared inside the app arrive here as a message.
+export const messages: Message[] = [
+  {
+    id: 'm1',
+    from: 'maya.runs',
+    to: 'nick',
+    text: 'Saw your long run update. What pace are you holding on the easy days?',
+    createdAt: ago(2 * DAY),
+    read: true,
+  },
+  {
+    id: 'm2',
+    from: 'nick',
+    to: 'maya.runs',
+    text: 'Around 10:15 a mile. Feels slow but my heart rate stays down.',
+    createdAt: ago(2 * DAY - 40 * 60 * 1000),
+    read: true,
+  },
+  {
+    id: 'm3',
+    from: 'maya.runs',
+    to: 'nick',
+    text: 'That is exactly right. Slow days make the fast days possible.',
+    createdAt: ago(2 * DAY - 55 * 60 * 1000),
+    read: true,
+  },
+  {
+    id: 'm4',
+    from: 'coach_jo',
+    to: 'nick',
+    goalId: 'g3',
+    text: 'You said you wanted a muscle-up too. Priya is posting her whole progression.',
+    createdAt: ago(1 * HOUR),
+    read: false,
+  },
+  {
+    id: 'm5',
+    from: 'nick',
+    to: 'tess.tri',
+    goalId: 'g8',
+    text: 'Maya finished hers. Thought you would like this one.',
+    createdAt: ago(4 * DAY),
+    read: true,
+  },
 ];

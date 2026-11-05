@@ -1,5 +1,5 @@
 // Share a goal. Two ways:
-//   1. Send to people on TENET: pick people, add a note; they get it in Activity.
+//   1. Send to people on TENET: pick people, add a note; it arrives in their Messages.
 //   2. Share outside TENET: the iPhone share sheet (Messages, copy link,
 //      AirDrop, other apps), with a ready-made message and link.
 
@@ -47,7 +47,7 @@ export default function ShareGoal() {
     store.dispatch({ type: 'shareGoal', goalId: goal.id, to: picked, message: note });
     const names = picked.map((u) => store.user(u)?.name.split(' ')[0] ?? u);
     const list = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names[0];
-    notify('Sent', `${list} will see it in their Activity tab.`);
+    notify('Sent', `It's in your messages with ${list}.`);
     router.back();
   };
 

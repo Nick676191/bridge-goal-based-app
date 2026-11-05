@@ -88,6 +88,12 @@ export function ProfileView({ username }: { username: string }) {
                 style={{ flex: 1 }}
                 onPress={() => store.dispatch({ type: 'toggleFollow', username })}
               />
+              <Button
+                label="Message"
+                variant="secondary"
+                style={{ flex: 1 }}
+                onPress={() => router.push({ pathname: '/messages/[username]', params: { username } })}
+              />
               <Pressable onPress={moreMenu} style={styles.more} accessibilityLabel="More options">
                 <Ionicons name="ellipsis-horizontal" size={20} color={colors.ink} />
               </Pressable>

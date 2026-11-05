@@ -47,10 +47,13 @@ To see it in a browser instead, press `w` in the Terminal window after
 - Post an update with **Tag as a setback** on.
 - Under any tip or update, tap **Reply** to answer it or the star to encourage it.
   Tips, updates and replies are limited to 300 characters.
-- **Activity**: Maya's achieved goal shows how people who committed are notified,
-  and Jordan's message shows what a shared goal looks like.
+- **Activity**: Maya's achieved goal shows how people who committed are notified.
+- **Messages** (the speech bubbles at the top right of Home): your conversations,
+  newest first, with a maize badge for unread ones. Jordan has sent you a goal;
+  open it, tap the goal card, or write back. The pencil starts a new
+  conversation, and every profile has a **Message** button.
 - **Share** (the paper plane at the top right of any post): send the goal to
-  people you follow, or tap **More options** for the iPhone share sheet
+  people you follow (it lands in your Messages with them), or tap **More options** for the iPhone share sheet
   (Messages, copy link, AirDrop). The message reads "Check out [name]'s goal
   that they posted on TENET. Follow along with their progress here: [link]".
   The link (`tenet://goal/...`) only opens on phones with the app installed for
@@ -77,6 +80,7 @@ app/
       user/[username].tsx  Someone else's profile
       connections/[username].tsx  Followers and Following lists
       share/[id].tsx Share a goal in the app or through the share sheet
+      messages/      The inbox (index), one conversation ([username]), new message
       welcome.tsx, onboarding.tsx, settings.tsx, edit-profile.tsx
     components/      Pieces used on many screens (post card, action bar, buttons)
     data/

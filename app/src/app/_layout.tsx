@@ -46,6 +46,9 @@ export default function RootLayout() {
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         <Stack.Screen name="edit-profile" options={{ title: 'Edit profile' }} />
         <Stack.Screen name="connections/[username]" options={{ title: '' }} />
+        <Stack.Screen name="messages/index" options={{ title: 'Messages' }} />
+        <Stack.Screen name="messages/new" options={{ title: 'New message', presentation: 'modal' }} />
+        <Stack.Screen name="messages/[username]" options={{ title: '' }} />
         <Stack.Screen name="share/[id]" options={{ title: 'Share goal', presentation: 'modal' }} />
       </Stack>
     </StoreProvider>

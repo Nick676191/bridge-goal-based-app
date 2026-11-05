@@ -115,3 +115,19 @@ export type AppNotification = {
   createdAt: number;
   read: boolean;
 };
+
+// A direct message between two people. A message is either plain text, a
+// shared goal, or both (a shared goal with a note). Conversations aren't
+// stored separately: a conversation is just every message between the same
+// two people, in time order.
+export const MESSAGE_MAX = 1000; // characters
+
+export type Message = {
+  id: string;
+  from: string; // username of the sender
+  to: string; // username of the recipient
+  text?: string;
+  goalId?: string; // set when the message shares a goal
+  createdAt: number;
+  read: boolean; // has the recipient opened the conversation
+};
