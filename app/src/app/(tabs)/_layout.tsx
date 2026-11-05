@@ -41,10 +41,10 @@ export default function TabsLayout() {
         name="post"
         options={{
           title: 'Post',
-          // A maize button with a navy plus: the one bright spot in the tab bar.
+          // A navy button with a white plus: the one filled spot in the tab bar.
           tabBarIcon: ({ focused }) => (
             <View style={[styles.postButton, focused && styles.postButtonOn]}>
-              <Ionicons name="add" size={22} color={colors.navy} />
+              <Ionicons name="add" size={22} color={colors.onAccent} />
             </View>
           ),
         }}
@@ -55,7 +55,7 @@ export default function TabsLayout() {
           title: 'Activity',
           tabBarIcon: icon('notifications', 'notifications-outline'),
           tabBarBadge: store.unreadCount > 0 ? store.unreadCount : undefined,
-          tabBarBadgeStyle: { backgroundColor: colors.maize, color: colors.navy, fontSize: 11, fontWeight: '700' },
+          tabBarBadgeStyle: { backgroundColor: colors.accent, color: colors.onAccent, fontSize: 11, fontWeight: '700' },
         }}
       />
       <Tabs.Screen name="profile" options={{ title: 'Profile', tabBarIcon: icon('person', 'person-outline') }} />
@@ -68,9 +68,9 @@ const styles = StyleSheet.create({
     width: 34,
     height: 26,
     borderRadius: 13,
-    backgroundColor: colors.maize,
+    backgroundColor: colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  postButtonOn: { borderWidth: 2, borderColor: colors.navy },
+  postButtonOn: { borderWidth: 2, borderColor: colors.carolina },
 });

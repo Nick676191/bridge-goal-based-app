@@ -30,14 +30,14 @@ export function Button({
   large?: boolean; // taller, fully rounded, bigger text (welcome screen)
   style?: StyleProp<ViewStyle>;
 }) {
-  // primary: maize with navy text (the main action on a screen)
+  // primary: navy with white text (the main action on a screen)
   // accent: Carolina blue with navy text (e.g. Commit to this goal)
   // secondary: white with a navy outline; danger: white with a red outline
   const bg =
-    variant === 'primary' ? colors.maize : variant === 'accent' ? colors.carolina : colors.paper;
-  const fg = variant === 'danger' ? colors.danger : colors.navy;
+    variant === 'primary' ? colors.accent : variant === 'accent' ? colors.carolina : colors.paper;
+  const fg = variant === 'danger' ? colors.danger : variant === 'primary' ? colors.onAccent : colors.navy;
   const border =
-    variant === 'primary' ? colors.maize : variant === 'accent' ? colors.carolina : variant === 'danger' ? colors.danger : colors.navy;
+    variant === 'primary' ? colors.accent : variant === 'accent' ? colors.carolina : variant === 'danger' ? colors.danger : colors.navy;
   return (
     <Pressable
       accessibilityRole="button"

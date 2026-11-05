@@ -39,7 +39,7 @@ export default function Home() {
       <ScreenTitle
         size={38}
         right={
-          // Messages, top right, with a maize badge for unread conversations.
+          // Messages, top right, with a navy badge for unread conversations.
           <Pressable
             onPress={() => router.push('/messages')}
             hitSlop={10}
@@ -106,13 +106,13 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     paddingHorizontal: 5,
-    backgroundColor: colors.maize,
+    backgroundColor: colors.accent,
     borderWidth: 2,
     borderColor: colors.carolina,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeText: { fontSize: 11, fontWeight: '800', color: colors.navy },
+  badgeText: { fontSize: 11, fontWeight: '800', color: colors.onAccent },
   emptyTitle: { fontFamily: fonts.display, fontSize: 28, color: colors.ink },
   emptyText: { fontSize: 16, lineHeight: 22, color: colors.muted },
 });

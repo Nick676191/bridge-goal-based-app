@@ -49,7 +49,7 @@ To see it in a browser instead, press `w` in the Terminal window after
   Tips, updates and replies are limited to 300 characters.
 - **Activity**: Maya's achieved goal shows how people who committed are notified.
 - **Messages** (the speech bubbles at the top right of Home): your conversations,
-  newest first, with a maize badge for unread ones. Jordan has sent you a goal;
+  newest first, with a navy badge for unread ones. Jordan has sent you a goal;
   open it, tap the goal card, or write back. The pencil starts a new
   conversation, and every profile has a **Message** button.
 - **Share** (the paper plane at the top right of any post): send the goal to
@@ -88,7 +88,7 @@ app/
       mock.ts        The fake data
       store.tsx      Shared state: what happens when you press each button
     lib/             Feed ranking, timestamps, SMART checks
-    theme.ts         Colors (Carolina blue, maize, navy), fonts and spacing
+    theme.ts         Colors (Carolina blue and navy), fonts and spacing
 ```
 
 If you know Python: `types.ts` is like a set of dataclasses, `store.tsx` is

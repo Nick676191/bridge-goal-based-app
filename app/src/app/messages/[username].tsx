@@ -122,7 +122,7 @@ export default function Conversation() {
                 style={[styles.send, !text.trim() && { opacity: 0.3 }]}
                 accessibilityLabel="Send message"
               >
-                <Ionicons name="arrow-up" size={18} color={colors.navy} />
+                <Ionicons name="arrow-up" size={18} color={colors.onAccent} />
               </Pressable>
             </View>
           )}
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     gap: 2,
     minWidth: 220,
   },
-  goalCardMine: { borderLeftColor: colors.maize },
+  goalCardMine: { borderLeftColor: colors.navy },
   goalLabel: { fontSize: 12, fontWeight: '700', color: colors.muted },
   goalSubject: { fontFamily: fonts.display, fontSize: 22, lineHeight: 24, color: colors.navy },
   goalOpen: { flexDirection: 'row', alignItems: 'center', gap: 2, marginTop: 4 },
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: colors.maize,
+    backgroundColor: colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
   },

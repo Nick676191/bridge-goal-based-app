@@ -7,19 +7,21 @@
 // "name" in app.json.
 export const APP_NAME = 'TENET';
 
-// Palette: Carolina Blue (UNC) and Michigan Maize, with UNC Navy for text.
-// Official values from the UNC and Michigan brand guides.
+// Palette: Carolina Blue and UNC Navy, on white. Official values from the
+// UNC brand guide.
 //   Carolina Blue  #4B9CD3  big surfaces: welcome screen, headers, selected chips
-//   Maize          #FFCB05  highlights: main buttons, the Post button, achievements
-//   Navy           #13294B  text and lines (readable on white, blue and maize)
+//   Navy           #13294B  text and lines, and filled highlights: main
+//                           buttons, the Post button, badges, achievements
+//                           (white text on navy)
 // Light Carolina Blue is too pale for small text on white, so links and
 // "you did this" accents use UNC's darker web-link blue (#007FAE).
 export const colors = {
   carolina: '#4B9CD3',
   carolinaWash: '#E7F1F9', // pale blue panels and highlighted rows
-  maize: '#FFCB05',
-  maizeWash: '#FFF5CC',
   navy: '#13294B',
+  // Filled highlights: main buttons, the Post button, badges. White on top.
+  accent: '#13294B',
+  onAccent: '#FFFFFF',
 
   ink: '#13294B', // primary text, dividers between posts, the wordmark
   paper: '#FFFFFF', // screen background
@@ -29,10 +31,10 @@ export const colors = {
   muted: '#5B6B7F', // secondary text: timestamps, counts, hints
   lane: '#007FAE', // accent text and icons: things YOU did (encouraged, committed)
   laneWash: '#E7F1F9',
-  setback: '#B4480B', // burnt orange: distinct from maize, and not an error red
+  setback: '#B4480B', // burnt orange: distinct from the blues, and not an error red
   setbackWash: '#FDEBDD',
-  achieved: '#13294B', // achieved tags are maize with navy text (a gold medal)
-  achievedFill: '#FFCB05',
+  achieved: '#FFFFFF', // achieved tags are navy with white text
+  achievedFill: '#13294B',
   danger: '#B42318', // only for destructive actions like deleting an account
 };
 
