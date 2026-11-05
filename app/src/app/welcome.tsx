@@ -20,7 +20,7 @@ export default function Welcome() {
         <Text style={styles.motto} accessibilityRole="header">
           Next Up
         </Text>
-        <Text style={styles.subtext}>Steady Strides Towards Big Goals</Text>
+        <Text style={styles.subtext}>Make it Easy</Text>
       </View>
       <View style={styles.bottom}>
         <Button large label="Create account" onPress={() => router.push('/onboarding')} />
