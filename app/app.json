@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "TENET",
-    "slug": "tenet",
+    "name": "PYN",
+    "slug": "pyn",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.nick676191.tenet"
+      "bundleIdentifier": "com.nick676191.pyn"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,11 +31,11 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "TENET uses your photo library so you can add photos and a video to your goals."
+          "photosPermission": "PYN uses your photo library so you can add photos and a video to your goals."
         }
       ]
     ],
-    "scheme": "tenet",
+    "scheme": "pyn",
     "experiments": {
       "typedRoutes": true
     }

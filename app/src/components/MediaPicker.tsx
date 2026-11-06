@@ -6,7 +6,7 @@ import { Alert, Image, Platform, Pressable, ScrollView, StyleSheet, Text, View }
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { MAX_PHOTOS, MAX_VIDEO_SECONDS, type Media } from '@/data/types';
-import { colors, space } from '@/theme';
+import { APP_NAME, colors, space } from '@/theme';
 import { formatDuration } from './MediaStrip';
 
 const notify = (title: string, message: string) =>
@@ -17,7 +17,7 @@ export async function canUseLibrary() {
   if (Platform.OS === 'web') return true;
   const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!granted)
-    notify('Photo access is off', 'To add photos or a video, allow TENET to use your photos in the iPhone Settings app.');
+    notify('Photo access is off', `To add photos or a video, allow ${APP_NAME} to use your photos in the iPhone Settings app.`);
   return granted;
 }
 

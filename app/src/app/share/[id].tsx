@@ -1,6 +1,6 @@
 // Share a goal. Two ways:
-//   1. Send to people on TENET: pick people, add a note; it arrives in their Messages.
-//   2. Share outside TENET: the iPhone share sheet (Messages, copy link,
+//   1. Send to people on PYN: pick people, add a note; it arrives in their Messages.
+//   2. Share outside PYN: the iPhone share sheet (Messages, copy link,
 //      AirDrop, other apps), with a ready-made message and link.
 
 import React, { useMemo, useState } from 'react';
@@ -11,7 +11,7 @@ import { useStore } from '@/data/store';
 import { Avatar } from '@/components/Avatar';
 import { Button, Divider } from '@/components/ui';
 import { shareText } from '@/lib/share';
-import { colors, fonts, space } from '@/theme';
+import { APP_NAME, colors, fonts, space } from '@/theme';
 
 const notify = (title: string, message: string) =>
   Platform.OS === 'web' ? window.alert(`${title}\n\n${message}`) : Alert.alert(title, message);
@@ -72,7 +72,7 @@ export default function ShareGoal() {
         accessibilityLabel="Note to include"
       />
 
-      <Text style={styles.heading}>Send to people on TENET</Text>
+      <Text style={styles.heading}>Send to people on {APP_NAME}</Text>
       <View style={styles.search}>
         <Ionicons name="search" size={16} color={colors.muted} />
         <TextInput
@@ -121,7 +121,7 @@ export default function ShareGoal() {
 
       {/* Everything outside the app goes through the iPhone share sheet,
           which includes Messages, so a text is one tap away. */}
-      <Text style={[styles.heading, { marginTop: space.lg }]}>Share outside TENET</Text>
+      <Text style={[styles.heading, { marginTop: space.lg }]}>Share outside {APP_NAME}</Text>
       <Pressable
         onPress={moreOptions}
         style={({ pressed }) => [styles.more, pressed && { opacity: 0.8 }]}

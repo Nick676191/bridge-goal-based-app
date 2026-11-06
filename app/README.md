@@ -1,4 +1,4 @@
-# TENET app (clickable prototype)
+# PYN app (clickable prototype)
 
 This is milestone 1 from the v1 plan: every screen of the iPhone app, working
 buttons, and fake data. Nothing is saved; closing the app resets it.
@@ -55,8 +55,8 @@ To see it in a browser instead, press `w` in the Terminal window after
 - **Share** (the paper plane at the top right of any post): send the goal to
   people you follow (it lands in your Messages with them), or tap **More options** for the iPhone share sheet
   (Messages, copy link, AirDrop). The message reads "Check out [name]'s goal
-  that they posted on TENET. Follow along with their progress here: [link]".
-  The link (`tenet://goal/...`) only opens on phones with the app installed for
+  that they posted on PYN. Follow along with their progress here: [link]".
+  The link (`pyn://goal/...`) only opens on phones with the app installed for
   now; a web link comes before launch.
 - On your own goal, use **Where does this goal stand?** under the post to mark it achieved or dropped.
 - **Post** tab: watch the SMART Principles fill in as you type (tick Attainable

@@ -59,7 +59,7 @@ export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean })
               : `${goal.categories[0]} +${goal.categories.length - 1}`}
           </Text>
         </Pressable>
-        {/* Share: send this goal to someone on TENET or through the share sheet. */}
+        {/* Share: send this goal to someone on PYN or through the share sheet. */}
         <Pressable
           onPress={() => router.push({ pathname: '/share/[id]', params: { id: goal.id } })}
           hitSlop={10}
