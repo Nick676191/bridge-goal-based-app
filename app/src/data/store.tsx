@@ -402,7 +402,15 @@ function useStoreValue() {
       // Returns false if the account needs its email confirmed before logging in.
       signUp: async (input: Parameters<typeof api.signUp>[0]) => {
         const { loggedIn } = await api.signUp(input);
-        if (loggedIn) await refresh();
+        if (loggedIn) {
+          try {
+            await refresh();
+          } catch (e) {
+            // The account exists; only loading failed. Say so, so nobody
+            // tries to sign up again with the same email.
+            throw new Error(`Your account was created, but PYN couldn’t load it: ${(e as Error).message}. Try logging in.`);
+          }
+        }
         return loggedIn;
       },
 

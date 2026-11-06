@@ -18,7 +18,9 @@ again: `git checkout 9e856fb` (and `git checkout app-prototype` to come back).
 1. In the Supabase dashboard, open your **pyn** project.
 2. Go to **SQL Editor**, click **New query**, paste the whole of
    `supabase/migrations/20261105000000_stage1_accounts_and_goals.sql`, and click
-   **Run**. It should say "Success. No rows returned".
+   **Run**. It should say "Success. No rows returned". Then do the same with
+   `supabase/migrations/20261106000000_grant_table_access.sql`. (Run the files
+   in that folder in order, oldest date first.)
 3. Go to **Authentication > Sign In / Providers**, open **Email**, turn off
    **Confirm email**, and save. While we're testing, this lets new accounts log
    in right away. Turn it back on before the beta; by then the app will handle
