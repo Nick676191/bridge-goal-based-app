@@ -5,7 +5,7 @@
 import React from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { useStore } from '@/data/store';
+import { showError, useStore } from '@/data/store';
 import { confirm } from '@/components/ProfileView';
 import { Button, Divider } from '@/components/ui';
 import { colors, space } from '@/theme';
@@ -14,8 +14,8 @@ export default function Settings() {
   const store = useStore();
   const { settings, blocked } = store.state;
 
-  const signOut = () => {
-    store.dispatch({ type: 'signOut' });
+  const signOut = async () => {
+    await store.logOut();
     if (router.canDismiss()) router.dismissAll();
     router.replace('/welcome');
   };
@@ -78,7 +78,13 @@ export default function Settings() {
             'Delete your account?',
             'This permanently removes your profile, goals, tips and updates. It cannot be undone.',
             'Delete',
-            signOut
+            // Deleting needs a small server function so it can remove your
+            // login too; it's built in stage 3 (safety), before the beta.
+            () =>
+              showError(
+                'Not available yet',
+                'Account deletion is added before the beta. For now, test accounts can be removed in the Supabase dashboard under Authentication > Users.'
+              )
           )
         }
       />

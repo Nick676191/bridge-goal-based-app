@@ -64,7 +64,7 @@ export default function GoalScreen() {
   };
 
   const setStatus = (status: GoalStatus) => {
-    store.dispatch({ type: 'setStatus', goalId: goal.id, status });
+    store.changeStatus(goal.id, status);
     // After marking it achieved or dropped, open Updates so you can say how it went.
     if (status !== 'active') switchTab('updates');
   };

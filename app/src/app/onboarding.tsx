@@ -1,7 +1,9 @@
 // Sign-up in three steps, then straight to writing your first goal.
-//   1. Account: username, email, password (no phone number; see the plan doc)
+//   1. Account: username, email, password (no phone number; see the plan doc).
+//      Continue checks with the database that the username is free.
 //   2. About you: name and an optional short bio
 //   3. Categories you care about, which seed your home feed
+// The account is created in Supabase at the end of step 3.
 
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -9,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
+import { USERNAME_RULE, usernameAvailable } from '@/data/api';
 import { type Category } from '@/data/types';
 import { Button, Chip, Field } from '@/components/ui';
 import { colors, fonts, space } from '@/theme';
@@ -22,15 +25,53 @@ export default function Onboarding() {
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [interests, setInterests] = useState<Category[]>([]);
+  const [busy, setBusy] = useState(false); // waiting on the database
+  const [error, setError] = useState('');
 
-  const emailOk = /^\S+@\S+\.\S+$/.test(email);
+  // Usernames are lowercase; capitals typed are lowered as you go.
+  const handle = username.trim().toLowerCase();
+  const handleOk = USERNAME_RULE.test(handle);
+  const emailOk = /^\S+@\S+\.\S+$/.test(email.trim());
   const canNext =
-    step === 1 ? username.trim().length >= 3 && emailOk && password.length >= 8 : step === 2 ? name.trim().length > 0 : interests.length > 0;
+    !busy &&
+    (step === 1 ? handleOk && emailOk && password.length >= 8 : step === 2 ? name.trim().length > 0 : interests.length > 0);
 
-  const next = () => {
-    if (step < 3) return setStep(step + 1);
-    store.dispatch({ type: 'signIn', name: name.trim(), bio: bio.trim() || undefined, interests });
-    router.replace('/post');
+  const next = async () => {
+    setError('');
+    if (step === 1) {
+      setBusy(true);
+      try {
+        if (!(await usernameAvailable(handle))) {
+          setError(`@${handle} is taken. Try another username.`);
+          return;
+        }
+        setStep(2);
+      } catch (e) {
+        setError((e as Error).message);
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
+    if (step === 2) return setStep(3);
+
+    // Step 3: create the account.
+    setBusy(true);
+    try {
+      const loggedIn = await store.signUp({ email, password, username: handle, name, bio, interests });
+      if (loggedIn) {
+        if (router.canDismiss()) router.dismissAll();
+        router.replace('/post');
+      } else {
+        // Supabase's "Confirm email" setting is on: they need to click the
+        // link in their email before they can log in.
+        setError('Almost there: open the link we just emailed you, then log in.');
+        setBusy(false);
+      }
+    } catch (e) {
+      setError((e as Error).message);
+      setBusy(false);
+    }
   };
 
   const toggleInterest = (c: Category) =>
@@ -57,14 +98,41 @@ export default function Onboarding() {
           {step === 1 && (
             <>
               <Text style={styles.title}>Create your account</Text>
-              <Pressable style={styles.apple} accessibilityRole="button" onPress={() => setStep(2)}>
-                <Ionicons name="logo-apple" size={20} color={colors.paper} />
-                <Text style={styles.appleText}>Continue with Apple</Text>
-              </Pressable>
-              <Text style={styles.or}>or use email</Text>
-              <Field label="Username" value={username} onChangeText={setUsername} autoCapitalize="none" autoCorrect={false} placeholder="at least 3 characters" />
-              <Field label="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="you@example.com" />
-              <Field label="Password" value={password} onChangeText={setPassword} secureTextEntry placeholder="at least 8 characters" />
+              {/* "Continue with Apple" comes back once PYN has an Apple
+                  developer account (stage 4); Apple has to approve it. */}
+              <Field
+                label="Username"
+                value={username}
+                onChangeText={(t) => setUsername(t.toLowerCase())}
+                autoCapitalize="none"
+                autoCorrect={false}
+                placeholder="3 to 24 characters"
+                hint={
+                  username && !handleOk
+                    ? 'Use lowercase letters, numbers, dots or underscores, 3 to 24 characters.'
+                    : undefined
+                }
+              />
+              <Field
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                autoComplete="email"
+                placeholder="you@example.com"
+              />
+              <Field
+                label="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                textContentType="newPassword"
+                autoComplete="new-password"
+                placeholder="at least 8 characters"
+              />
             </>
           )}
 
@@ -94,9 +162,14 @@ export default function Onboarding() {
               </View>
             </>
           )}
+          {error ? <Text style={styles.error}>{error}</Text> : null}
         </ScrollView>
         <View style={styles.footer}>
-          <Button label={step === 3 ? 'Write your first goal' : 'Continue'} onPress={next} disabled={!canNext} />
+          <Button
+            label={busy ? (step === 3 ? 'Creating your account…' : 'Checking…') : step === 3 ? 'Write your first goal' : 'Continue'}
+            onPress={next}
+            disabled={!canNext}
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -111,17 +184,7 @@ const styles = StyleSheet.create({
   progressFill: { height: 3, backgroundColor: colors.carolina },
   content: { padding: space.xl, gap: space.lg },
   title: { fontFamily: fonts.displayHeavy, fontSize: 40, lineHeight: 42, color: colors.ink },
-  apple: {
-    minHeight: 48,
-    borderRadius: 4,
-    backgroundColor: colors.ink,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.sm,
-  },
-  appleText: { color: colors.paper, fontSize: 16, fontWeight: '700' },
-  or: { textAlign: 'center', color: colors.muted, fontSize: 14 },
+  error: { fontSize: 15, lineHeight: 21, color: colors.danger },
   label: { fontSize: 14, fontWeight: '700', color: colors.ink },
   hint: { fontSize: 14, lineHeight: 20, color: colors.muted },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },

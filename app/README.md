@@ -1,7 +1,28 @@
-# PYN app (clickable prototype)
+# PYN app
 
-This is milestone 1 from the v1 plan: every screen of the iPhone app, working
-buttons, and fake data. Nothing is saved; closing the app resets it.
+The iPhone app, connected to PYN's Supabase database (stage 1 of the plan).
+
+What's saved online, so it's there after you close the app and other people
+see it: accounts, profiles and profile photos, goal posts with their photos and
+video, goal status (achieved or dropped), and follows.
+
+What still lives on your phone only, until stage 2: commits, encouragements,
+tips, updates, replies, notifications and messages. They work, but reset when
+the app restarts and nobody else sees them.
+
+The fake-data prototype is saved as the `prototype-v1` tag in git, if you ever
+want to look at it again: `git checkout prototype-v1`.
+
+## Set up the database (once)
+
+1. In the Supabase dashboard, open your **pyn** project.
+2. Go to **SQL Editor**, click **New query**, paste the whole of
+   `supabase/migrations/20261105000000_stage1_accounts_and_goals.sql`, and click
+   **Run**. It should say "Success. No rows returned".
+3. Go to **Authentication > Sign In / Providers**, open **Email**, turn off
+   **Confirm email**, and save. While we're testing, this lets new accounts log
+   in right away. Turn it back on before the beta; by then the app will handle
+   the confirmation link.
 
 ## Open it on your iPhone
 
@@ -39,7 +60,10 @@ To see it in a browser instead, press `w` in the Terminal window after
 
 ## Things to try
 
-- **Log in** skips straight to the app; **Create account** walks through sign-up.
+- **Create account** makes a real account. Then log out (Profile > the gear >
+  Log out) and **Log in** again: your goals are still there.
+- Make a second account (another email) to see two people at once: follow one
+  from the other, and pull down on Home to load the newest posts.
 - On any post: **Reply** (bottom left), **Commit** (the pen, center), and the
   **star** (bottom right), which turns into an arrow when you encourage.
 - Open a goal: switch between **Tips** (left) and **Updates** (right). On a goal you haven't
@@ -47,10 +71,9 @@ To see it in a browser instead, press `w` in the Terminal window after
 - Post an update with **Tag as a setback** on.
 - Under any tip or update, tap **Reply** to answer it or the star to encourage it.
   Tips, updates and replies are limited to 300 characters.
-- **Activity**: Maya's achieved goal shows how people who committed are notified.
+- **Activity**: when you mark a goal achieved, people who committed are notified.
 - **Messages** (the speech bubbles at the top right of Home): your conversations,
-  newest first, with a navy badge for unread ones. Jordan has sent you a goal;
-  open it, tap the goal card, or write back. The pencil starts a new
+  newest first, with a navy badge for unread ones. The pencil starts a new
   conversation, and every profile has a **Message** button.
 - **Share** (the paper plane at the top right of any post): send the goal to
   people you follow (it lands in your Messages with them), or tap **More options** for the iPhone share sheet
@@ -62,7 +85,7 @@ To see it in a browser instead, press `w` in the Terminal window after
 - **Post** tab: watch the SMART Principles fill in as you type (tick Attainable
   and Relevant yourself), add up to 4 photos and one video (60 seconds max), and
   pick up to 3 categories (or tap **New category** if none fit).
-- **Explore**: tap a category, or search "marathon" or "Maya".
+- **Explore**: tap a category, or search for a goal or a person.
 - **Profile > Edit profile**: tap the photo to add your own.
 - **Profile**: tap **Followers** or **Following** to see the lists.
 - On someone's profile, the **...** button has Report and Block.
@@ -81,13 +104,15 @@ app/
       connections/[username].tsx  Followers and Following lists
       share/[id].tsx Share a goal in the app or through the share sheet
       messages/      The inbox (index), one conversation ([username]), new message
-      welcome.tsx, onboarding.tsx, settings.tsx, edit-profile.tsx
+      welcome.tsx, onboarding.tsx (sign-up), login.tsx, settings.tsx, edit-profile.tsx
     components/      Pieces used on many screens (post card, action bar, buttons)
     data/
       types.ts       The shapes of users, goals, tips, updates
-      mock.ts        The fake data
+      api.ts         Every read and write to the Supabase database
       store.tsx      Shared state: what happens when you press each button
-    lib/             Feed ranking, timestamps, SMART checks
+    lib/             Feed ranking, timestamps, SMART checks, the Supabase connection
+  supabase/
+    migrations/      The database setup, as SQL to run in Supabase
     theme.ts         Colors (Carolina blue and navy), fonts and spacing
 ```
 
@@ -103,5 +128,4 @@ npm run typecheck  # check for type errors
 npm run lint       # check for common mistakes
 ```
 
-Built with Expo SDK 58 and Expo Router. In milestone 2, `src/data/store.tsx`
-starts reading and writing a real Supabase database instead of `mock.ts`.
+Built with Expo SDK 58, Expo Router and Supabase.

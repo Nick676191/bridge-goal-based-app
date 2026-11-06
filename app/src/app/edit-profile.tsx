@@ -1,13 +1,13 @@
 // Edit profile: photo, name and bio. Opened from "Edit profile" on your
 // profile, from tapping your own photo, or from Settings.
-// The photo changes right away; name and bio save with the button.
+// The photo uploads right away; name and bio save with the button.
 
 import React, { useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useStore } from '@/data/store';
+import { showError, useStore } from '@/data/store';
 import { Avatar } from '@/components/Avatar';
 import { canUseLibrary } from '@/components/MediaPicker';
 import { Button, Field } from '@/components/ui';
@@ -18,6 +18,18 @@ export default function EditProfile() {
   const me = store.meUser;
   const [name, setName] = useState(me.name);
   const [bio, setBio] = useState(me.bio);
+  const [busy, setBusy] = useState<'' | 'photo' | 'save'>('');
+
+  const setPhoto = async (uri: string | undefined) => {
+    setBusy('photo');
+    try {
+      await store.changeAvatar(uri);
+    } catch (e) {
+      showError('Couldn’t update your photo', (e as Error).message);
+    } finally {
+      setBusy('');
+    }
+  };
 
   const choosePhoto = async () => {
     if (!(await canUseLibrary())) return;
@@ -28,12 +40,18 @@ export default function EditProfile() {
       quality: 0.7,
     });
     if (result.canceled) return;
-    store.dispatch({ type: 'setAvatar', uri: result.assets[0].uri });
+    await setPhoto(result.assets[0].uri);
   };
 
-  const save = () => {
-    store.dispatch({ type: 'updateProfile', name: name.trim() || me.name, bio: bio.trim() });
-    router.back();
+  const save = async () => {
+    setBusy('save');
+    try {
+      await store.saveProfile(name.trim() || me.name, bio);
+      router.back();
+    } catch (e) {
+      showError('Couldn’t save your profile', (e as Error).message);
+      setBusy('');
+    }
   };
 
   return (
@@ -47,10 +65,10 @@ export default function EditProfile() {
         </Pressable>
         <View style={styles.photoButtons}>
           <Pressable onPress={choosePhoto} hitSlop={6}>
-            <Text style={styles.link}>{me.avatarUri ? 'Change photo' : 'Add photo'}</Text>
+            <Text style={styles.link}>{busy === 'photo' ? 'Uploading…' : me.avatarUri ? 'Change photo' : 'Add photo'}</Text>
           </Pressable>
           {me.avatarUri ? (
-            <Pressable onPress={() => store.dispatch({ type: 'setAvatar', uri: undefined })} hitSlop={6}>
+            <Pressable onPress={() => setPhoto(undefined)} hitSlop={6} disabled={!!busy}>
               <Text style={[styles.link, { color: colors.danger }]}>Remove photo</Text>
             </Pressable>
           ) : null}
@@ -62,7 +80,7 @@ export default function EditProfile() {
 
       <Field label="Name" value={name} onChangeText={setName} />
       <Field label="Bio" value={bio} onChangeText={setBio} multiline max={160} />
-      <Button label="Save" onPress={save} disabled={bio.length > 160} />
+      <Button label={busy === 'save' ? 'Saving…' : 'Save'} onPress={save} disabled={bio.length > 160 || !!busy} />
     </ScrollView>
   );
 }

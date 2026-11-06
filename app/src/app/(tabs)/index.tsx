@@ -1,12 +1,12 @@
 // Home feed: posts from people you follow (and yours), then active posts in
 // the categories you picked. Posts are separated by thin black bars.
 
-import React from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useStore } from '@/data/store';
+import { showError, useStore } from '@/data/store';
 import { rankFeed } from '@/lib/rank';
 import { GoalCard } from '@/components/GoalCard';
 import { Button, Divider, ScreenTitle } from '@/components/ui';
@@ -18,6 +18,19 @@ type Row = { kind: 'goal'; goal: Goal } | { kind: 'section'; label: string };
 export default function Home() {
   const store = useStore();
   const { me, interests } = store.state;
+
+  // Pull down on the feed to load the newest goals from the database.
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await store.refresh();
+    } catch (e) {
+      showError('Couldn’t refresh', (e as Error).message);
+    } finally {
+      setRefreshing(false);
+    }
+  };
   const feed = rankFeed(store.visibleGoals, me, store.meUser.following, interests);
 
   // Insert a small label where the feed switches from people you follow to
@@ -62,6 +75,7 @@ export default function Home() {
       <FlatList
         data={rows}
         keyExtractor={(r) => (r.kind === 'goal' ? r.goal.id : r.label)}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.navy} />}
         renderItem={({ item }) =>
           item.kind === 'goal' ? (
             <GoalCard goal={item.goal} />

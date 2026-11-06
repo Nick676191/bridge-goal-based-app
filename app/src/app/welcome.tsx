@@ -5,12 +5,10 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { useStore } from '@/data/store';
 import { Button } from '@/components/ui';
 import { APP_NAME, colors, fonts, space } from '@/theme';
 
 export default function Welcome() {
-  const store = useStore();
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.top}>
@@ -24,17 +22,7 @@ export default function Welcome() {
       </View>
       <View style={styles.bottom}>
         <Button large label="Create account" onPress={() => router.push('/onboarding')} />
-        <Button
-          large
-          label="Log in"
-          variant="secondary"
-          onPress={() => {
-            // Prototype: logging in skips straight to the app as Nick.
-            store.dispatch({ type: 'signIn' });
-            router.replace('/');
-          }}
-        />
-        <Text style={styles.note}>Prototype: nothing you enter is saved.</Text>
+        <Button large label="Log in" variant="secondary" onPress={() => router.push('/login')} />
       </View>
     </SafeAreaView>
   );
@@ -52,5 +40,4 @@ const styles = StyleSheet.create({
   // About half the motto's size, so the two read as one line and its follow-up.
   subtext: { fontFamily: fonts.display, fontSize: 52, lineHeight: 54, color: colors.ink },
   bottom: { gap: space.md, paddingBottom: space.lg },
-  note: { fontSize: 13, color: colors.navy, textAlign: 'center', opacity: 0.8 },
 });

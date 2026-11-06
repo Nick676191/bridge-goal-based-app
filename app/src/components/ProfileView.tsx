@@ -86,7 +86,7 @@ export function ProfileView({ username }: { username: string }) {
                 label={store.isFollowing(username) ? 'Following' : 'Follow'}
                 variant={store.isFollowing(username) ? 'secondary' : 'primary'}
                 style={{ flex: 1 }}
-                onPress={() => store.dispatch({ type: 'toggleFollow', username })}
+                onPress={() => store.toggleFollow(username)}
               />
               <Button
                 label="Message"

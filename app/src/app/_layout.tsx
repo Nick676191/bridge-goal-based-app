@@ -41,6 +41,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="welcome" options={{ headerShown: false, animation: 'fade' }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="goal/[id]" options={{ title: 'Goal' }} />
         <Stack.Screen name="user/[username]" options={{ title: '' }} />
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />

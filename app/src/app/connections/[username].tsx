@@ -54,7 +54,7 @@ export default function Connections() {
                 label={store.isFollowing(u.username) ? 'Following' : 'Follow'}
                 variant={store.isFollowing(u.username) ? 'secondary' : 'primary'}
                 style={styles.follow}
-                onPress={() => store.dispatch({ type: 'toggleFollow', username: u.username })}
+                onPress={() => store.toggleFollow(u.username)}
               />
             ) : null}
           </Pressable>

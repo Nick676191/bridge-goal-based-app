@@ -7,7 +7,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { newId, useStore } from '@/data/store';
+import { showError, useStore } from '@/data/store';
 import { CATEGORY_MAX, MAX_CATEGORIES_PER_GOAL, type Category, type Media } from '@/data/types';
 import { MediaPicker } from '@/components/MediaPicker';
 import { Button, Chip, Field, ScreenTitle } from '@/components/ui';
@@ -51,24 +51,21 @@ export default function Post() {
   const ready =
     subject.trim().length > 0 && subject.length <= SUBJECT_MAX && body.length <= BODY_MAX && categories.length > 0;
 
-  const publish = () => {
-    if (!ready) return;
-    const id = newId('g');
-    store.dispatch({
-      type: 'addGoal',
-      goal: {
-        id,
-        author: store.state.me,
-        subject: subject.trim(),
-        body: body.trim(),
-        categories,
-        status: 'active',
-        createdAt: Date.now(),
-        committed: [],
-        encouraged: [],
-        media,
-      },
-    });
+  const [posting, setPosting] = useState(false);
+
+  // Uploads any photos and video, saves the goal to the database, then opens it.
+  const publish = async () => {
+    if (!ready || posting) return;
+    setPosting(true);
+    let id: string;
+    try {
+      id = (await store.publishGoal({ subject, body, categories, media })).id;
+    } catch (e) {
+      showError('Your goal wasn’t posted', `${(e as Error).message}\n\nCheck your connection and try again.`);
+      setPosting(false);
+      return;
+    }
+    setPosting(false);
     setSubject('');
     setBody('');
     setCategories([]);
@@ -190,7 +187,11 @@ export default function Post() {
               </Text>
             </View>
 
-            <Button label="Post goal" onPress={publish} disabled={!ready} />
+            <Button
+              label={posting ? (media.length ? 'Uploading…' : 'Posting…') : 'Post goal'}
+              onPress={publish}
+              disabled={!ready || posting}
+            />
             {categories.length === 0 && subject.trim() ? (
               <Text style={styles.why}>Pick at least one category to post.</Text>
             ) : null}

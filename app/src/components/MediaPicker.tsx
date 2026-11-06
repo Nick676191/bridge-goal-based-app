@@ -47,7 +47,12 @@ export function MediaPicker({ value, onChange }: { value: Media[]; onChange: (m:
 
   const addVideo = async () => {
     if (video || !(await canUseLibrary())) return;
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: 'videos', quality: 0.8 });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: 'videos',
+      // Medium quality keeps a 60-second phone video around 10-20 MB, well
+      // under the 50 MB upload limit, and quick to load in the feed.
+      videoQuality: ImagePicker.UIImagePickerControllerQualityType.Medium,
+    });
     if (result.canceled) return;
     const a = result.assets[0];
     const seconds = (a.duration ?? 0) / 1000; // the picker reports milliseconds

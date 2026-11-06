@@ -1,12 +1,19 @@
-// The app's shared state for the prototype: every screen reads from and
-// writes to this one store, so pressing Encourage on the feed also shows up on
-// the goal page and the profile.
+// The app's shared state: every screen reads from and writes to this one
+// store, so pressing Follow on a profile also shows up in the feed.
 //
-// It lives only in memory: closing the app resets everything to the fake data.
-// In milestone 2 these same functions will read and write the database instead.
+// Two kinds of data live here:
+//   - Saved in the database (stage 1): accounts, profiles, goals, follows,
+//     photos. These load when you log in, and changes are sent to Supabase
+//     (see the async functions near the bottom and api.ts).
+//   - On this phone only, for now: commits, encouragements, tips, updates,
+//     replies, notifications and messages. They reset when the app restarts
+//     and other people don't see them yet. Stage 2 moves them to the database.
 
-import React, { createContext, useContext, useMemo, useReducer } from 'react';
-import * as mock from './mock';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
+import { ActivityIndicator, Platform, Alert, View } from 'react-native';
+import * as api from './api';
+import { supabase } from '@/lib/supabase';
+import { colors } from '@/theme';
 import { CATEGORIES, type AppNotification, type Category, type Goal, type GoalStatus, type Message, type Reply, type Tip, type Update, type User } from './types';
 
 type Settings = {
@@ -15,7 +22,10 @@ type Settings = {
 };
 
 type State = {
-  me: string;
+  ready: boolean; // finished checking whether someone is already logged in
+  me: string; // your username ('' when logged out)
+  myId: string; // your account id in the database
+  idOf: Record<string, string>; // username -> account id
   signedIn: boolean;
   users: User[];
   goals: Goal[];
@@ -31,7 +41,8 @@ type State = {
 };
 
 type Action =
-  | { type: 'signIn'; username?: string; name?: string; bio?: string; interests?: Category[] }
+  | { type: 'loaded'; snapshot: api.Snapshot }
+  | { type: 'ready' }
   | { type: 'signOut' }
   | { type: 'toggleEncourage'; goalId: string }
   | { type: 'toggleCommit'; goalId: string }
@@ -40,6 +51,7 @@ type Action =
   | { type: 'addTip'; goalId: string; text: string }
   | { type: 'addUpdate'; goalId: string; text: string; setback: boolean }
   | { type: 'setStatus'; goalId: string; status: GoalStatus }
+  | { type: 'removeGoal'; goalId: string }
   | { type: 'markAllRead' }
   | { type: 'block'; username: string }
   | { type: 'unblock'; username: string }
@@ -53,18 +65,22 @@ type Action =
   | { type: 'toggleItemEncourage'; kind: 'tip' | 'update' | 'reply'; id: string }
   | { type: 'setAvatar'; uri: string | undefined };
 
+// Logged out: nothing loaded yet.
 const initialState: State = {
-  me: mock.ME,
+  ready: false,
+  me: '',
+  myId: '',
+  idOf: {},
   signedIn: false,
-  users: mock.users,
-  goals: mock.goals,
-  tips: mock.tips,
-  updates: mock.updates,
-  replies: mock.replies,
-  notifications: mock.notifications,
-  messages: mock.messages,
+  users: [],
+  goals: [],
+  tips: [],
+  updates: [],
+  replies: [],
+  notifications: [],
+  messages: [],
   blocked: [],
-  interests: ['Running', 'Weightlifting', 'Triathlon'],
+  interests: [],
   customCategories: [],
   settings: { dailyReminderCap: true, quietHours: true },
 };
@@ -80,25 +96,30 @@ const toggle = (list: string[], item: string) =>
 // It never edits the old state in place; it builds a new copy.
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'signIn': {
-      const users = state.users.map((u) =>
-        u.username === state.me
-          ? {
-              ...u,
-              name: action.name || u.name,
-              bio: action.bio ?? u.bio,
-            }
-          : u
-      );
+    case 'loaded': {
+      // Fresh data from the database after logging in (or pulling to refresh).
+      // Commits and encouragements you made on this phone are kept on top.
+      const local = new Map(state.goals.map((g) => [g.id, g]));
+      const { snapshot } = action;
       return {
         ...state,
+        ready: true,
         signedIn: true,
-        users,
-        interests: action.interests?.length ? action.interests : state.interests,
+        me: snapshot.me,
+        myId: snapshot.myId,
+        idOf: snapshot.idOf,
+        users: snapshot.users,
+        interests: snapshot.interests,
+        goals: snapshot.goals.map((g) => {
+          const old = local.get(g.id);
+          return old ? { ...g, committed: old.committed, encouraged: old.encouraged } : g;
+        }),
       };
     }
+    case 'ready':
+      return { ...state, ready: true };
     case 'signOut':
-      return { ...initialState };
+      return { ...initialState, ready: true };
     case 'toggleEncourage':
       return {
         ...state,
@@ -122,6 +143,8 @@ function reducer(state: State, action: Action): State {
       };
     case 'addGoal':
       return { ...state, goals: [action.goal, ...state.goals] };
+    case 'removeGoal':
+      return { ...state, goals: state.goals.filter((g) => g.id !== action.goalId) };
     case 'addTip':
       return {
         ...state,
@@ -270,7 +293,11 @@ function useStoreValue() {
   const helpers = useMemo(() => {
     const visible = (username: string) => !state.blocked.includes(username);
     const user = (username: string) => state.users.find((u) => u.username === username);
+    // Only screens behind the login use this, so it's always there for them.
     const meUser = user(state.me)!;
+    const knownCategories = [
+      ...new Set([...CATEGORIES, ...state.goals.flatMap((g) => g.categories), ...state.customCategories]),
+    ];
 
     // Direct messages, grouped into one conversation per person. Blocked
     // people's conversations are hidden. Newest conversation first.
@@ -322,19 +349,129 @@ function useStoreValue() {
       // author who was notified).
       notifiedOf: (goalId: string) =>
         state.notifications.filter((n) => n.kind === 'achieved' && n.goalId === goalId).map((n) => n.to),
-      // Built-in categories first, then ones people created.
-      allCategories: [...CATEGORIES, ...state.customCategories],
+      // Built-in categories first, then ones people created (on any goal, or
+      // just now on the Post screen).
+      allCategories: knownCategories,
       // Finds an existing category ignoring capitalization ("sport" -> "Sport").
-      findCategory: (name: string) =>
-        [...CATEGORIES, ...state.customCategories].find((c) => c.toLowerCase() === name.trim().toLowerCase()),
+      findCategory: (name: string) => knownCategories.find((c) => c.toLowerCase() === name.trim().toLowerCase()),
     };
   }, [state]);
 
-  return { state, dispatch, ...helpers };
+  // Loads everything from the database and puts it on screen. Used after
+  // logging in and when you pull down on the Home feed.
+  const refresh = useCallback(async () => {
+    const snapshot = await api.loadSnapshot();
+    dispatch(snapshot ? { type: 'loaded', snapshot } : { type: 'signOut' });
+  }, []);
+
+  // When the app opens: if you logged in before, load your data; otherwise
+  // show the welcome screen. Also notices when you're logged out (for
+  // example, if your session expired).
+  useEffect(() => {
+    let alive = true;
+    api
+      .loadSnapshot()
+      .then((snapshot) => alive && dispatch(snapshot ? { type: 'loaded', snapshot } : { type: 'ready' }))
+      .catch((e: Error) => {
+        if (!alive) return;
+        dispatch({ type: 'ready' });
+        showError('Couldn’t load PYN', e.message);
+      });
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') dispatch({ type: 'signOut' });
+    });
+    return () => {
+      alive = false;
+      data.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Things that talk to the database. Each one saves to Supabase and updates
+  // the screen. Quick toggles (follow, goal status) update the screen first
+  // and undo themselves if saving fails, so taps feel instant.
+  const actions = useMemo(() => {
+    const { myId, me, idOf } = state;
+    return {
+      refresh,
+
+      logIn: async (email: string, password: string) => {
+        await api.logIn(email, password);
+        await refresh();
+      },
+
+      // Returns false if the account needs its email confirmed before logging in.
+      signUp: async (input: Parameters<typeof api.signUp>[0]) => {
+        const { loggedIn } = await api.signUp(input);
+        if (loggedIn) await refresh();
+        return loggedIn;
+      },
+
+      logOut: async () => {
+        await api.logOut();
+        dispatch({ type: 'signOut' });
+      },
+
+      publishGoal: async (input: Parameters<typeof api.createGoal>[2]) => {
+        const goal = await api.createGoal(myId, me, input);
+        dispatch({ type: 'addGoal', goal });
+        return goal;
+      },
+
+      changeStatus: async (goalId: string, status: GoalStatus) => {
+        const before = state.goals.find((g) => g.id === goalId)?.status;
+        dispatch({ type: 'setStatus', goalId, status });
+        try {
+          await api.setGoalStatus(goalId, status);
+        } catch (e) {
+          if (before) dispatch({ type: 'setStatus', goalId, status: before });
+          showError('Couldn’t update the goal', (e as Error).message);
+        }
+      },
+
+      toggleFollow: async (username: string) => {
+        const following = state.users.find((u) => u.username === me)?.following.includes(username) ?? false;
+        dispatch({ type: 'toggleFollow', username });
+        try {
+          await api.setFollowing(myId, idOf[username], !following);
+        } catch (e) {
+          dispatch({ type: 'toggleFollow', username }); // undo
+          showError(following ? 'Couldn’t unfollow' : 'Couldn’t follow', (e as Error).message);
+        }
+      },
+
+      saveProfile: async (name: string, bio: string) => {
+        await api.saveProfile(myId, name, bio);
+        dispatch({ type: 'updateProfile', name: name.trim(), bio: bio.trim() });
+      },
+
+      // Pass a photo from the phone, or undefined to remove it.
+      changeAvatar: async (localUri: string | undefined) => {
+        const url = await api.saveAvatar(myId, localUri);
+        dispatch({ type: 'setAvatar', uri: url });
+      },
+    };
+  }, [state, refresh]);
+
+  return { state, dispatch, ...helpers, ...actions };
+}
+
+// A pop-up error message. (The web preview has no native alerts.)
+export function showError(title: string, message: string) {
+  if (Platform.OS === 'web') window.alert(`${title}\n\n${message}`);
+  else Alert.alert(title, message);
 }
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const value = useStoreValue();
+  // While checking for a saved login, show a plain blue screen with a spinner
+  // instead of flashing the welcome screen.
+  if (!value.state.ready) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.carolina, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator color={colors.navy} size="large" />
+      </View>
+    );
+  }
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
 
