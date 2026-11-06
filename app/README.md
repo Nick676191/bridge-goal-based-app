@@ -10,8 +10,8 @@ What still lives on your phone only, until stage 2: commits, encouragements,
 tips, updates, replies, notifications and messages. They work, but reset when
 the app restarts and nobody else sees them.
 
-The fake-data prototype is saved as the `prototype-v1` tag in git, if you ever
-want to look at it again: `git checkout prototype-v1`.
+The fake-data prototype is commit `9e856fb`, if you ever want to look at it
+again: `git checkout 9e856fb` (and `git checkout app-prototype` to come back).
 
 ## Set up the database (once)
 
