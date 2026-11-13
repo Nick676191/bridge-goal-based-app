@@ -65,6 +65,13 @@ export default function Login() {
             returnKeyType="go"
           />
           {error ? <Text style={styles.error}>{error}</Text> : null}
+          <Pressable
+            onPress={() => router.push({ pathname: '/forgot-password', params: { email: email.trim() } })}
+            hitSlop={8}
+            style={{ alignSelf: 'flex-start' }}
+          >
+            <Text style={styles.forgot}>Forgot password?</Text>
+          </Pressable>
         </ScrollView>
         <View style={styles.footer}>
           <Button label={busy ? 'Logging in…' : 'Log in'} onPress={submit} disabled={!ready} />
@@ -89,5 +96,6 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.hairline,
   },
+  forgot: { fontSize: 15, fontWeight: '600', color: colors.lane },
   switch: { textAlign: 'center', fontSize: 15, fontWeight: '600', color: colors.lane },
 });

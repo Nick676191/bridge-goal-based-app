@@ -25,6 +25,20 @@ again: `git checkout 9e856fb` (and `git checkout app-prototype` to come back).
    **Confirm email**, and save. While we're testing, this lets new accounts log
    in right away. Turn it back on before the beta; by then the app will handle
    the confirmation link.
+4. Go to **Authentication > Emails**, open the **Reset Password** template, and
+   replace its message with this, so the email contains a code to type into
+   the app (instead of a link the app can't open yet):
+
+   ```html
+   <h2>Reset your PYN password</h2>
+   <p>Your code is: <strong>{{ .Token }}</strong></p>
+   <p>Enter it in the PYN app. It expires in one hour. If you didn't ask to
+   reset your password, you can ignore this email.</p>
+   ```
+
+   Supabase's built-in email is for testing: it only delivers to the email
+   addresses of people on your Supabase team, and only a few per hour. Before
+   the beta, PYN needs its own email sender (Supabase calls it custom SMTP).
 
 ## Open it on your iPhone
 
@@ -62,6 +76,8 @@ To see it in a browser instead, press `w` in the Terminal window after
 
 ## Things to try
 
+- **Log in > Forgot password?** emails you a code; enter it with a new
+  password and you're logged in.
 - **Create account** makes a real account. Then log out (Profile > the gear >
   Log out) and **Log in** again: your goals are still there.
 - Make a second account (another email) to see two people at once: follow one
@@ -106,7 +122,8 @@ app/
       connections/[username].tsx  Followers and Following lists
       share/[id].tsx Share a goal in the app or through the share sheet
       messages/      The inbox (index), one conversation ([username]), new message
-      welcome.tsx, onboarding.tsx (sign-up), login.tsx, settings.tsx, edit-profile.tsx
+      welcome.tsx, onboarding.tsx (sign-up), login.tsx, forgot-password.tsx,
+      settings.tsx, edit-profile.tsx
     components/      Pieces used on many screens (post card, action bar, buttons)
     data/
       types.ts       The shapes of users, goals, tips, updates

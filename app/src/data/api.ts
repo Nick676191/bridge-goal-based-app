@@ -86,6 +86,29 @@ export async function logIn(email: string, password: string) {
   if (error) throw new Error(friendlyAuthError(error.message));
 }
 
+// ─── Forgot password ────────────────────────────────────────────────────────
+// Three steps, all inside the app (no links to open):
+//   1. sendResetCode: Supabase emails a one-time code to that address.
+//   2. verifyResetCode: the code logs you in for this one purpose.
+//   3. setNewPassword: saves the new password on your account.
+// The code only arrives if the "Reset password" email template in Supabase
+// includes {{ .Token }} (see the README).
+
+export async function sendResetCode(email: string) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+  if (error) throw new Error(friendlyAuthError(error.message));
+}
+
+export async function verifyResetCode(email: string, code: string) {
+  const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'recovery' });
+  if (error) throw new Error(friendlyAuthError(error.message));
+}
+
+export async function setNewPassword(password: string) {
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw new Error(friendlyAuthError(error.message));
+}
+
 export async function logOut() {
   await supabase.auth.signOut();
 }
@@ -97,6 +120,9 @@ function friendlyAuthError(message: string) {
   if (m.includes('email not confirmed')) return 'Confirm your email first: open the link we sent you, then log in.';
   if (m.includes('already registered')) return 'There’s already an account with that email. Try logging in.';
   if (m.includes('database error saving new user')) return 'That username was just taken. Go back and pick another.';
+  if (m.includes('token has expired') || m.includes('otp') || m.includes('invalid token'))
+    return 'That code is wrong or has expired. Check the newest email, or send a new code.';
+  if (m.includes('different from the old')) return 'Pick a password you haven’t used on this account.';
   if (m.includes('password')) return message; // e.g. "Password should be at least 8 characters"
   if (m.includes('rate limit')) return 'Too many tries in a short time. Wait a minute and try again.';
   if (m.includes('network') || m.includes('fetch')) return 'Can’t reach PYN. Check your connection and try again.';

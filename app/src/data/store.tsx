@@ -414,6 +414,20 @@ function useStoreValue() {
         return loggedIn;
       },
 
+      // Forgot password, step 2 and 3 together: check the emailed code, save
+      // the new password, then load everything (you're now logged in).
+      // `verified` skips the code if it already worked and only saving the
+      // password failed, since each code works once.
+      resetPassword: async (email: string, code: string, password: string, verified: boolean) => {
+        if (!verified) await api.verifyResetCode(email, code);
+        try {
+          await api.setNewPassword(password);
+        } catch (e) {
+          throw Object.assign(e as Error, { verified: true });
+        }
+        await refresh();
+      },
+
       logOut: async () => {
         await api.logOut();
         dispatch({ type: 'signOut' });
