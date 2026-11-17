@@ -1,0 +1,699 @@
+/* PYN website styles, shared by every page.
+   Same look as the app: Carolina blue bands, navy text, white paper, and the
+   condensed Barlow display face for big words. Light only, on purpose (no
+   dark mode, same as the app).
+
+   Layout: a full-width Carolina blue header band, then white sections whose
+   content sits in one centered column; a navy footer band closes each page. */
+
+:root {
+  --carolina: #4b9cd3; /* UNC Carolina blue: bands, accents */
+  --carolina-wash: #e7f1f9; /* pale blue panels */
+  --navy: #13294b; /* UNC navy: text, buttons, footer */
+  --lane: #007fae; /* links (darker blue, readable on white) */
+  --paper: #ffffff;
+  --wash: #f1f5f9; /* light grey-blue fills */
+  --hairline: #d5dee7; /* thin dividers */
+  --muted: #5b6b7f; /* secondary text */
+  --setback: #b4480b; /* the app's Setback tag */
+  --setback-wash: #fdebdd;
+
+  --display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif-condensed, Impact, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --measure: 68ch; /* comfortable line length for reading pages */
+  --wide: 1080px; /* home page content width */
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* The side gutter lives on each band's inner wrapper so color reaches the edges. */
+.wrap {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+
+a {
+  color: var(--lane);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--navy);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.site-header {
+  background: var(--carolina);
+}
+
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-block: 18px;
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: 2px;
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+/* ─── Home: hero ─────────────────────────────────────────────────────────── */
+
+.hero {
+  background: var(--carolina);
+  padding-bottom: 56px;
+}
+
+.hero .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 48px;
+  align-items: center;
+  padding-block: 24px 0;
+}
+
+.motto {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(88px, 15vw, 168px);
+  line-height: 0.88;
+  letter-spacing: -1px;
+}
+
+.motto-sub {
+  margin: 10px 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(44px, 7.5vw, 84px);
+  line-height: 0.95;
+}
+
+.lede {
+  max-width: 34ch;
+  margin: 28px 0 0;
+  font-size: 19px;
+  line-height: 1.5;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin-top: 28px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.pill svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.beta-note {
+  font-size: 15px;
+}
+
+.beta-note strong {
+  user-select: all;
+}
+
+/* ─── The example goal card (drawn like the app's post) ──────────────────── */
+
+.card-stage {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.goal-card {
+  width: 100%;
+  max-width: 390px;
+  background: var(--paper);
+  border: 2px solid var(--navy);
+  border-radius: 18px;
+  padding: 18px 18px 8px;
+  box-shadow: 10px 10px 0 var(--navy);
+  display: grid;
+  gap: 8px;
+}
+
+.example-tag {
+  justify-self: start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.gc-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--carolina-wash);
+  color: var(--navy);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.gc-who {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.gc-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.gc-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.gc-cat {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.gc-subject {
+  margin: 4px 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.05;
+}
+
+.gc-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.gc-committed {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--lane);
+}
+
+.gc-latest {
+  margin-top: 6px;
+  padding-left: 12px;
+  border-left: 2px solid var(--hairline);
+  display: grid;
+  gap: 4px;
+}
+
+.gc-latest-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.setback {
+  padding: 1px 8px;
+  border-radius: 4px;
+  background: var(--setback-wash);
+  color: var(--setback);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gc-latest p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.gc-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--hairline);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.gc-actions span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+}
+
+.gc-actions svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ─── Home: how it works ─────────────────────────────────────────────────── */
+
+.section {
+  padding-block: 72px;
+}
+
+.section-title {
+  margin: 0 0 32px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 60px);
+  line-height: 1;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px;
+  counter-reset: step;
+}
+
+.steps li {
+  counter-increment: step;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 3px solid var(--navy);
+}
+
+.steps li::before {
+  content: counter(step);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--carolina);
+}
+
+.steps h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.05;
+}
+
+.steps p {
+  margin: 0;
+  color: var(--navy);
+}
+
+/* ─── Home: who it's for ─────────────────────────────────────────────────── */
+
+.band-wash {
+  background: var(--carolina-wash);
+}
+
+.for-whom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.for-whom .section-title {
+  margin-bottom: 0;
+}
+
+.for-whom p {
+  margin: 0 0 16px;
+  max-width: 52ch;
+}
+
+.for-whom ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.for-whom li {
+  padding-left: 22px;
+  position: relative;
+  font-weight: 600;
+}
+
+.for-whom li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--carolina);
+}
+
+/* ─── Reading pages (privacy, terms, support) ────────────────────────────── */
+
+.page-title {
+  background: var(--carolina);
+}
+
+.page-title .wrap {
+  padding-block: 8px 40px;
+}
+
+.page-title h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(48px, 9vw, 84px);
+  line-height: 0.95;
+}
+
+.page-title p {
+  margin: 10px 0 0;
+  font-weight: 600;
+}
+
+.doc {
+  max-width: var(--measure);
+  padding-block: 40px 72px;
+}
+
+.doc .wrap-narrow {
+  min-width: 0;
+}
+
+.doc h2 {
+  margin: 44px 0 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+.doc h2:first-child {
+  margin-top: 0;
+}
+
+.doc p,
+.doc li {
+  max-width: var(--measure);
+}
+
+.doc ul,
+.doc ol {
+  padding-left: 22px;
+}
+
+.doc li + li {
+  margin-top: 6px;
+}
+
+.doc address {
+  font-style: normal;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 16px 0;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}
+
+.doc table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.doc th,
+.doc td {
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.doc th {
+  background: var(--wash);
+  font-weight: 700;
+}
+
+.doc tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Support page */
+
+.contact-box {
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+  border: 2px solid var(--navy);
+  border-radius: 14px;
+  box-shadow: 8px 8px 0 var(--navy);
+  max-width: 520px;
+}
+
+.contact-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.contact-email {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1;
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+
+.copy-btn {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--navy);
+  background: var(--paper);
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: var(--carolina-wash);
+}
+
+.faq h3 {
+  margin: 28px 0 6px;
+  font-size: 18px;
+}
+
+.faq p {
+  margin: 0;
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+
+.site-footer {
+  background: var(--navy);
+  color: var(--paper);
+  font-size: 15px;
+}
+
+.site-footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px 48px;
+  padding-block: 40px;
+}
+
+.site-footer .wordmark {
+  color: var(--paper);
+  font-size: 32px;
+}
+
+.site-footer address {
+  margin-top: 10px;
+  font-style: normal;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.site-footer nav {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.site-footer a {
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
+.copyright {
+  flex-basis: 100%;
+  margin: 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* ─── Narrow screens ─────────────────────────────────────────────────────── */
+
+@media (max-width: 820px) {
+  .hero .wrap,
+  .for-whom {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .section {
+    padding-block: 56px;
+  }
+
+  .goal-card {
+    box-shadow: 6px 6px 0 var(--navy);
+  }
+}
+
+@media (max-width: 420px) {
+  .site-nav {
+    gap: 16px;
+  }
+
+  .wordmark {
+    font-size: 34px;
+  }
+
+  .gc-subject {
+    font-size: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .goal-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .goal-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 12px 12px 0 var(--navy);
+  }
+}

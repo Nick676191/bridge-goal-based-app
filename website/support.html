@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PYN Support</title>
+<meta name="description" content="Get help with PYN.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="wordmark" href="index.html" aria-label="PYN home">PYN</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="support.html" aria-current="page">Support</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-title">
+    <div class="wrap">
+      <h1>Support</h1>
+      <p>Questions, account help, or something to report.</p>
+    </div>
+  </section>
+  <div class="wrap">
+    <article class="doc">
+
+<div class="contact-box">
+  <p class="contact-label">Email us</p>
+  <div class="contact-row">
+    <span class="contact-email" id="support-email">info@pynpro.net</span>
+    <button class="copy-btn" id="copy-email" type="button">Copy</button>
+  </div>
+  <p style="margin:0">We answer within two business days. Write from the email on your PYN account if your question is about your account.</p>
+</div>
+
+<div class="faq">
+  <h2 style="margin-top:48px">Common questions</h2>
+
+  <h3>I forgot my password</h3>
+  <p>On the login screen, tap <strong>Forgot password?</strong>. We'll email you a code; enter it with a new password and you're back in.</p>
+
+  <h3>How do I delete my account?</h3>
+  <p>In the app, go to Profile &gt; Settings &gt; Delete account, or email info@pynpro.net from the address on your account. Deleting removes your profile, goals, photos and messages. See the <a href="privacy.html">Privacy Policy</a> for details.</p>
+
+  <h3>How do I report a post or block someone?</h3>
+  <p>Tap the &hellip; on a post, message or profile and choose Report or Block. We review reports, generally within 24 hours. For anything urgent, email us too.</p>
+
+  <h3>Who can see my goals?</h3>
+  <p>Everyone on PYN. There are no private accounts, so every goal has people behind it. Direct messages are only between you and the people in the conversation.</p>
+
+  <h3>When can I get PYN?</h3>
+  <p>PYN is in testing now and coming to the App Store. To join the beta, email info@pynpro.net with your name and the sport you played.</p>
+
+  <h2 style="margin-top:48px">Mailing address</h2>
+  <address>PYN LLC<br>4539 North 22nd Street, Suite 10034<br>Phoenix, AZ 85016</address>
+</div>
+
+    </article>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <a class="wordmark" href="index.html">PYN</a>
+      <address>
+        PYN LLC<br>
+        4539 North 22nd Street, Suite 10034<br>
+        Phoenix, AZ 85016<br>
+        info@pynpro.net
+      </address>
+    </div>
+    <nav aria-label="Footer">
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Use</a>
+    </nav>
+    <p class="copyright">&copy; 2026 PYN LLC. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+  // Copy the support email. Falls back to selecting it if copying isn't allowed.
+  (function () {
+    var btn = document.getElementById('copy-email');
+    var email = document.getElementById('support-email');
+    if (!btn || !email) return;
+    btn.addEventListener('click', function () {
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 2000); };
+      var select = function () { var r = document.createRange(); r.selectNodeContents(email); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email.textContent.trim()).then(done, select);
+      } else { select(); }
+    });
+  })();
+</script>
+
+</body>
+</html>
