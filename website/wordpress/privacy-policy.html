@@ -1,0 +1,717 @@
+<!-- PYN privacy-policy.html: paste this whole file into one Custom HTML block. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&display=swap">
+<style>
+.pyn {
+  --carolina: #4b9cd3; 
+  --carolina-wash: #e7f1f9; 
+  --navy: #13294b; 
+  --lane: #007fae; 
+  --paper: #ffffff;
+  --wash: #f1f5f9; 
+  --hairline: #d5dee7; 
+  --muted: #5b6b7f; 
+  --setback: #b4480b; 
+  --setback-wash: #fdebdd;
+
+  --display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', sans-serif-condensed, Impact, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --measure: 68ch; 
+  --wide: 1080px; 
+  color-scheme: light;
+}
+.pyn, .pyn * {
+  box-sizing: border-box;
+}
+.pyn {
+  -webkit-text-size-adjust: 100%;
+}
+.pyn {
+  margin: 0;
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.55;
+}
+.pyn .wrap {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.pyn a {
+  color: var(--lane);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+.pyn a:focus-visible, .pyn button:focus-visible {
+  outline: 3px solid var(--navy);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.pyn h1, .pyn h2, .pyn h3 {
+  text-wrap: balance;
+}
+.pyn .site-header {
+  background: var(--carolina);
+}
+.pyn .site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-block: 18px;
+}
+.pyn .wordmark {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: 2px;
+  color: var(--navy);
+  text-decoration: none;
+}
+.pyn .site-nav {
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.pyn .site-nav a {
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 15px;
+}
+.pyn .site-nav a:hover, .pyn .site-nav a[aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+.pyn .hero {
+  background: var(--carolina);
+  padding-bottom: 56px;
+}
+.pyn .hero .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 48px;
+  align-items: center;
+  padding-block: 24px 0;
+}
+.pyn .motto {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(88px, 15vw, 168px);
+  line-height: 0.88;
+  letter-spacing: -1px;
+}
+.pyn .motto-sub {
+  margin: 10px 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(44px, 7.5vw, 84px);
+  line-height: 0.95;
+}
+.pyn .lede {
+  max-width: 34ch;
+  margin: 28px 0 0;
+  font-size: 19px;
+  line-height: 1.5;
+}
+.pyn .cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  margin-top: 28px;
+}
+.pyn .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 16px;
+}
+.pyn .pill svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+.pyn .beta-note {
+  font-size: 15px;
+}
+.pyn .beta-note strong {
+  user-select: all;
+}
+.pyn .card-stage {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+.pyn .goal-card {
+  width: 100%;
+  max-width: 390px;
+  background: var(--paper);
+  border: 2px solid var(--navy);
+  border-radius: 18px;
+  padding: 18px 18px 8px;
+  box-shadow: 10px 10px 0 var(--navy);
+  display: grid;
+  gap: 8px;
+}
+.pyn .example-tag {
+  justify-self: start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pyn .gc-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pyn .avatar {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--carolina-wash);
+  color: var(--navy);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+.pyn .gc-who {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.25;
+}
+.pyn .gc-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+.pyn .gc-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+.pyn .gc-cat {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.pyn .gc-subject {
+  margin: 4px 0 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1.05;
+}
+.pyn .gc-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.pyn .gc-committed {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--lane);
+}
+.pyn .gc-latest {
+  margin-top: 6px;
+  padding-left: 12px;
+  border-left: 2px solid var(--hairline);
+  display: grid;
+  gap: 4px;
+}
+.pyn .gc-latest-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.pyn .setback {
+  padding: 1px 8px;
+  border-radius: 4px;
+  background: var(--setback-wash);
+  color: var(--setback);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pyn .gc-latest p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.pyn .gc-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--hairline);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.pyn .gc-actions span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+}
+.pyn .gc-actions svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pyn .section {
+  padding-block: 72px;
+}
+.pyn .section-title {
+  margin: 0 0 32px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 60px);
+  line-height: 1;
+}
+.pyn .steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px;
+  counter-reset: step;
+}
+.pyn .steps li {
+  counter-increment: step;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 3px solid var(--navy);
+}
+.pyn .steps li::before {
+  content: counter(step);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--carolina);
+}
+.pyn .steps h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.05;
+}
+.pyn .steps p {
+  margin: 0;
+  color: var(--navy);
+}
+.pyn .band-wash {
+  background: var(--carolina-wash);
+}
+.pyn .for-whom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+.pyn .for-whom .section-title {
+  margin-bottom: 0;
+}
+.pyn .for-whom p {
+  margin: 0 0 16px;
+  max-width: 52ch;
+}
+.pyn .for-whom ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.pyn .for-whom li {
+  padding-left: 22px;
+  position: relative;
+  font-weight: 600;
+}
+.pyn .for-whom li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--carolina);
+}
+.pyn .page-title {
+  background: var(--carolina);
+}
+.pyn .page-title .wrap {
+  padding-block: 8px 40px;
+}
+.pyn .page-title h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(48px, 9vw, 84px);
+  line-height: 0.95;
+}
+.pyn .page-title p {
+  margin: 10px 0 0;
+  font-weight: 600;
+}
+.pyn .doc {
+  max-width: var(--measure);
+  padding-block: 40px 72px;
+}
+.pyn .doc .wrap-narrow {
+  min-width: 0;
+}
+.pyn .doc h2 {
+  margin: 44px 0 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.1;
+}
+.pyn .doc h2:first-child {
+  margin-top: 0;
+}
+.pyn .doc p, .pyn .doc li {
+  max-width: var(--measure);
+}
+.pyn .doc ul, .pyn .doc ol {
+  padding-left: 22px;
+}
+.pyn .doc li + li {
+  margin-top: 6px;
+}
+.pyn .doc address {
+  font-style: normal;
+}
+.pyn .table-scroll {
+  overflow-x: auto;
+  margin: 16px 0;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+}
+.pyn .doc table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.pyn .doc th, .pyn .doc td {
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--hairline);
+}
+.pyn .doc th {
+  background: var(--wash);
+  font-weight: 700;
+}
+.pyn .doc tr:last-child td {
+  border-bottom: 0;
+}
+.pyn .contact-box {
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+  border: 2px solid var(--navy);
+  border-radius: 14px;
+  box-shadow: 8px 8px 0 var(--navy);
+  max-width: 520px;
+}
+.pyn .contact-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pyn .contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.pyn .contact-email {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1;
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+.pyn .copy-btn {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid var(--navy);
+  background: var(--paper);
+  color: var(--navy);
+  cursor: pointer;
+}
+.pyn .copy-btn:hover {
+  background: var(--carolina-wash);
+}
+.pyn .faq h3 {
+  margin: 28px 0 6px;
+  font-size: 18px;
+}
+.pyn .faq p {
+  margin: 0;
+}
+.pyn .site-footer {
+  background: var(--navy);
+  color: var(--paper);
+  font-size: 15px;
+}
+.pyn .site-footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px 48px;
+  padding-block: 40px;
+}
+.pyn .site-footer .wordmark {
+  color: var(--paper);
+  font-size: 32px;
+}
+.pyn .site-footer address {
+  margin-top: 10px;
+  font-style: normal;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+.pyn .site-footer nav {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.pyn .site-footer a {
+  color: var(--paper);
+  text-decoration: none;
+}
+.pyn .site-footer a:hover {
+  text-decoration: underline;
+}
+.pyn .copyright {
+  flex-basis: 100%;
+  margin: 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 13px;
+  opacity: 0.8;
+}
+@media (max-width: 820px) {
+.pyn .hero .wrap, .pyn .for-whom {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+.pyn .steps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+.pyn .section {
+    padding-block: 56px;
+  }
+.pyn .goal-card {
+    box-shadow: 6px 6px 0 var(--navy);
+  }
+}
+@media (max-width: 420px) {
+.pyn .site-nav {
+    gap: 16px;
+  }
+.pyn .wordmark {
+    font-size: 34px;
+  }
+.pyn .gc-subject {
+    font-size: 30px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+.pyn .goal-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+.pyn .goal-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 12px 12px 0 var(--navy);
+  }
+}
+
+/* Fill the full width of the window, even inside the theme's content column. */
+.pyn { width: 100vw; max-width: 100vw !important; margin: 0 0 0 calc(50% - 50vw) !important; }
+html, body { overflow-x: hidden; }
+.pyn h1, .pyn h2, .pyn h3, .pyn p, .pyn ul, .pyn ol, .pyn address { font-family: inherit; letter-spacing: normal; }
+.pyn .motto, .pyn .motto-sub, .pyn .wordmark, .pyn .section-title, .pyn .gc-subject, .pyn .steps h3,
+.pyn .page-title h1, .pyn .doc h2, .pyn .contact-email { font-family: var(--display); }
+.pyn .wordmark { letter-spacing: 2px; }
+.pyn a { box-shadow: none; }
+.pyn h1, .pyn h2, .pyn h3, .pyn p, .pyn li { color: inherit; text-transform: none; }
+.pyn .example-tag, .pyn .setback, .pyn .contact-label { text-transform: uppercase; }
+
+</style>
+<div class="pyn">
+<header class="site-header">
+  <div class="wrap">
+    <a class="wordmark" href="/" aria-label="PYN home">PYN</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/support/">Support</a>
+      <a href="/privacy-policy/" aria-current="page">Privacy</a>
+      <a href="/terms-of-use/">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-title">
+    <div class="wrap">
+      <h1>Privacy Policy</h1>
+      <p>Last updated November 17, 2026</p>
+    </div>
+  </section>
+  <div class="wrap">
+    <article class="doc">
+
+<p>PYN is a goal-based fitness app run by PYN LLC, an Arizona limited liability company. This policy explains what information PYN collects, what is public, how we use it, and the choices you have.</p>
+
+<h2>Who we are</h2>
+<p>PYN LLC (&ldquo;PYN&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) operates the PYN mobile app and the website at pynpro.net (together, the &ldquo;Service&rdquo;).</p>
+<address>PYN LLC<br>4539 North 22nd Street, Suite 10034<br>Phoenix, AZ 85016<br>Email: info@pynpro.net</address>
+<p>This policy applies to the Service. It does not cover other companies' apps or websites, even if you reach them through PYN.</p>
+
+<h2>Information we collect</h2>
+<p>We collect what you give us when you use PYN, plus a small amount of technical information needed to run the Service.</p>
+<div class="table-scroll"><table>
+<thead><tr><th>What</th><th>Examples</th><th>Where it comes from</th></tr></thead>
+<tbody>
+<tr><td>Account</td><td>Email address, password (stored only in scrambled, hashed form)</td><td>You, at sign-up</td></tr>
+<tr><td>Profile</td><td>Username, display name, bio, profile photo, the fitness categories you pick</td><td>You</td></tr>
+<tr><td>Goals and posts</td><td>Goal subjects and plans, categories, status, photos and videos, updates, tips, replies</td><td>You</td></tr>
+<tr><td>Activity</td><td>Who you follow, goals you commit to or encourage, stars on tips and updates</td><td>You, as you use PYN</td></tr>
+<tr><td>Messages</td><td>Direct messages and goals you share with other PYN users</td><td>You and the people you message</td></tr>
+<tr><td>Reports and support</td><td>What you report, block, or tell us when you contact support</td><td>You</td></tr>
+<tr><td>Device and technical</td><td>Device type, operating system, app version, IP address, log and error data, and (when you allow notifications) a push notification token</td><td>Your device and our service providers</td></tr>
+</tbody></table></div>
+<p>We do not collect your phone number, your contacts, your precise location, or health data from Apple Health or other apps. PYN only sees the photos and videos you choose to add to a post or your profile.</p>
+
+<h2>What is public on PYN</h2>
+<p>PYN is public by design: there are no private accounts. Anyone with a PYN account can see:</p>
+<ul>
+<li>Your username, display name, bio and profile photo</li>
+<li>Every goal you post, with its photos, videos, status and updates</li>
+<li>Your tips, replies and stars on other people's goals</li>
+<li>Who you follow, who follows you, and the goals you commit to or encourage</li>
+</ul>
+<p>Post only what you are comfortable sharing publicly. When you share a goal outside PYN (for example by text message), the people you send it to can see that goal.</p>
+<p>Direct messages are different. They are visible only to you and the people in the conversation. We may review messages when someone reports them, to keep PYN safe, or when the law requires it.</p>
+
+<h2>How we use information</h2>
+<p>We use your information to run PYN and keep it safe:</p>
+<ul>
+<li>Create and secure your account, including password resets</li>
+<li>Show your profile, goals and activity to other users, and build your home feed from the people you follow and the categories you pick</li>
+<li>Deliver messages and send notifications and reminders you have turned on</li>
+<li>Respond to reports, enforce our Terms of Use, and prevent spam, abuse and fraud</li>
+<li>Answer your support requests and send important notices about the Service</li>
+<li>Fix bugs and understand, in general terms, how PYN is used so we can improve it</li>
+<li>Meet legal obligations</li>
+</ul>
+<p>We do not sell your personal information, and we do not use it for third-party advertising.</p>
+
+<h2>Who we share it with</h2>
+<p>We share information only as described here:</p>
+<ul>
+<li><strong>Other PYN users:</strong> the public information above, and messages with the people you message.</li>
+<li><strong>Service providers</strong> that run parts of PYN for us, under contracts that limit their use of your information to providing their service:
+  <ul>
+  <li>Supabase (database, account login, file storage and account emails)</li>
+  <li>Expo (app updates and push notification delivery)</li>
+  <li>Apple (app distribution and push notifications)</li>
+  <li>An email delivery provider, once PYN sends its own emails</li>
+  </ul></li>
+<li><strong>Legal and safety:</strong> when required by law or legal process, or when needed to protect the rights, safety or property of PYN, our users or others.</li>
+<li><strong>Business transfers:</strong> if PYN LLC is involved in a merger, acquisition or sale of assets, your information may transfer as part of that deal. This policy would continue to apply to it.</li>
+<li><strong>With your permission:</strong> for any other purpose you agree to.</li>
+</ul>
+<p>Our providers may store and process information in the United States.</p>
+
+<h2>Keeping and deleting your information</h2>
+<p>We keep your information for as long as your account is open. You can delete your account at any time in the app (Profile &gt; Settings &gt; Delete account) or by emailing info@pynpro.net from the address on your account.</p>
+<p>When you delete your account, we delete your profile, goals, photos, videos, updates, tips, replies, follows and messages you sent. Deleted information can remain in backups for up to 30 days before it is erased. We may keep a limited record longer when the law requires it, to resolve disputes, or to act on reports of abuse.</p>
+<p>You can also delete individual goals and posts at any time.</p>
+
+<h2>Your choices and rights</h2>
+<ul>
+<li><strong>See and change your information:</strong> edit your profile in the app at any time.</li>
+<li><strong>Get a copy or delete it:</strong> email info@pynpro.net and we will respond within 30 days. We may need to confirm the request comes from you.</li>
+<li><strong>Notifications:</strong> turn push notifications off in your iPhone's Settings, and set reminder limits in PYN's settings.</li>
+<li><strong>Block and report:</strong> block anyone, and report posts, messages or profiles that break our rules.</li>
+</ul>
+<p>Depending on where you live, you may have additional privacy rights under local law. We honor these requests for all users, wherever they live.</p>
+
+<h2>Security</h2>
+<p>We protect your information with encrypted connections, access rules enforced by our database, and hashed passwords. No system is perfectly secure, so use a strong password you don't use elsewhere and tell us right away at info@pynpro.net if you think your account was accessed without permission.</p>
+
+<h2>Children</h2>
+<p>PYN is not for children under 13, and you must be at least 13 to create an account. We do not knowingly collect information from children under 13. If you believe a child under 13 has an account, email info@pynpro.net and we will delete it.</p>
+
+<h2>Changes to this policy</h2>
+<p>We will post any changes here and update the date at the top. If a change is significant, we will tell you in the app or by email before it takes effect.</p>
+
+<h2>Contact us</h2>
+<p>Questions about this policy or your information: info@pynpro.net, or PYN LLC, 4539 North 22nd Street, Suite 10034, Phoenix, AZ 85016.</p>
+
+    </article>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <a class="wordmark" href="/">PYN</a>
+      <address>
+        PYN LLC<br>
+        4539 North 22nd Street, Suite 10034<br>
+        Phoenix, AZ 85016<br>
+        info@pynpro.net
+      </address>
+    </div>
+    <nav aria-label="Footer">
+      <a href="/support/">Support</a>
+      <a href="/privacy-policy/">Privacy Policy</a>
+      <a href="/terms-of-use/">Terms of Use</a>
+    </nav>
+    <p class="copyright">&copy; 2026 PYN LLC. All rights reserved.</p>
+  </div>
+</footer>
+</div>

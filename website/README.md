@@ -39,19 +39,16 @@ different DNS records than the website.
 
 ## Hosting option B: the WordPress hosting from your domain company
 
-WordPress has no "upload my files" option, so each page is pasted in:
+The `wordpress/` folder has a paste-ready version of each page, with its styles
+built in and links set to WordPress addresses. Each one goes into a single
+Custom HTML block.
 
-1. Install a blank page template (for example the "Blank Slate" plugin) so
-   WordPress doesn't add its own header and footer around the pages.
-2. Appearance > Customize > Additional CSS: paste all of `site.css`.
-3. Create four pages (Home, Support, Privacy Policy, Terms of Use) with the
-   blank template. In each, add a **Custom HTML** block and paste everything
-   between `<body>` and `</body>` from the matching `.html` file. Put the
-   `<link>` line for the Barlow Condensed font from the file's `<head>` at the
-   top of each block.
-4. Change the links in the header and footer from `privacy.html` and so on to
-   the WordPress page addresses (for example `/privacy-policy/`), and set the
-   Home page as the site's front page (Settings > Reading).
+| Paste this file | Into a WordPress page titled | With this address (permalink) |
+| --- | --- | --- |
+| `wordpress/home.html` | Home | `/` (set as the front page) |
+| `wordpress/support.html` | Support | `/support/` |
+| `wordpress/privacy-policy.html` | Privacy Policy | `/privacy-policy/` |
+| `wordpress/terms-of-use.html` | Terms of Use | `/terms-of-use/` |
 
-Every later change has to be pasted in again by hand, which is why option A is
-easier to keep up to date.
+The `wordpress/` files are made from the main pages. After changing a main
+page, ask Claude to rebuild them, then paste the changed page in again.
