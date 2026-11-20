@@ -1,13 +1,14 @@
 // The app's shared state: every screen reads from and writes to this one
 // store, so pressing Follow on a profile also shows up in the feed.
 //
-// Two kinds of data live here:
-//   - Saved in the database (stage 1): accounts, profiles, goals, follows,
-//     photos. These load when you log in, and changes are sent to Supabase
-//     (see the async functions near the bottom and api.ts).
-//   - On this phone only, for now: commits, encouragements, tips, updates,
-//     replies, notifications and messages. They reset when the app restarts
-//     and other people don't see them yet. Stage 2 moves them to the database.
+// Everything here is saved in the Supabase database: accounts, profiles,
+// goals, follows, photos, commits, encouragements, tips, updates, replies,
+// stars, notifications and messages. It loads when you log in (and when you
+// pull to refresh), and every change is sent to the database through the
+// async functions near the bottom (see api.ts).
+//
+// On this phone only, for now: blocked people and the notification settings.
+// Those move to the database in stage 3 (safety).
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
 import { ActivityIndicator, Platform, Alert, View } from 'react-native';
@@ -48,8 +49,8 @@ type Action =
   | { type: 'toggleCommit'; goalId: string }
   | { type: 'toggleFollow'; username: string }
   | { type: 'addGoal'; goal: Goal }
-  | { type: 'addTip'; goalId: string; text: string }
-  | { type: 'addUpdate'; goalId: string; text: string; setback: boolean }
+  | { type: 'addTip'; tip: Tip }
+  | { type: 'addUpdate'; update: Update }
   | { type: 'setStatus'; goalId: string; status: GoalStatus }
   | { type: 'removeGoal'; goalId: string }
   | { type: 'markAllRead' }
@@ -58,9 +59,8 @@ type Action =
   | { type: 'updateProfile'; name: string; bio: string }
   | { type: 'setSetting'; key: keyof Settings; value: boolean }
   | { type: 'addCategory'; name: string }
-  | { type: 'addReply'; parentId: string; text: string }
-  | { type: 'shareGoal'; goalId: string; to: string[]; message: string }
-  | { type: 'sendMessage'; to: string; text: string }
+  | { type: 'addReply'; reply: Reply }
+  | { type: 'addMessages'; messages: Message[] }
   | { type: 'readConversation'; with: string }
   | { type: 'toggleItemEncourage'; kind: 'tip' | 'update' | 'reply'; id: string }
   | { type: 'setAvatar'; uri: string | undefined };
@@ -98,8 +98,6 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'loaded': {
       // Fresh data from the database after logging in (or pulling to refresh).
-      // Commits and encouragements you made on this phone are kept on top.
-      const local = new Map(state.goals.map((g) => [g.id, g]));
       const { snapshot } = action;
       return {
         ...state,
@@ -110,10 +108,12 @@ function reducer(state: State, action: Action): State {
         idOf: snapshot.idOf,
         users: snapshot.users,
         interests: snapshot.interests,
-        goals: snapshot.goals.map((g) => {
-          const old = local.get(g.id);
-          return old ? { ...g, committed: old.committed, encouraged: old.encouraged } : g;
-        }),
+        goals: snapshot.goals,
+        tips: snapshot.tips,
+        updates: snapshot.updates,
+        replies: snapshot.replies,
+        notifications: snapshot.notifications,
+        messages: snapshot.messages,
       };
     }
     case 'ready':
@@ -146,54 +146,16 @@ function reducer(state: State, action: Action): State {
     case 'removeGoal':
       return { ...state, goals: state.goals.filter((g) => g.id !== action.goalId) };
     case 'addTip':
-      return {
-        ...state,
-        tips: [
-          ...state.tips,
-          { id: newId('t'), goalId: action.goalId, author: state.me, text: action.text, createdAt: Date.now(), encouraged: [] },
-        ],
-      };
+      return { ...state, tips: [...state.tips, action.tip] };
     case 'addUpdate':
-      return {
-        ...state,
-        updates: [
-          ...state.updates,
-          {
-            id: newId('u'),
-            goalId: action.goalId,
-            author: state.me,
-            text: action.text,
-            setback: action.setback,
-            createdAt: Date.now(),
-            encouraged: [],
-          },
-        ],
-      };
-    case 'setStatus': {
-      const goal = state.goals.find((g) => g.id === action.goalId);
-      if (!goal) return state;
-      // When a goal becomes achieved, tell everyone who committed to it.
-      // (In the real app this also sends a push notification to their phone.)
-      const newlyAchieved = action.status === 'achieved' && goal.status !== 'achieved';
-      const alerts: AppNotification[] = newlyAchieved
-        ? goal.committed
-            .filter((u) => u !== goal.author)
-            .map((u) => ({
-              id: newId('n'),
-              kind: 'achieved' as const,
-              to: u,
-              actor: goal.author,
-              goalId: goal.id,
-              createdAt: Date.now(),
-              read: false,
-            }))
-        : [];
+      return { ...state, updates: [...state.updates, action.update] };
+    case 'setStatus':
+      // When a goal becomes achieved, the database notifies everyone who
+      // committed to it (see notify_on_achieved in the stage 2 SQL).
       return {
         ...state,
         goals: state.goals.map((g) => (g.id === action.goalId ? { ...g, status: action.status } : g)),
-        notifications: [...alerts, ...state.notifications],
       };
-    }
     case 'markAllRead':
       return {
         ...state,
@@ -225,32 +187,8 @@ function reducer(state: State, action: Action): State {
       const exists = [...CATEGORIES, ...state.customCategories].some((c) => c.toLowerCase() === name.toLowerCase());
       return exists || !name ? state : { ...state, customCategories: [...state.customCategories, name] };
     }
-    case 'shareGoal':
-      // Each person you send it to gets it as a direct message, with your
-      // note (if any) attached. It shows up in their Messages inbox.
-      return {
-        ...state,
-        messages: [
-          ...state.messages,
-          ...action.to.map((u) => ({
-            id: newId('m'),
-            from: state.me,
-            to: u,
-            goalId: action.goalId,
-            text: action.message.trim() || undefined,
-            createdAt: Date.now(),
-            read: false,
-          })),
-        ],
-      };
-    case 'sendMessage':
-      return {
-        ...state,
-        messages: [
-          ...state.messages,
-          { id: newId('m'), from: state.me, to: action.to, text: action.text.trim(), createdAt: Date.now(), read: false },
-        ],
-      };
+    case 'addMessages':
+      return { ...state, messages: [...state.messages, ...action.messages] };
     case 'readConversation':
       // Opening a conversation marks everything they sent you as read.
       return {
@@ -260,13 +198,7 @@ function reducer(state: State, action: Action): State {
         ),
       };
     case 'addReply':
-      return {
-        ...state,
-        replies: [
-          ...state.replies,
-          { id: newId('r'), parentId: action.parentId, author: state.me, text: action.text, createdAt: Date.now(), encouraged: [] },
-        ],
-      };
+      return { ...state, replies: [...state.replies, action.reply] };
     case 'toggleItemEncourage': {
       // Same idea as encouraging a goal, for a single tip, update or reply.
       const flip = <T extends { id: string; encouraged: string[] }>(list: T[]) =>
@@ -342,13 +274,14 @@ function useStoreValue() {
       repliesFor: (parentId: string) =>
         state.replies.filter((r) => r.parentId === parentId && visible(r.author)),
       canPostUpdate: (g: Goal) => g.author === state.me || g.committed.includes(state.me),
-      // Only your own notifications (others' are kept for when the backend sends them).
       myNotifications: state.notifications.filter((n) => n.to === state.me),
       unreadCount: state.notifications.filter((n) => n.to === state.me && !n.read).length,
-      // Everyone who has been told a goal was achieved (used to show the
-      // author who was notified).
-      notifiedOf: (goalId: string) =>
-        state.notifications.filter((n) => n.kind === 'achieved' && n.goalId === goalId).map((n) => n.to),
+      // Everyone told that a goal was achieved: the people committed to it
+      // (the database notifies them when it's marked achieved).
+      notifiedOf: (goalId: string) => {
+        const g = state.goals.find((x) => x.id === goalId);
+        return g && g.status === 'achieved' ? g.committed.filter((u) => u !== g.author) : [];
+      },
       // Built-in categories first, then ones people created (on any goal, or
       // just now on the Post screen).
       allCategories: knownCategories,
@@ -458,6 +391,83 @@ function useStoreValue() {
         } catch (e) {
           dispatch({ type: 'toggleFollow', username }); // undo
           showError(following ? 'Couldn’t unfollow' : 'Couldn’t follow', (e as Error).message);
+        }
+      },
+
+      // Commit and Encourage on a goal, and the star on a tip, update or reply:
+      // the screen changes right away and changes back if saving fails.
+      toggleCommit: async (goalId: string) => {
+        const on = !state.goals.find((g) => g.id === goalId)?.committed.includes(me);
+        dispatch({ type: 'toggleCommit', goalId });
+        try {
+          await api.setCommitted(myId, goalId, on);
+        } catch (e) {
+          dispatch({ type: 'toggleCommit', goalId });
+          showError(on ? 'Couldn’t commit' : 'Couldn’t take back your commit', (e as Error).message);
+        }
+      },
+
+      toggleEncourage: async (goalId: string) => {
+        const on = !state.goals.find((g) => g.id === goalId)?.encouraged.includes(me);
+        dispatch({ type: 'toggleEncourage', goalId });
+        try {
+          await api.setEncouraged(myId, goalId, on);
+        } catch (e) {
+          dispatch({ type: 'toggleEncourage', goalId });
+          showError('Couldn’t save that', (e as Error).message);
+        }
+      },
+
+      toggleStar: async (kind: 'tip' | 'update' | 'reply', id: string) => {
+        const list = kind === 'tip' ? state.tips : kind === 'update' ? state.updates : state.replies;
+        const on = !list.find((x) => x.id === id)?.encouraged.includes(me);
+        dispatch({ type: 'toggleItemEncourage', kind, id });
+        try {
+          await api.setStar(myId, kind, id, on);
+        } catch (e) {
+          dispatch({ type: 'toggleItemEncourage', kind, id });
+          showError('Couldn’t save that', (e as Error).message);
+        }
+      },
+
+      // Posting waits for the database so the new post has its real id.
+      // These throw on failure; the goal screen keeps your text and says so.
+      postTip: async (goalId: string, text: string) => {
+        dispatch({ type: 'addTip', tip: await api.createTip(myId, me, goalId, text) });
+      },
+
+      postUpdate: async (goalId: string, text: string, setback: boolean) => {
+        dispatch({ type: 'addUpdate', update: await api.createUpdate(myId, me, goalId, text, setback) });
+      },
+
+      // `parentId` is the tip or update being answered.
+      postReply: async (parentId: string, text: string) => {
+        const kind = state.tips.some((t) => t.id === parentId) ? 'tip' : 'update';
+        dispatch({ type: 'addReply', reply: await api.createReply(myId, me, kind, parentId, text) });
+      },
+
+      markAllRead: async () => {
+        if (!state.notifications.some((n) => !n.read)) return;
+        dispatch({ type: 'markAllRead' });
+        try {
+          await api.markNotificationsRead(myId);
+        } catch {
+          // Not worth an alert: they'll just show as unread next time.
+        }
+      },
+
+      // Messages, including goals shared from the Share screen.
+      sendMessage: async (to: string[], text: string | undefined, goalId?: string) => {
+        const people = to.map((username) => ({ username, id: idOf[username] }));
+        dispatch({ type: 'addMessages', messages: await api.sendMessages(myId, me, people, text, goalId) });
+      },
+
+      readConversation: async (username: string) => {
+        dispatch({ type: 'readConversation', with: username });
+        try {
+          await api.markConversationRead(myId, idOf[username]);
+        } catch {
+          // They'll show as unread again after a refresh; no alert needed.
         }
       },
 

@@ -2,13 +2,13 @@
 
 The iPhone app, connected to PYN's Supabase database (stage 1 of the plan).
 
-What's saved online, so it's there after you close the app and other people
-see it: accounts, profiles and profile photos, goal posts with their photos and
-video, goal status (achieved or dropped), and follows.
+Everything is saved online, so it's there after you close the app and other
+people see it: accounts, profiles and photos, goals with their photos and
+video, follows, commits, encouragements, tips, updates, replies, stars,
+notifications (the Activity tab) and direct messages.
 
-What still lives on your phone only, until stage 2: commits, encouragements,
-tips, updates, replies, notifications and messages. They work, but reset when
-the app restarts and nobody else sees them.
+On your phone only, until stage 3: blocked people and the notification
+settings.
 
 The fake-data prototype is commit `9e856fb`, if you ever want to look at it
 again: `git checkout 9e856fb` (and `git checkout app-prototype` to come back).
@@ -19,8 +19,9 @@ again: `git checkout 9e856fb` (and `git checkout app-prototype` to come back).
 2. Go to **SQL Editor**, click **New query**, paste the whole of
    `supabase/migrations/20261105000000_stage1_accounts_and_goals.sql`, and click
    **Run**. It should say "Success. No rows returned". Then do the same with
-   `supabase/migrations/20261106000000_grant_table_access.sql`. (Run the files
-   in that folder in order, oldest date first.)
+   `supabase/migrations/20261106000000_grant_table_access.sql`, and then
+   `supabase/migrations/20261120000000_stage2_activity_and_messages.sql`.
+   (Run the files in that folder in order, oldest date first, each once.)
 3. Go to **Authentication > Sign In / Providers**, open **Email**, turn off
    **Confirm email**, and save. While we're testing, this lets new accounts log
    in right away. Turn it back on before the beta; by then the app will handle

@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { router, Stack } from 'expo-router';
+import { router, Stack, useFocusEffect } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '@/data/store';
 import { Avatar } from '@/components/Avatar';
@@ -14,6 +14,14 @@ import { colors, space } from '@/theme';
 export default function Inbox() {
   const store = useStore();
   const me = store.state.me;
+
+  // Load the newest messages each time the inbox opens.
+  const { refresh } = store;
+  useFocusEffect(
+    React.useCallback(() => {
+      refresh().catch(() => {});
+    }, [refresh])
+  );
 
   return (
     <View style={styles.screen}>

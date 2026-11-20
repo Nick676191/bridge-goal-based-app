@@ -23,6 +23,7 @@ export default function ShareGoal() {
   const [note, setNote] = useState('');
   const [query, setQuery] = useState('');
   const [picked, setPicked] = useState<string[]>([]);
+  const [sending, setSending] = useState(false);
 
   // People you're connected to (following or followers), excluding you and
   // anyone blocked. People you follow come first.
@@ -43,8 +44,17 @@ export default function ShareGoal() {
   const shown = q ? people.filter((u) => u.name.toLowerCase().includes(q) || u.username.includes(q)) : people;
   const toggle = (u: string) => setPicked((p) => (p.includes(u) ? p.filter((x) => x !== u) : [...p, u]));
 
-  const sendInApp = () => {
-    store.dispatch({ type: 'shareGoal', goalId: goal.id, to: picked, message: note });
+  // Sends the goal (and your note) as a message to each person picked.
+  const sendInApp = async () => {
+    if (sending) return;
+    setSending(true);
+    try {
+      await store.sendMessage(picked, note, goal.id);
+    } catch (e) {
+      setSending(false);
+      notify('Not sent', `${(e as Error).message}\n\nCheck your connection and try again.`);
+      return;
+    }
     const names = picked.map((u) => store.user(u)?.name.split(' ')[0] ?? u);
     const list = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names[0];
     notify('Sent', `It's in your messages with ${list}.`);
@@ -114,9 +124,15 @@ export default function ShareGoal() {
         })}
       </View>
       <Button
-        label={picked.length ? `Send to ${picked.length} ${picked.length === 1 ? 'person' : 'people'}` : 'Pick people to send to'}
+        label={
+          sending
+            ? 'Sending…'
+            : picked.length
+              ? `Send to ${picked.length} ${picked.length === 1 ? 'person' : 'people'}`
+              : 'Pick people to send to'
+        }
         onPress={sendInApp}
-        disabled={picked.length === 0}
+        disabled={picked.length === 0 || sending}
       />
 
       {/* Everything outside the app goes through the iPhone share sheet,

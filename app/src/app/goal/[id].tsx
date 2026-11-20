@@ -18,7 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useKeyboardLift } from '@/lib/keyboard';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useStore } from '@/data/store';
+import { showError, useStore } from '@/data/store';
 import { REPLY_MAX, type GoalStatus, type Reply, type Tip, type Update } from '@/data/types';
 import { EncourageButton } from '@/components/ActionBar';
 import { GoalCard } from '@/components/GoalCard';
@@ -35,6 +35,7 @@ export default function GoalScreen() {
   const [tab, setTab] = useState<'updates' | 'tips'>(params.tab === 'tips' ? 'tips' : 'updates');
   const [text, setText] = useState('');
   const [setback, setSetback] = useState(false);
+  const [sending, setSending] = useState(false); // waiting for the database
   // Set when you tap Reply under a tip, update or reply: who and what you're answering.
   const [replyingTo, setReplyingTo] = useState<{ parentId: string; name: string } | null>(null);
   const inputRef = useRef<React.ComponentRef<typeof TextInput>>(null);
@@ -51,16 +52,24 @@ export default function GoalScreen() {
       ? [...store.updatesFor(goal.id)].reverse()
       : [...store.tipsFor(goal.id)].reverse();
 
-  const send = () => {
+  // Saves the tip, update or reply. Your text stays in the box if it fails,
+  // so you can try again.
+  const send = async () => {
     const t = text.trim();
-    if (!t) return;
-    if (replyingTo) {
-      store.dispatch({ type: 'addReply', parentId: replyingTo.parentId, text: t });
+    if (!t || sending) return;
+    setSending(true);
+    try {
+      if (replyingTo) await store.postReply(replyingTo.parentId, t);
+      else if (tab === 'updates') await store.postUpdate(goal.id, t, setback);
+      else await store.postTip(goal.id, t);
       setReplyingTo(null);
-    } else if (tab === 'updates') store.dispatch({ type: 'addUpdate', goalId: goal.id, text: t, setback });
-    else store.dispatch({ type: 'addTip', goalId: goal.id, text: t });
-    setText('');
-    setSetback(false);
+      setText('');
+      setSetback(false);
+    } catch (e) {
+      showError('That didn’t post', `${(e as Error).message}\n\nCheck your connection and try again.`);
+    } finally {
+      setSending(false);
+    }
   };
 
   const setStatus = (status: GoalStatus) => {
@@ -180,7 +189,7 @@ export default function GoalScreen() {
               <Text style={styles.locked}>
                 Only {authorFirst} and people committed to this goal post updates. Commit to train alongside them.
               </Text>
-              <Button label="Commit to this goal" variant="accent" onPress={() => store.dispatch({ type: 'toggleCommit', goalId: goal.id })} />
+              <Button label="Commit to this goal" variant="accent" onPress={() => store.toggleCommit(goal.id)} />
             </View>
           ) : (
             <>
@@ -225,8 +234,8 @@ export default function GoalScreen() {
                 />
                 <Pressable
                   onPress={send}
-                  disabled={!text.trim()}
-                  style={[styles.send, !text.trim() && { opacity: 0.3 }]}
+                  disabled={!text.trim() || sending}
+                  style={[styles.send, (!text.trim() || sending) && { opacity: 0.3 }]}
                   accessibilityLabel={replyingTo ? 'Post reply' : tab === 'updates' ? 'Post update' : 'Post tip'}
                 >
                   <Ionicons name="arrow-up" size={18} color={colors.paper} />
@@ -285,7 +294,7 @@ function ThreadItem({
             encouraged={item.encouraged.includes(me)}
             count={item.encouraged.length}
             disabled={item.author === me}
-            onPress={() => store.dispatch({ type: 'toggleItemEncourage', kind, id: item.id })}
+            onPress={() => store.toggleStar(kind, item.id)}
           />
         </View>
       </View>

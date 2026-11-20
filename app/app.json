@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.nick676191.pyn"
+      "bundleIdentifier": "net.pynpro.app"
     },
     "android": {
       "adaptiveIcon": {

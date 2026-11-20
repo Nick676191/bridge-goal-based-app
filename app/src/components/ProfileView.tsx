@@ -33,7 +33,12 @@ export function ProfileView({ username }: { username: string }) {
         `Block ${user.name}?`,
         "You won't see their goals, tips or updates, and they won't see yours.",
         'Block',
-        () => store.dispatch({ type: 'block', username })
+        () => {
+          // Unfollow in the database too. (The block itself is saved on this
+          // phone for now; stage 3 moves blocking to the database.)
+          if (store.isFollowing(username)) store.toggleFollow(username);
+          store.dispatch({ type: 'block', username });
+        }
       );
     if (Platform.OS === 'web') {
       block();

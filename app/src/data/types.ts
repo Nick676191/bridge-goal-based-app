@@ -1,6 +1,6 @@
-// The shapes of the data in the app. These mirror the database tables in the
-// plan doc, so when the real backend (Supabase) arrives, the screens won't
-// need to change much. In Python terms, each `type` here is like a dataclass.
+// The shapes of the data in the app. These mirror the database tables
+// (supabase/migrations), translated by api.ts. In Python terms, each `type`
+// here is like a dataclass.
 
 // A category is any short name. The built-in list below covers most goals;
 // people can also create their own when posting (see the Post screen).
@@ -100,6 +100,7 @@ export type NotificationKind =
   | 'commit'
   | 'tip'
   | 'update'
+  | 'reply' // someone replied to your tip or update
   | 'reminder'
   | 'follow'
   | 'achieved'

@@ -123,8 +123,8 @@ export function GoalCard({ goal, full = false }: { goal: Goal; full?: boolean })
         encouraged={goal.encouraged.includes(me)}
         isOwn={goal.author === me}
         onReply={() => open('tips')}
-        onCommit={() => store.dispatch({ type: 'toggleCommit', goalId: goal.id })}
-        onEncourage={() => store.dispatch({ type: 'toggleEncourage', goalId: goal.id })}
+        onCommit={() => store.toggleCommit(goal.id)}
+        onEncourage={() => store.toggleEncourage(goal.id)}
       />
     </View>
   );

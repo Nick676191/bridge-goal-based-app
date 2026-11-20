@@ -7,7 +7,7 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useStore } from '@/data/store';
+import { showError, useStore } from '@/data/store';
 import { MESSAGE_MAX, type Message } from '@/data/types';
 import { Avatar } from '@/components/Avatar';
 import { useKeyboardLift } from '@/lib/keyboard';
@@ -34,6 +34,7 @@ export default function Conversation() {
   const blocked = store.state.blocked.includes(username);
   const messages = store.messagesWith(username);
   const [text, setText] = useState('');
+  const [sending, setSending] = useState(false);
   const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const keyboardLift = useKeyboardLift();
 
@@ -41,13 +42,30 @@ export default function Conversation() {
   // a new one arrives while you're looking at it.
   const unread = messages.filter((m) => m.from === username && !m.read).length;
   useEffect(() => {
-    if (unread > 0) store.dispatch({ type: 'readConversation', with: username });
+    if (unread > 0) store.readConversation(username);
   }, [unread, username, store]);
 
-  const send = () => {
-    if (!text.trim()) return;
-    store.dispatch({ type: 'sendMessage', to: username, text });
-    setText('');
+  // While the conversation is open, check for new messages every 10 seconds.
+  // (Instant delivery and push notifications come in stage 3.)
+  const { refresh } = store;
+  useEffect(() => {
+    const timer = setInterval(() => refresh().catch(() => {}), 10_000);
+    return () => clearInterval(timer);
+  }, [refresh]);
+
+  // Your text stays in the box if sending fails, so you can try again.
+  const send = async () => {
+    const t = text.trim();
+    if (!t || sending) return;
+    setSending(true);
+    try {
+      await store.sendMessage([username], t);
+      setText('');
+    } catch (e) {
+      showError('Not sent', `${(e as Error).message}\n\nCheck your connection and try again.`);
+    } finally {
+      setSending(false);
+    }
   };
 
   const firstName = person?.name.split(' ')[0] ?? username;
@@ -118,8 +136,8 @@ export default function Conversation() {
               />
               <Pressable
                 onPress={send}
-                disabled={!text.trim()}
-                style={[styles.send, !text.trim() && { opacity: 0.3 }]}
+                disabled={!text.trim() || sending}
+                style={[styles.send, (!text.trim() || sending) && { opacity: 0.3 }]}
                 accessibilityLabel="Send message"
               >
                 <Ionicons name="arrow-up" size={18} color={colors.onAccent} />

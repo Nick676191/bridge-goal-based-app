@@ -21,13 +21,20 @@ export default function Notifications() {
   const store = useStore();
   const list = store.myNotifications.filter((n) => !n.actor || !store.state.blocked.includes(n.actor));
 
-  // Mark everything read when you leave the screen, so unread items stay
-  // highlighted while you're looking at them.
+  // Load the newest activity when you open this tab, and mark everything
+  // read when you leave it, so unread items stay highlighted while you look.
+  const { refresh } = store;
+  const markRead = React.useRef(store.markAllRead);
+  React.useEffect(() => {
+    markRead.current = store.markAllRead;
+  });
   useFocusEffect(
     React.useCallback(() => {
-      return () => store.dispatch({ type: 'markAllRead' });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+      refresh().catch(() => {});
+      return () => {
+        markRead.current();
+      };
+    }, [refresh])
   );
 
   const describe = (n: AppNotification): { icon: IconName | 'pen'; color: string; text: string } => {
@@ -56,6 +63,8 @@ export default function Notifications() {
         return { icon: 'chatbubble-outline', color: colors.ink, text: `${who} left a tip on "${subject}"` };
       case 'update':
         return { icon: 'flag-outline', color: colors.ink, text: `${who} posted an update on "${subject}"` };
+      case 'reply':
+        return { icon: 'return-down-forward-outline', color: colors.ink, text: `${who} replied to you on "${subject}"` };
       case 'follow':
         return { icon: 'person-add-outline', color: colors.ink, text: `${who} followed you` };
     }
